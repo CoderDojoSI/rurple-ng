@@ -1,24 +1,31 @@
 #!/usr/bin/env python
-#----------------------------------------------------------------------------
-# Name:         test1.py
-# Purpose:      A minimal wxPython program
-#
-# Author:       Robin Dunn
-#
-# Created:
-# Licence:      wxWindows license
-#----------------------------------------------------------------------------
-
 
 import wx
 
 class MyFrame(wx.Frame):
-    def __init__(self, parent, id, title):
-        wx.Frame.__init__(self, parent, id, title)
+    def __init__(self, *args, **kw):
+        wx.Frame.__init__(self, *args, **kw)
+        self.CreateStatusBar()
+        filemenu= wx.Menu()
+        item = filemenu.Append(wx.ID_ABOUT, "&About..."," Information about this program")
+        self.Bind(wx.EVT_MENU, self.OnAbout, item)
+        filemenu.AppendSeparator()
+        filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program")
+        # Creating the menubar.
+        menuBar = wx.MenuBar()
+        menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
+        self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
+
+    def OnAbout(self, e):
+        d = wx.MessageDialog( self, " A sample editor \n"
+                            " in wxPython","About Sample Editor", wx.OK)
+                            # Create a message dialog box
+        d.ShowModal() # Shows it
+        d.Destroy() # finally destroy it when finished.
 
 class MyApp(wx.App):
     def OnInit(self):
-        frame = MyFrame(None, -1, "This is a test")
+        frame = MyFrame(None, title="This is a test")
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
