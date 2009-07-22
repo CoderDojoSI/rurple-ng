@@ -9,22 +9,31 @@ class MyWindow(wx.Window):
         wx.Window.__init__(self, *args, **kw)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnClick)
-        self.dots = [(10,10), (100,100)]
+        self._radius = 10
+        self._dots = [(10,10), (100,100)]
     
     def OnPaint(self, e):
+        self.Paint(self.GetUpdateRegion().GetBox())
+        
+    def Paint(self, box):
         dc = wx.PaintDC(self)
         ctx = wx.lib.wxcairo.ContextFromDC(dc)
+        ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
+        ctx.clip()
         ctx.set_source_rgb(0, 0, 0)
         ctx.paint()
+        self.CairoPaint(ctx)
+        
+    def CairoPaint(self, ctx):
         ctx.set_source_rgb(0, 1, 1)
-        for dot in self.dots:
-            ctx.arc(dot[0], dot[1], 10, 0, 2*math.pi)
+        for dot in self._dots:
+            ctx.arc(dot[0], dot[1], self._radius, 0, 2*math.pi)
             ctx.close_path()
         ctx.fill()
                 
     def OnClick(self, e):
-        self.dots.append((e.m_x, e.m_y))
-        self.OnPaint(e) # ugly hack!
+        self._dots.append((e.m_x, e.m_y))
+        self.Paint(wx.Rect(e.m_x - self._radius, e.m_y - self._radius, self._radius *2, self._radius *2))
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
