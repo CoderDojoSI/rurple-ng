@@ -31,10 +31,11 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kw)
         self.CreateStatusBar()
         filemenu= wx.Menu()
-        item = filemenu.Append(wx.ID_ABOUT, "&About..."," Information about this program")
-        self.Bind(wx.EVT_MENU, self.OnAbout, item)
+        self.Bind(wx.EVT_MENU, self.OnAbout,
+            filemenu.Append(wx.ID_ABOUT, "&About..."," Information about this program"))
         filemenu.AppendSeparator()
-        filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program")
+        self.Bind(wx.EVT_MENU, self.OnExit,
+            filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
         # Creating the menubar.
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
@@ -47,6 +48,9 @@ class MyFrame(wx.Frame):
                             # Create a message dialog box
         d.ShowModal() # Shows it
         d.Destroy() # finally destroy it when finished.
+
+    def OnExit(self, e):
+        self.Close(True)
 
 class MyApp(wx.App):
     def OnInit(self):
