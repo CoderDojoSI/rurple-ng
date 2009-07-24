@@ -10,10 +10,10 @@ class MyWindow(wx.Window):
         wx.EVT_PAINT(self, self.OnPaint)
         wx.EVT_LEFT_DOWN(self, self.OnClick)
         self._radius = 10
-        self._dots = [(10,10), (100,100)]
         self._width = 10
         self._height = 10
         self._spacing = 40
+        self._walls = set([(1, 2, 'v')])
     
     def OnPaint(self, e):
         self.Paint(self.GetUpdateRegion().GetBox())
@@ -38,14 +38,19 @@ class MyWindow(wx.Window):
             ctx.line_to(self._spacing*(1 + 2*i), self._spacing*(1 + 2 * self._height))
         ctx.stroke()
         ctx.set_source_rgb(0, 0, 1)
-        for dot in self._dots:
-            ctx.arc(dot[0], dot[1], self._radius, 0, 2*math.pi)
-            ctx.close_path()
-        ctx.fill()
+        ctx.set_line_width(10)
+        for x, y, d in self._walls:
+            ctx.move_to(self._spacing*(1 + 2*x), self._spacing*(1 + 2*y))
+            if d == 'v':
+               ctx.line_to(self._spacing*(1 + 2*x), self._spacing*(3 + 2*y))
+            else:
+               ctx.line_to(self._spacing*(3 + 2*x), self._spacing*(1 + 2*y))
+        ctx.stroke()
                 
     def OnClick(self, e):
-        self._dots.append((e.m_x, e.m_y))
-        self.Paint(wx.Rect(e.m_x - self._radius, e.m_y - self._radius, self._radius *2, self._radius *2))
+        pass
+        #self._dots.append((e.m_x, e.m_y))
+        #self.Paint(wx.Rect(e.m_x - self._radius, e.m_y - self._radius, self._radius *2, self._radius *2))
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
