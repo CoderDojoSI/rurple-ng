@@ -15,6 +15,7 @@ class MyWindow(wx.Window):
         self._width = 10
         self._height = 10
         self._spacing = 40
+        self._offset = 40
         self._walls = set()
     
     def OnPaint(self, e):
@@ -30,42 +31,47 @@ class MyWindow(wx.Window):
         self.CairoPaint(ctx)
         
     def CairoPaint(self, ctx):
+        ctx.translate(self._offset, self._offset)
         ctx.set_source_rgb(0, 0, 0)
         ctx.set_line_width(0.3)
         for i in range(self._height +1):
-            ctx.move_to(self._spacing, self._spacing*(1 + 2*i))
-            ctx.line_to(self._spacing*(1 + 2 * self._width), self._spacing*(1 + 2*i))
+            ctx.move_to(0, self._spacing*2*i)
+            ctx.line_to(self._spacing*2*self._width, self._spacing*2*i)
         for i in range(self._width +1):
-            ctx.move_to(self._spacing*(1 + 2*i), self._spacing)
-            ctx.line_to(self._spacing*(1 + 2*i), self._spacing*(1 + 2 * self._height))
+            ctx.move_to(self._spacing*2*i, 0)
+            ctx.line_to(self._spacing*2*i, self._spacing*2 * self._height)
         ctx.stroke()
         ctx.set_source_rgb(0, 0, 1)
         ctx.set_line_width(10)
         for x, y, d in self._walls:
-            ctx.move_to(self._spacing*(1 + 2*x), self._spacing*(1 + 2*y))
+            ctx.move_to(self._spacing*2*x, self._spacing*2*y)
             if d == 'v':
-               ctx.line_to(self._spacing*(1 + 2*x), self._spacing*(3 + 2*y))
+               ctx.line_to(self._spacing*2*x, self._spacing*(2 + 2*y))
             else:
-               ctx.line_to(self._spacing*(3 + 2*x), self._spacing*(1 + 2*y))
+               ctx.line_to(self._spacing*(2 + 2*x), self._spacing*2*y)
         ctx.stroke()
                 
     def OnClick(self, e):
-        x = e.m_x // (self._spacing*2)
-        xx = (e.m_x % (self._spacing*2)) - self._spacing
-        y = e.m_y // (self._spacing*2)
-        yy = (e.m_y % (self._spacing*2)) - self._spacing
+        x = e.m_x - self._offset
+        y = e.m_y - self._offset
+        xx = (x % (self._spacing*2)) - self._spacing
+        yy = (y % (self._spacing*2)) - self._spacing
+        x = x // (self._spacing*2)
+        y = y // (self._spacing*2)
         if xx >= yy and xx >= -yy:
-            self.toggle_wall(x, y, 'h')
+            self.toggle_wall(x +1, y, 'v')
         elif xx <= yy and xx <= -yy:
-            self.toggle_wall(x-1, y, 'h')
-        elif yy >= 0:
             self.toggle_wall(x, y, 'v')
+        elif yy >= 0:
+            self.toggle_wall(x, y+1, 'h')
         else:
-            self.toggle_wall(x, y-1, 'v')
+            self.toggle_wall(x, y, 'h')
     
     def toggle_wall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
-        self.Paint(wx.Rect(self._spacing*2*x, self._spacing*2*y, self._spacing*4, self._spacing*4))
+        self.Paint(wx.Rect(self._offset + self._spacing*(2*x -1),
+                           self._offset + self._spacing*(2*y -1),
+                           self._spacing*4, self._spacing*4))
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
