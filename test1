@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 import math
 import wx
 import wx.lib.wxcairo
@@ -13,7 +15,7 @@ class MyWindow(wx.Window):
         self._width = 10
         self._height = 10
         self._spacing = 40
-        self._walls = set([(1, 2, 'v')])
+        self._walls = set()
     
     def OnPaint(self, e):
         self.Paint(self.GetUpdateRegion().GetBox())
@@ -48,9 +50,22 @@ class MyWindow(wx.Window):
         ctx.stroke()
                 
     def OnClick(self, e):
-        pass
-        #self._dots.append((e.m_x, e.m_y))
-        #self.Paint(wx.Rect(e.m_x - self._radius, e.m_y - self._radius, self._radius *2, self._radius *2))
+        x = e.m_x // (self._spacing*2)
+        xx = (e.m_x % (self._spacing*2)) - self._spacing
+        y = e.m_y // (self._spacing*2)
+        yy = (e.m_y % (self._spacing*2)) - self._spacing
+        if xx >= yy and xx >= -yy:
+            self.toggle_wall(x, y, 'h')
+        elif xx <= yy and xx <= -yy:
+            self.toggle_wall(x-1, y, 'h')
+        elif yy >= 0:
+            self.toggle_wall(x, y, 'v')
+        else:
+            self.toggle_wall(x, y-1, 'v')
+    
+    def toggle_wall(self, x, y, d):
+        self._walls ^= set([(x, y, d)])
+        self.Paint(wx.Rect(self._spacing*2*x, self._spacing*2*y, self._spacing*4, self._spacing*4))
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
