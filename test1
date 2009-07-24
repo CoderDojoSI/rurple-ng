@@ -7,10 +7,13 @@ import wx.lib.wxcairo
 class MyWindow(wx.Window):
     def __init__(self, *args, **kw):
         wx.Window.__init__(self, *args, **kw)
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick)
+        wx.EVT_PAINT(self, self.OnPaint)
+        wx.EVT_LEFT_DOWN(self, self.OnClick)
         self._radius = 10
         self._dots = [(10,10), (100,100)]
+        self._width = 10
+        self._height = 10
+        self._spacing = 40
     
     def OnPaint(self, e):
         self.Paint(self.GetUpdateRegion().GetBox())
@@ -20,12 +23,21 @@ class MyWindow(wx.Window):
         ctx = wx.lib.wxcairo.ContextFromDC(dc)
         ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
         ctx.clip()
-        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_source_rgb(1, 1, 1)
         ctx.paint()
         self.CairoPaint(ctx)
         
     def CairoPaint(self, ctx):
-        ctx.set_source_rgb(0, 1, 1)
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_line_width(0.3)
+        for i in range(self._height +1):
+            ctx.move_to(self._spacing, self._spacing*(1 + 2*i))
+            ctx.line_to(self._spacing*(1 + 2 * self._width), self._spacing*(1 + 2*i))
+        for i in range(self._width +1):
+            ctx.move_to(self._spacing*(1 + 2*i), self._spacing)
+            ctx.line_to(self._spacing*(1 + 2*i), self._spacing*(1 + 2 * self._height))
+        ctx.stroke()
+        ctx.set_source_rgb(0, 0, 1)
         for dot in self._dots:
             ctx.arc(dot[0], dot[1], self._radius, 0, 2*math.pi)
             ctx.close_path()
@@ -63,7 +75,7 @@ class MyFrame(wx.Frame):
 
 class MyApp(wx.App):
     def OnInit(self):
-        frame = MyFrame(None, title="This is a test")
+        frame = MyFrame(None, title="This is a test", size=(880,880))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
