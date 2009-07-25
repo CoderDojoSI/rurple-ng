@@ -5,6 +5,7 @@ from __future__ import division
 import math
 import wx
 import wx.lib.wxcairo
+import cairo
 
 class MyWindow(wx.Window):
     def __init__(self, *args, **kw):
@@ -41,16 +42,25 @@ class MyWindow(wx.Window):
             ctx.move_to(self._spacing*2*i, 0)
             ctx.line_to(self._spacing*2*i, self._spacing*2 * self._height)
         ctx.stroke()
-        ctx.set_source_rgb(0, 0, 1)
-        ctx.set_line_width(10)
+        ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
         for x, y, d in self._walls:
             ctx.move_to(self._spacing*2*x, self._spacing*2*y)
             if d == 'v':
                ctx.line_to(self._spacing*2*x, self._spacing*(2 + 2*y))
             else:
                ctx.line_to(self._spacing*(2 + 2*x), self._spacing*2*y)
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_line_width(10)
+        ctx.stroke_preserve()    
+        ctx.set_source_rgb(1, 0, 0)
+        ctx.set_line_width(4)
         ctx.stroke()
-                
+        
+    def paint_squares(self, x, y, w, h):
+        self.Paint(wx.Rect(self._offset + self._spacing*(2*x -1),
+                           self._offset + self._spacing*(2*y -1),
+                           self._spacing*2*(w+1), self._spacing*2*(h+1)))
+    
     def OnClick(self, e):
         x = e.m_x - self._offset
         y = e.m_y - self._offset
@@ -69,9 +79,11 @@ class MyWindow(wx.Window):
     
     def toggle_wall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
-        self.Paint(wx.Rect(self._offset + self._spacing*(2*x -1),
-                           self._offset + self._spacing*(2*y -1),
-                           self._spacing*4, self._spacing*4))
+        if d == 'h':
+            self.paint_squares(x, y, 1, 0)
+        else:
+            self.paint_squares(x, y, 0, 1)
+        
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
