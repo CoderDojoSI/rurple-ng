@@ -21,6 +21,16 @@ class Observable(object):
         for l in self._listeners:
             l(self, *args, **kw)
 
+class Robot(Observable):
+    def __init__(self, maze):
+        self._maze = maze
+
+    def Paint(self, ctx):
+        x, y = self._maze.Coordinates(2.5, 3.5)
+        ctx.set_source_rgb(0, 0, 1)
+        ctx.arc(x, y, 10, 0, 2*math.pi)
+        ctx.fill()
+
 class Maze(Observable):
     def __init__(self, w, h):
         Observable.__init__(self)
@@ -29,6 +39,7 @@ class Maze(Observable):
         self._width = w
         self._height = h
         self._walls = set()
+        self._objects = set([Robot(self)])
 
     def ToggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
@@ -81,6 +92,10 @@ class Maze(Observable):
         ctx.set_source_rgb(1, 0, 0)
         ctx.set_line_width(4)
         ctx.stroke()
+        for obj in self._objects:
+            ctx.save()
+            obj.Paint(ctx)
+            ctx.restore()
 
     def PaintSquares(self, ctx, x, y, w, h):
         ctx.rectangle(*(self.Coordinates(x-0.5, y-0.5) + self.Coordinates(x + w + 0.5, y + h + 0.5)))
