@@ -28,10 +28,10 @@ class Maze(Observable):
         self._offset = 25
         self._width = w
         self._height = h
-        self.walls = set()
+        self._walls = set()
 
     def ToggleWall(self, x, y, d):
-        self.walls ^= set([(x, y, d)])
+        self._walls ^= set([(x, y, d)])
         if d == 'h':
             self.TriggerListeners(x, y, 1, 0)
         else:
@@ -69,7 +69,7 @@ class Maze(Observable):
             ctx.line_to(*self.Coordinates(i, self._width))
         ctx.stroke()
         ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
-        for x, y, d in self.walls:
+        for x, y, d in self._walls:
             ctx.move_to(*self.Coordinates(x, y))
             if d == 'v':
                ctx.line_to(*self.Coordinates(x, y+1))
