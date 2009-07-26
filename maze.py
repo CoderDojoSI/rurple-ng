@@ -35,6 +35,40 @@ class Maze(Observable):
         else:
             self.TriggerListeners(x, y, 0, 1)
 
+    def Paint(self, win, ctx):
+        ctx.translate(win._offset, win._offset)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.paint()
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_line_width(0.3)
+        for i in range(self.height +1):
+            ctx.move_to(0, win._spacing*2*i)
+            ctx.line_to(win._spacing*2*self.width, win._spacing*2*i)
+        for i in range(self.width +1):
+            ctx.move_to(win._spacing*2*i, 0)
+            ctx.line_to(win._spacing*2*i, win._spacing*2 * self.height)
+        ctx.stroke()
+        ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
+        for x, y, d in self.walls:
+            ctx.move_to(win._spacing*2*x, win._spacing*2*y)
+            if d == 'v':
+               ctx.line_to(win._spacing*2*x, win._spacing*(2 + 2*y))
+            else:
+               ctx.line_to(win._spacing*(2 + 2*x), win._spacing*2*y)
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_line_width(10)
+        ctx.stroke_preserve()    
+        ctx.set_source_rgb(1, 0, 0)
+        ctx.set_line_width(4)
+        ctx.stroke()
+
+    def PaintSquares(self, win, ctx, x, y, w, h):
+        ctx.rectangle(win._offset + win._spacing*(2*x -1),
+            win._offset + win._spacing*(2*y -1),
+            win._spacing*2*(w+1), win._spacing*2*(h+1))
+        ctx.clip()
+        self.Paint(win, ctx)
+
 class MazeWindow(wx.Window):
     def __init__(self, *args, **kw):
         self._maze = kw['maze']
@@ -49,43 +83,14 @@ class MazeWindow(wx.Window):
         self.Paint(self.GetUpdateRegion().GetBox())
         
     def Paint(self, box):
-        dc = wx.PaintDC(self)
-        ctx = wx.lib.wxcairo.ContextFromDC(dc)
+        ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
         ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
         ctx.clip()
-        ctx.set_source_rgb(1, 1, 1)
-        ctx.paint()
-        self.CairoPaint(ctx)
-        
-    def CairoPaint(self, ctx):
-        ctx.translate(self._offset, self._offset)
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(0.3)
-        for i in range(self._maze.height +1):
-            ctx.move_to(0, self._spacing*2*i)
-            ctx.line_to(self._spacing*2*self._maze.width, self._spacing*2*i)
-        for i in range(self._maze.width +1):
-            ctx.move_to(self._spacing*2*i, 0)
-            ctx.line_to(self._spacing*2*i, self._spacing*2 * self._maze.height)
-        ctx.stroke()
-        ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
-        for x, y, d in self._maze.walls:
-            ctx.move_to(self._spacing*2*x, self._spacing*2*y)
-            if d == 'v':
-               ctx.line_to(self._spacing*2*x, self._spacing*(2 + 2*y))
-            else:
-               ctx.line_to(self._spacing*(2 + 2*x), self._spacing*2*y)
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(10)
-        ctx.stroke_preserve()    
-        ctx.set_source_rgb(1, 0, 0)
-        ctx.set_line_width(4)
-        ctx.stroke()
-        
-    def OnMazeChange(self, maze, x, y, w, h):
-        self.Paint(wx.Rect(self._offset + self._spacing*(2*x -1),
-                           self._offset + self._spacing*(2*y -1),
-                           self._spacing*2*(w+1), self._spacing*2*(h+1)))
+        self._maze.Paint(self, ctx)
+                
+    def OnMazeChange(self, maze, *args, **kw):
+        ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
+        self._maze.PaintSquares(self, ctx, *args, **kw)
 
 class EditableMazeWindow(MazeWindow):
     def __init__(self, *args, **kw):
