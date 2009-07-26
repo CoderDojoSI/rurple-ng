@@ -43,7 +43,6 @@ class MazeWindow(wx.Window):
         self._spacing = 25
         self._offset = 25
         wx.EVT_PAINT(self, self.OnPaint)
-        wx.EVT_LEFT_DOWN(self, self.OnClick)
         self._maze.AddListener(self.OnMazeChange)
     
     def OnPaint(self, e):
@@ -87,7 +86,12 @@ class MazeWindow(wx.Window):
         self.Paint(wx.Rect(self._offset + self._spacing*(2*x -1),
                            self._offset + self._spacing*(2*y -1),
                            self._spacing*2*(w+1), self._spacing*2*(h+1)))
-    
+
+class EditableMazeWindow(MazeWindow):
+    def __init__(self, *args, **kw):
+        MazeWindow.__init__(self, *args, **kw)
+        wx.EVT_LEFT_DOWN(self, self.OnClick)
+
     def OnClick(self, e):
         x = e.m_x - self._offset
         y = e.m_y - self._offset

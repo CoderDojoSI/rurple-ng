@@ -17,7 +17,7 @@ class MyFrame(wx.Frame):
         sash = wx.SplitterWindow(self)
         sp = ScrolledPanel(sash)
         maze.MazeWindow(sp, size=(1000,1000), maze=mymaze)
-        sash.SplitVertically(maze.MazeWindow(sash, maze=mymaze), sp)
+        sash.SplitVertically(maze.EditableMazeWindow(sash, maze=mymaze), sp)
         sp.SetupScrolling()
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
