@@ -4,6 +4,7 @@ from __future__ import division
 
 import math
 import wx
+from wx.lib.scrolledpanel import ScrolledPanel
 import wx.lib.wxcairo
 import cairo
 
@@ -88,7 +89,10 @@ class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
         sash = wx.SplitterWindow(self)
-        sash.SplitVertically(MyWindow(sash), MyWindow(sash))
+        sp = ScrolledPanel(sash)
+        MyWindow(sp, size=(1000,1000))
+        sash.SplitVertically(MyWindow(sash), sp)
+        sp.SetupScrolling()
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
@@ -127,5 +131,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
