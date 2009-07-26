@@ -12,11 +12,10 @@ class MyWindow(wx.Window):
         wx.Window.__init__(self, *args, **kw)
         wx.EVT_PAINT(self, self.OnPaint)
         wx.EVT_LEFT_DOWN(self, self.OnClick)
-        self._radius = 10
         self._width = 10
         self._height = 10
-        self._spacing = 40
-        self._offset = 40
+        self._spacing = 25
+        self._offset = 25
         self._walls = set()
     
     def OnPaint(self, e):
@@ -88,25 +87,29 @@ class MyWindow(wx.Window):
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
+        sash = wx.SplitterWindow(self)
+        sash.SplitVertically(MyWindow(sash), MyWindow(sash))
         self.CreateStatusBar()
-        filemenu= wx.Menu()
+        menuBar = wx.MenuBar()
+        filemenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnAbout,
             filemenu.Append(wx.ID_ABOUT, "&About..."," Information about this program"))
         filemenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnExit,
             filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
-        # Creating the menubar.
-        menuBar = wx.MenuBar()
-        menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
-        self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
-        MyWindow(self)
+        menuBar.Append(filemenu,"&File")
+        self.SetMenuBar(menuBar)
+        toolbar = self.CreateToolBar()
+        tsize = (24,24)
+        toolbar.SetToolBitmapSize(tsize)
+        open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tsize)
+        toolbar.AddLabelTool(wx.ID_ANY, "Open", open_bmp, shortHelp="Open", longHelp="Long help for 'Open'")
 
     def OnAbout(self, e):
-        d = wx.MessageDialog( self, " A sample editor \n"
-                            " in wxPython","About Sample Editor", wx.OK)
-                            # Create a message dialog box
-        d.ShowModal() # Shows it
-        d.Destroy() # finally destroy it when finished.
+        d = wx.MessageDialog(self, " A test application \n"
+                            " in wxPython","About test app", wx.OK)
+        d.ShowModal()
+        d.Destroy()
 
     def OnExit(self, e):
         self.Close(True)
