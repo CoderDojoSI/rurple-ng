@@ -108,6 +108,9 @@ class MyFrame(wx.Frame):
         toolbar.SetToolBitmapSize(tsize)
         open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tsize)
         toolbar.AddLabelTool(wx.ID_ANY, "Open", open_bmp, shortHelp="Open", longHelp="Long help for 'Open'")
+        slider = wx.Slider(toolbar, size=(250,-1))
+        toolbar.AddControl(slider)
+        
 
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A test application \n"
