@@ -27,9 +27,16 @@ class Robot(Observable):
 
     def Paint(self, ctx):
         x, y = self._maze.Coordinates(2.5, 3.5)
+        ctx.translate(x, y)
         ctx.set_source_rgb(0, 0, 1)
-        ctx.arc(x, y, 10, 0, 2*math.pi)
+        ctx.arc(0, 0, 7, 0, 2*math.pi)
         ctx.fill()
+        ctx.move_to(10, -10)
+        ctx.line_to(0, -10)
+        ctx.line_to(0, 10)
+        ctx.line_to(10, 10)
+        ctx.set_line_width(4)
+        ctx.stroke()
 
 class Maze(Observable):
     def __init__(self, w, h):
