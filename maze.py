@@ -93,8 +93,8 @@ class EditableMazeWindow(MazeWindow):
         wx.EVT_LEFT_DOWN(self, self.OnClick)
 
     def OnClick(self, e):
-        x = e.m_x - self._offset
-        y = e.m_y - self._offset
+        x = e.GetX() - self._offset
+        y = e.GetY() - self._offset
         xx = (x % (self._spacing*2)) - self._spacing
         yy = (y % (self._spacing*2)) - self._spacing
         x = x // (self._spacing*2)
