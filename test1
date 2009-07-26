@@ -16,8 +16,8 @@ class MyFrame(wx.Frame):
         mymaze = maze.Maze(10, 10)
         sash = wx.SplitterWindow(self)
         sp = ScrolledPanel(sash)
-        maze.MazeWindow(sp, size=(1000,1000), maze=mymaze)
-        sash.SplitVertically(maze.EditableMazeWindow(sash, maze=mymaze), sp)
+        maze.EditableMazeWindow(sp, size=(900,900), maze=mymaze)
+        sash.SplitVertically(wx.Panel(sash), sp)
         sp.SetupScrolling()
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
@@ -49,7 +49,7 @@ class MyFrame(wx.Frame):
 
 class MyApp(wx.App):
     def OnInit(self):
-        frame = MyFrame(None, title="This is a test", size=(880,880))
+        frame = MyFrame(None, title="This is a test", size=(900,1000))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
