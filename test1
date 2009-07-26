@@ -8,90 +8,16 @@ from wx.lib.scrolledpanel import ScrolledPanel
 import wx.lib.wxcairo
 import cairo
 
-class MyWindow(wx.Window):
-    def __init__(self, *args, **kw):
-        wx.Window.__init__(self, *args, **kw)
-        wx.EVT_PAINT(self, self.OnPaint)
-        wx.EVT_LEFT_DOWN(self, self.OnClick)
-        self._width = 10
-        self._height = 10
-        self._spacing = 25
-        self._offset = 25
-        self._walls = set()
-    
-    def OnPaint(self, e):
-        self.Paint(self.GetUpdateRegion().GetBox())
-        
-    def Paint(self, box):
-        dc = wx.PaintDC(self)
-        ctx = wx.lib.wxcairo.ContextFromDC(dc)
-        ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
-        ctx.clip()
-        ctx.set_source_rgb(1, 1, 1)
-        ctx.paint()
-        self.CairoPaint(ctx)
-        
-    def CairoPaint(self, ctx):
-        ctx.translate(self._offset, self._offset)
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(0.3)
-        for i in range(self._height +1):
-            ctx.move_to(0, self._spacing*2*i)
-            ctx.line_to(self._spacing*2*self._width, self._spacing*2*i)
-        for i in range(self._width +1):
-            ctx.move_to(self._spacing*2*i, 0)
-            ctx.line_to(self._spacing*2*i, self._spacing*2 * self._height)
-        ctx.stroke()
-        ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
-        for x, y, d in self._walls:
-            ctx.move_to(self._spacing*2*x, self._spacing*2*y)
-            if d == 'v':
-               ctx.line_to(self._spacing*2*x, self._spacing*(2 + 2*y))
-            else:
-               ctx.line_to(self._spacing*(2 + 2*x), self._spacing*2*y)
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(10)
-        ctx.stroke_preserve()    
-        ctx.set_source_rgb(1, 0, 0)
-        ctx.set_line_width(4)
-        ctx.stroke()
-        
-    def paint_squares(self, x, y, w, h):
-        self.Paint(wx.Rect(self._offset + self._spacing*(2*x -1),
-                           self._offset + self._spacing*(2*y -1),
-                           self._spacing*2*(w+1), self._spacing*2*(h+1)))
-    
-    def OnClick(self, e):
-        x = e.m_x - self._offset
-        y = e.m_y - self._offset
-        xx = (x % (self._spacing*2)) - self._spacing
-        yy = (y % (self._spacing*2)) - self._spacing
-        x = x // (self._spacing*2)
-        y = y // (self._spacing*2)
-        if xx >= yy and xx >= -yy:
-            self.toggle_wall(x +1, y, 'v')
-        elif xx <= yy and xx <= -yy:
-            self.toggle_wall(x, y, 'v')
-        elif yy >= 0:
-            self.toggle_wall(x, y+1, 'h')
-        else:
-            self.toggle_wall(x, y, 'h')
-    
-    def toggle_wall(self, x, y, d):
-        self._walls ^= set([(x, y, d)])
-        if d == 'h':
-            self.paint_squares(x, y, 1, 0)
-        else:
-            self.paint_squares(x, y, 0, 1)
-        
+import maze
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
+        mymaze = maze.Maze(10, 10)
         sash = wx.SplitterWindow(self)
         sp = ScrolledPanel(sash)
-        MyWindow(sp, size=(1000,1000))
-        sash.SplitVertically(MyWindow(sash), sp)
+        maze.MazeWindow(sp, size=(1000,1000), maze=mymaze)
+        sash.SplitVertically(maze.MazeWindow(sash, maze=mymaze), sp)
         sp.SetupScrolling()
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
