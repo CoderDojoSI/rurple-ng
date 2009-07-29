@@ -5,6 +5,7 @@ from __future__ import division, print_function
 import math
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
+import wx.stc
 import wx.lib.wxcairo
 import cairo
 
@@ -15,9 +16,10 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kw)
         mymaze = maze.Maze(10, 10)
         sash = wx.SplitterWindow(self)
+        stc = wx.stc.StyledTextCtrl(sash)
         sp = ScrolledPanel(sash)
         maze.EditableMazeWindow(sp, size=(900,900), maze=mymaze)
-        sash.SplitVertically(wx.Panel(sash), sp)
+        sash.SplitVertically(stc, sp)
         sp.SetupScrolling()
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
