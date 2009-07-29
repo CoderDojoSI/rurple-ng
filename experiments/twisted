@@ -15,6 +15,11 @@ def deferAMo():
     reactor.callLater(2, d.callback, "foo")
     return d
 
+def loopForever():
+    print "looping..."
+    reactor.callLater(0.7, loopForever)
+
+loopForever()
 reactor.callInThread(doInThread)
 reactor.run()
 
