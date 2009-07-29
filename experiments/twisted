@@ -1,0 +1,20 @@
+#!/usr/bin/python
+
+from twisted.internet import threads, reactor, defer
+
+
+def doInThread():
+    print "Starting in thread"
+    print "Result of blocking call:", blockingCall()
+    
+def blockingCall():
+    return threads.blockingCallFromThread(reactor, deferAMo)
+    
+def deferAMo():
+    d = defer.Deferred()
+    reactor.callLater(2, d.callback, "foo")
+    return d
+
+reactor.callInThread(doInThread)
+reactor.run()
+
