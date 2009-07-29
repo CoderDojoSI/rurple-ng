@@ -1,0 +1,19 @@
+#!/usr/bin/python
+
+import sys
+
+def tracefunc(frame, event, arg):
+    #print frame, event, arg
+    print event, frame.f_code.co_filename, frame.f_lineno
+    return tracefunc
+    
+execme = """print 5
+print 3
+for i in range(4):
+    print i
+print 8"""
+
+sys.settrace(tracefunc)
+exec execme
+sys.settrace(None)
+print "foo"
