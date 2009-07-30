@@ -21,13 +21,17 @@ class Observable(object):
         for l in self._listeners:
             l(self, *args, **kw)
 
-class Robot(Observable):
+class Robot(object):
     def __init__(self, maze):
         self._maze = maze
+        self._x = 2
+        self._y = 3
+        self._dir = 0
 
     def Paint(self, ctx):
-        x, y = self._maze.Coordinates(2.5, 3.5)
+        x, y = self._maze.Coordinates(self._x + .5, self._y + .5)
         ctx.translate(x, y)
+        ctx.rotate(math.pi * 0.5 * self._dir)
         ctx.set_source_rgb(0, 0, 1)
         ctx.arc(0, 0, 7, 0, 2*math.pi)
         ctx.fill()
@@ -37,6 +41,25 @@ class Robot(Observable):
         ctx.line_to(10, 10)
         ctx.set_line_width(4)
         ctx.stroke()
+    
+    def move(self):
+        if self._dir == 0:
+            self._x += 1
+            self._maze.TriggerListeners(self._x -1, self._y, 2, 1)
+        elif self._dir == 1:
+            self._y += 1
+            self._maze.TriggerListeners(self._x, self._y -1, 1, 2)
+        elif self._dir == 2:
+            self._x -= 1
+            self._maze.TriggerListeners(self._x, self._y, 2, 1)
+        else:
+            self._y -= 1
+            self._maze.TriggerListeners(self._x, self._y, 1, 2)
+    
+    def turn_left(self):
+        self._dir -= 1
+        self._dir %= 4
+        self._maze.TriggerListeners(self._x, self._y, 1, 1)
 
 class Maze(Observable):
     def __init__(self, w, h):
@@ -46,7 +69,11 @@ class Maze(Observable):
         self._width = w
         self._height = h
         self._walls = set()
-        self._objects = set([Robot(self)])
+        self._objects = set()
+
+    def AddObject(self, o):
+        self._objects.add(o)
+        # TriggerSomething?
 
     def ToggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])

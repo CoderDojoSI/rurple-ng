@@ -15,6 +15,8 @@ class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
         mymaze = maze.Maze(10, 10)
+        self._robot = maze.Robot(mymaze)
+        mymaze.AddObject(self._robot)
         sash = wx.SplitterWindow(self)
         stc = wx.stc.StyledTextCtrl(sash)
         sp = ScrolledPanel(sash)
@@ -35,7 +37,10 @@ class MyFrame(wx.Frame):
         tsize = (24,24)
         toolbar.SetToolBitmapSize(tsize)
         open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tsize)
-        self.Bind(wx.EVT_TOOL, lambda e: print("Replace this with OnOpen"), 
+        self.Bind(wx.EVT_TOOL, lambda e: self._robot.move(), 
+            toolbar.AddLabelTool(wx.ID_ANY, "Open", open_bmp, 
+                shortHelp="Open", longHelp="Long help for 'Open'"))
+        self.Bind(wx.EVT_TOOL, lambda e: self._robot.turn_left(), 
             toolbar.AddLabelTool(wx.ID_ANY, "Open", open_bmp, 
                 shortHelp="Open", longHelp="Long help for 'Open'"))
         slider = wx.Slider(toolbar, size=(250,-1))
