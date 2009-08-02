@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+TWIST = True
+
+if TWIST:
+    import twisted.internet.wxreactor
+    twisted.internet.wxreactor.install()
+
+    from twisted.internet import reactor
+
+import wx
+
+class MyFrame(wx.Frame):
+    def __init__(self, *args, **kw):
+        wx.Frame.__init__(self, *args, **kw)
+        self.Bind(wx.EVT_BUTTON, self.OnExit,
+            wx.Button(self, wx.ID_ANY, "Exit"))
+        wx.EVT_CLOSE(self, lambda evt: reactor.stop())
+        
+    def OnExit(self, e):
+        reactor.stop()
+        #self.Close(True)
+
+class MyApp(wx.App):
+    def OnInit(self):
+        frame = MyFrame(None, title="This is a test")
+        frame.Show(True)
+        self.SetTopWindow(frame)
+        return True
+
+def main():
+    app = MyApp(0)
+    if TWIST:
+        reactor.registerWxApp(app)
+        reactor.run(0)
+    else:
+        app.MainLoop()
+
+if __name__ == "__main__":
+    main()
+
