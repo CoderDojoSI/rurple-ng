@@ -10,6 +10,7 @@ import wx.lib.wxcairo
 import cairo
 
 import maze
+import cpu
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
@@ -36,13 +37,10 @@ class MyFrame(wx.Frame):
         toolbar = self.CreateToolBar()
         tsize = (24,24)
         toolbar.SetToolBitmapSize(tsize)
-        open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tsize)
-        self.Bind(wx.EVT_TOOL, lambda e: self._robot.move(), 
-            toolbar.AddLabelTool(wx.ID_ANY, "Open", open_bmp, 
-                shortHelp="Open", longHelp="Long help for 'Open'"))
-        self.Bind(wx.EVT_TOOL, lambda e: self._robot.turn_left(), 
-            toolbar.AddLabelTool(wx.ID_ANY, "Open", open_bmp, 
-                shortHelp="Open", longHelp="Long help for 'Open'"))
+        play_bmp = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tsize)
+        self.Bind(wx.EVT_TOOL, self.OnPlay, 
+            toolbar.AddLabelTool(wx.ID_ANY, "Play", play_bmp, 
+                shortHelp="Play"))
         slider = wx.Slider(toolbar, size=(250,-1))
         toolbar.AddControl(slider)
         
@@ -51,6 +49,30 @@ class MyFrame(wx.Frame):
                             " in wxPython","About test app", wx.OK)
         d.ShowModal()
         d.Destroy()
+        
+    def OnPlay(self, e):
+        self._cpu = cpu.CPU()
+        self._cpu.SetTrace(self.TraceLine)
+        self._cpu.AddFunction("move", self.moveHandler)
+        self._cpu.AddFunction("turn_left", self.turn_leftHandler)
+        self._cpu.SetProgram("""
+move()
+turn_left()
+move()
+""")
+        self._cpu.Start()
+
+    def TraceLine(self, q, line):
+        print("Line", line)
+        wx.CallLater(1000, q.put, None)
+    
+    def moveHandler(self, q):
+        self._robot.move()
+        q.put(None)
+      
+    def turn_leftHandler(self, q):
+        self._robot.turn_left()
+        q.put(None)
 
     def OnExit(self, e):
         self.Close(True)
