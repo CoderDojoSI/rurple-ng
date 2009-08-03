@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+
+import wx
+
+class MyFrame(wx.Frame):
+    def __init__(self, *args, **kw):
+        wx.Frame.__init__(self, *args, **kw)
+        self._toolbar = self.CreateToolBar()
+        tsize = (24,24)
+        self._toolbar.SetToolBitmapSize(tsize)
+        self._undoTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Undo", 
+            wx.ArtProvider.GetBitmap(wx.ART_UNDO, wx.ART_TOOLBAR, tsize))
+        self._redoTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Redo", 
+            wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tsize))
+        self._crossTool = self._toolbar.AddLabelTool(wx.ID_ANY, "Cross", 
+            wx.ArtProvider.GetBitmap(wx.ART_CROSS_MARK, wx.ART_TOOLBAR, tsize))
+        self.Bind(wx.EVT_TOOL, self.OnCross, self._crossTool)
+    
+    def OnCross(self, e):
+        self._toolbar.ToggleTool(self._redoTool.Id, True)
+        
+class MyApp(wx.App):
+    def OnInit(self):
+        frame = MyFrame(None, title="This is a test")
+        frame.Show(True)
+        self.SetTopWindow(frame)
+        return True
+
+def main():
+    app = MyApp(0)
+    app.MainLoop()
+
+if __name__ == "__main__":
+    main()
+
