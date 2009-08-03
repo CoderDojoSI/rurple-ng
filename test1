@@ -69,9 +69,8 @@ move()
             "turn_left": self._cpu.ProxyFunction(self._robot.turn_left)
         }
 
-    def traceLine(self, rcb, line):
+    def traceLine(self, line):
         print("Line", line)
-        wx.CallLater(1000, rcb, (None, None))
             
     def done(self, e):
         print("Done, exception:", e)

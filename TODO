@@ -4,16 +4,17 @@ Done:
 - switch from thread to threading
 - pass return-callbacks instead of queues
 - cpu tells main thread when it's finished
+- abolish CPU.AddFunction in favour of SetGlobals and exposing proxyFunction
+- handle exceptions
+- move timing into CPU object
 
 Still to do:
 
 - read code from editor window (initializing first)
 - highlight lines instead of printing
-- handle exceptions
 - alert instead of printing on finish and exceptions
 - log window
 - cpu redirect stdout, stderr during run
-- abolish CPU.AddFunction in favour of SetGlobals and exposing proxyFunction
 - move Universe-CPU linkup into Universe
 - move window creation into Universe
 - Universe handles UniverseExceptions
