@@ -41,6 +41,8 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnPlay, 
             toolbar.AddLabelTool(wx.ID_ANY, "Play", play_bmp, 
                 shortHelp="Play"))
+        # Cheat - play anyway, for testing
+        wx.CallLater(1500, self.OnPlay, None)
         slider = wx.Slider(toolbar, size=(250,-1))
         toolbar.AddControl(slider)
         
@@ -53,8 +55,8 @@ class MyFrame(wx.Frame):
     def OnPlay(self, e):
         self._cpu = cpu.CPU()
         self._cpu.SetTrace(self.TraceLine)
-        self._cpu.AddFunction("move", self.moveHandler)
-        self._cpu.AddFunction("turn_left", self.turn_leftHandler)
+        self._cpu.AddFunction("move", self._robot.move)
+        self._cpu.AddFunction("turn_left", self._robot.turn_left)
         self._cpu.SetProgram("""
 move()
 turn_left()
@@ -62,18 +64,10 @@ move()
 """)
         self._cpu.Start()
 
-    def TraceLine(self, q, line):
+    def TraceLine(self, rcb, line):
         print("Line", line)
-        wx.CallLater(1000, q.put, None)
+        wx.CallLater(1000, rcb, (None, None))
     
-    def moveHandler(self, q):
-        self._robot.move()
-        q.put(None)
-      
-    def turn_leftHandler(self, q):
-        self._robot.turn_left()
-        q.put(None)
-
     def OnExit(self, e):
         self.Close(True)
 
