@@ -12,6 +12,10 @@ import cairo
 import maze
 import cpu
 
+
+def toBitmap(name):
+    return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
@@ -36,12 +40,11 @@ class MyFrame(wx.Frame):
         menuBar.Append(filemenu,"&File")
         self.SetMenuBar(menuBar)
         toolbar = self.CreateToolBar()
-        tsize = (24,24)
+        tsize = (32,32)
         toolbar.SetToolBitmapSize(tsize)
-        play_bmp = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tsize)
         self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.Play()), 
-            toolbar.AddLabelTool(wx.ID_ANY, "Play", play_bmp, 
-                shortHelp="Play"))
+            toolbar.AddLabelTool(wx.ID_ANY, "Play",
+                toBitmap('play'), shortHelp="Play"))
         # Cheat - play anyway, for testing
         wx.CallLater(1500, self._cpu.Play)
         slider = wx.Slider(toolbar, size=(250,-1))
