@@ -19,6 +19,7 @@ Still to do:
 - Universe handles UniverseExceptions
 - make speed control work
 - make proper Play, Pause, Step, Stop buttons
+- make Play button work properly
 - make Stop button work
 - make Pause button work
 - make Step button work
