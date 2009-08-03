@@ -1,0 +1,40 @@
+
+- automatically start program, to speed debugging
+- switch from thread to threading
+- cpu tells main thread when it's finished
+- read code from editor window (initializing first)
+- highlight lines instead of printing
+- pass return-callbacks instead of queues
+- handle exceptions
+- alert instead of printing on finish and exceptions
+- log window
+- cpu redirect stdout, stderr during run
+- abolish CPU.AddFunction in favour of SetGlobals and exposing proxyFunction
+- move Universe-CPU linkup into Universe
+- move window creation into Universe
+- Universe handles UniverseExceptions
+- make speed control work
+- make proper Play, Pause, Step, Stop buttons
+- make Stop button work
+- make Pause button work
+- make Step button work
+- only internal walls editable
+- make walls work
+- make world loadable and saveable
+- make program loadable and saveable
+- load a program by default
+- add beepers
+- add World menu with set beepers option
+- add reset world button
+- add hyperlink to help in about
+- new text for title etc
+- ink trails
+- useful status bar info
+- resize world dialog
+- style editor and log window properly
+- make robot look nicer
+
+- make Play and Pause into ToggleButtons
+- highlight exception line
+
+- look into using process instead of thread
