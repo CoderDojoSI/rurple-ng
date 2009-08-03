@@ -18,6 +18,7 @@
 - make Stop button work
 - make Pause button work
 - make Step button work
+- start with walls on outside
 - only internal walls editable
 - make walls work
 - make world loadable and saveable
