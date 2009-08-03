@@ -4,8 +4,8 @@ import Queue
 import wx
 
 class CPU(object):
-    def __init__(self):
-        self._functions = {}
+    def __init__(self, partner):
+        self._partner = partner
         
     def NonblockingProxyFunction(self, f):
         def callF(*a, **kw):
@@ -25,16 +25,10 @@ class CPU(object):
                 rcb((None, e))
         return self.NonblockingProxyFunction(callBlocking)
 
-    def SetTrace(self, f):
-        self._trace = self.NonblockingProxyFunction(f)
-    
-    def SetProgram(self, p):
-        self._program = p
-
-    def AddFunction(self, name, f):
-        self._functions[name] = self.ProxyFunction(f)
-    
-    def Start(self):
+    def Play(self):
+        self._globals = self._partner.getGlobals()
+        self._program = self._partner.program()
+        self._trace = self.NonblockingProxyFunction(self._partner.traceLine)
         t = threading.Thread(target = self._start)
         t.start()
     
@@ -42,10 +36,10 @@ class CPU(object):
         try:
             sys.settrace(self._tracefunc)
             try:
-                exec self._program in self._functions
+                exec self._program in self._globals
                 wx.CallAfter(self._done, None)
             except Exception, e:
-                wx.CallAfter(self._done, e)
+                wx.CallAfter(self._partner.done, e)
         finally:
             sys.settrace(None)
     
@@ -55,7 +49,7 @@ class CPU(object):
             if event == "line":
                 self._trace(frame.f_lineno)
         return self._tracefunc
-            
+    
     def _done(self, e):
-        print "Done, exception:", e
+        self._partner.done(e)
 

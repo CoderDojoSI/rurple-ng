@@ -15,6 +15,7 @@ import cpu
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
+        self._cpu = cpu.CPU(self)
         mymaze = maze.Maze(10, 10)
         self._robot = maze.Robot(mymaze)
         mymaze.AddObject(self._robot)
@@ -38,11 +39,11 @@ class MyFrame(wx.Frame):
         tsize = (24,24)
         toolbar.SetToolBitmapSize(tsize)
         play_bmp = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tsize)
-        self.Bind(wx.EVT_TOOL, self.OnPlay, 
+        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.Play()), 
             toolbar.AddLabelTool(wx.ID_ANY, "Play", play_bmp, 
                 shortHelp="Play"))
         # Cheat - play anyway, for testing
-        wx.CallLater(1500, self.OnPlay, None)
+        wx.CallLater(1500, self._cpu.Play)
         slider = wx.Slider(toolbar, size=(250,-1))
         toolbar.AddControl(slider)
         
@@ -51,25 +52,29 @@ class MyFrame(wx.Frame):
                             " in wxPython","About test app", wx.OK)
         d.ShowModal()
         d.Destroy()
-        
-    def OnPlay(self, e):
-        self._cpu = cpu.CPU()
-        self._cpu.SetTrace(self.TraceLine)
-        self._cpu.AddFunction("move", self._robot.move)
-        self._cpu.AddFunction("turn_left", self._robot.turn_left)
-        self._cpu.SetProgram("""
-move()
-turn_left()
-move()
-""")
-        self._cpu.Start()
-
-    def TraceLine(self, rcb, line):
-        print("Line", line)
-        wx.CallLater(1000, rcb, (None, None))
     
     def OnExit(self, e):
         self.Close(True)
+
+    def program(self):
+        return """
+move()
+turn_left()
+move()
+"""
+
+    def getGlobals(self):
+        return {
+            "move": self._cpu.ProxyFunction(self._robot.move),
+            "turn_left": self._cpu.ProxyFunction(self._robot.turn_left)
+        }
+
+    def traceLine(self, rcb, line):
+        print("Line", line)
+        wx.CallLater(1000, rcb, (None, None))
+            
+    def done(self, e):
+        print("Done, exception:", e)
 
 class MyApp(wx.App):
     def OnInit(self):
