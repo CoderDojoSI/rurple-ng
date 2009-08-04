@@ -12,10 +12,10 @@ Done:
 - make Stop button work
 - make Pause button work
 - make Step button work
+- read code from editor window (initializing first)
 
 Still to do:
 
-- read code from editor window (initializing first)
 - highlight lines instead of printing
 - alert instead of printing on finish and exceptions
 - log window

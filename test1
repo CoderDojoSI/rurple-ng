@@ -23,10 +23,15 @@ class MyFrame(wx.Frame):
         self._robot = maze.Robot(mymaze)
         mymaze.AddObject(self._robot)
         sash = wx.SplitterWindow(self)
-        stc = wx.stc.StyledTextCtrl(sash)
+        self._stc = wx.stc.StyledTextCtrl(sash)
+        self._stc.AddText("""
+for i in range(4):
+    move()
+    turn_left()
+""")
         sp = ScrolledPanel(sash)
         maze.EditableMazeWindow(sp, size=(900,900), maze=mymaze)
-        sash.SplitVertically(stc, sp)
+        sash.SplitVertically(self._stc, sp)
         sp.SetupScrolling()
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
@@ -72,11 +77,7 @@ class MyFrame(wx.Frame):
         self._cpu.Step()
 
     def program(self):
-        return """
-for i in range(4):
-    move()
-    turn_left()
-"""
+        return self._stc.GetText()
 
     def getGlobals(self, t):
         return {
