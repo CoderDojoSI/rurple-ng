@@ -2,6 +2,7 @@
 
 from __future__ import division, print_function
 
+import sys
 import math
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
@@ -15,6 +16,21 @@ import cpu
 def toBitmap(name):
     return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
+class PythonEditor(wx.stc.StyledTextCtrl):
+    MARK_RUNNING = 7
+
+    def __init__(self, *a, **kw):
+        wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
+        self.MarkerDefine(self.MARK_RUNNING, wx.stc.STC_MARK_BACKGROUND, 'white', 'wheat')
+        self._marked = None
+
+    def mark(self, line):
+        if self._marked is not None:
+            self.MarkerDelete(self._marked, self.MARK_RUNNING)
+        self._marked = line
+        if self._marked is not None:
+            self.MarkerAdd(self._marked, self.MARK_RUNNING)
+
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
@@ -23,7 +39,7 @@ class MyFrame(wx.Frame):
         self._robot = maze.Robot(mymaze)
         mymaze.AddObject(self._robot)
         sash = wx.SplitterWindow(self)
-        self._stc = wx.stc.StyledTextCtrl(sash)
+        self._stc = PythonEditor(sash)
         self._stc.AddText("""
 for i in range(4):
     move()
@@ -86,6 +102,10 @@ for i in range(4):
         }
 
     def traceLine(self, line):
+        if line is None:
+            self._stc.mark(None)
+        else:
+            self._stc.mark(line-1)    
         print("Line", line)
             
     def done(self, e):
@@ -105,4 +125,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    sys.exit(0)
 
