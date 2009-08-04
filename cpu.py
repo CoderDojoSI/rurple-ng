@@ -3,16 +3,39 @@ import threading
 import Queue
 import wx
 
-class CPU(object):
-    def __init__(self, partner):
+class TraceThread(threading.Thread):
+    def __init__(self, cpu, partner):
+        threading.Thread.__init__(self)
+        self._cpu = cpu
         self._partner = partner
-        self._traceProxy = self.NonblockingProxyFunction(self._trace)
-        self._lineTime = 1000
+        self._globals = self._partner.getGlobals(self)
+        self._program = self._partner.program()
+        self._stopped = False
+        self._traceProxy = self.ThreadAwareProxyFunction(self._cpu.trace)
+    
+    def run(self):
+        try:
+            sys.settrace(self._tracefunc)
+            try:
+                exec self._program in self._globals
+                wx.CallAfter(self._cpu.done, None)
+            except Exception, e:
+                wx.CallAfter(self._cpu.done, e)
+        finally:
+            # not really necessary - thread's done anyway
+            sys.settrace(None)
+
+    # FIXME: leak threads on stop()
+    def stop(self):
+        self._stopped = True
         
-    def NonblockingProxyFunction(self, f):
+    def ThreadAwareProxyFunction(self, f):
+        def guardF(*a, **kw):
+            if not self._stopped:
+                return f(*a, **kw)
         def callF(*a, **kw):
             q = Queue.Queue()
-            wx.CallAfter(f, q.put, *a, **kw)
+            wx.CallAfter(guardF, q.put, *a, **kw)
             res, exc = q.get()
             if exc is not None:
                 raise exc
@@ -25,44 +48,76 @@ class CPU(object):
                 rcb((f(*a, **kw), None))
             except Exception, e:
                 rcb((None, e))
-        return self.NonblockingProxyFunction(callBlocking)
+        return self.ThreadAwareProxyFunction(callBlocking)
 
-    def Play(self):
-        self._globals = self._partner.getGlobals()
-        self._program = self._partner.program()
-        t = threading.Thread(target = self._start)
-        t.start()
-    
-    def _start(self):
-        try:
-            sys.settrace(self._tracefunc)
-            try:
-                exec self._program in self._globals
-                wx.CallAfter(self._done, None)
-            except Exception, e:
-                wx.CallAfter(self._partner.done, e)
-        finally:
-            sys.settrace(None)
-    
     def _tracefunc(self, frame, event, arg):
+        # FIXME: shame to stop only on the lines in string if stopped
         #print frame, event, arg, frame.f_code.co_filename, frame.f_lineno
         if "<string>" in frame.f_code.co_filename:
             if event == "line":
                 self._traceProxy(frame.f_lineno)
         return self._tracefunc
 
-    def _trace(self, rcb, lineno):
+class CPU(object):
+    def __init__(self, partner):
+        self._partner = partner
+        self._lineTime = 1000
+        self._state = "stop"
+        
+    def trace(self, rcb, lineno):
+        if self._state == "stop":
+            return # FIXME: assert out
         self._partner.traceLine(lineno)
         self._rcb = rcb
-        self._timer = wx.CallLater(self._lineTime, self._release)
+        if self._state == "play":
+            self._timer = wx.CallLater(self._lineTime, self._release)
+    
+    def _stopTimer(self):
+        if self._timer is not None:
+            self._timer.Stop()
+            self._timer = None
     
     def _release(self):
         r = self._rcb
-        self._rcb = None
-        self._timer = None
-        r((None, None))
+        if r is not None:
+            self._rcb = None
+            self._timer = None
+            r((None, None))
     
-    def _done(self, e):
+    def done(self, e):
+        self._state = "stop"
         self._partner.traceLine(None)
         self._partner.done(e)
 
+    def _start(self):
+        self._thread = TraceThread(self, self._partner)
+        self._thread.start()
+    
+    def Play(self):
+        if self._state == "stop":
+            self._state = "play"
+            self._start()
+        elif self._state == "pause":
+            self._state = "play"
+            self._release()
+    
+    def Pause(self):
+        if self._state == "stop":
+            self._state = "pause"
+            self._start()
+        elif self._state == "play":
+            self._state = "pause"
+            self._stopTimer()
+    
+    def Stop(self):
+        self._stopTimer()
+        if self._thread:
+            self._thread.stop()
+            self._thread = None
+        self._rcb = None
+        self._partner.traceLine(None)
+        
+    def Step(self):
+        self.Pause()
+        self._release()
+            

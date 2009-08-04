@@ -12,7 +12,6 @@ import cairo
 import maze
 import cpu
 
-
 def toBitmap(name):
     return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
@@ -39,16 +38,26 @@ class MyFrame(wx.Frame):
             filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
         menuBar.Append(filemenu,"&File")
         self.SetMenuBar(menuBar)
-        toolbar = self.CreateToolBar()
-        tsize = (32,32)
-        toolbar.SetToolBitmapSize(tsize)
-        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.Play()), 
-            toolbar.AddLabelTool(wx.ID_ANY, "Play",
-                toBitmap('play'), shortHelp="Play"))
+        self._toolbar = self.CreateToolBar()
+        tsize = (24,24)
+        self._toolbar.SetToolBitmapSize(tsize)
+        self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
+            toBitmap('play'), shortHelp="Play")
+        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.Play()), self._playTool)
+        self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "pause",
+            toBitmap('pause'), shortHelp="pause")
+        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.Pause()), self._pauseTool)
+        self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "stop",
+            toBitmap('stop'), shortHelp="stop")
+        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.Stop()), self._stopTool)
+        self._stepTool = self._toolbar.AddLabelTool(wx.ID_ANY, "step",
+            toBitmap('step'), shortHelp="step")
+        self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
+        self._toolbar.ToggleTool(self._stopTool.Id, True)
         # Cheat - play anyway, for testing
         wx.CallLater(1500, self._cpu.Play)
-        slider = wx.Slider(toolbar, size=(250,-1))
-        toolbar.AddControl(slider)
+        slider = wx.Slider(self._toolbar, size=(250,-1))
+        self._toolbar.AddControl(slider)
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A test application \n"
@@ -59,17 +68,22 @@ class MyFrame(wx.Frame):
     def OnExit(self, e):
         self.Close(True)
 
+    def OnStep(self, e):
+        # FIXME: bit inelegant this
+        self._toolbar.ToggleTool(self._pauseTool.Id, True)
+        self._cpu.Step()
+
     def program(self):
         return """
-move()
-turn_left()
-move()
+for i in range(4):
+    move()
+    turn_left()
 """
 
-    def getGlobals(self):
+    def getGlobals(self, t):
         return {
-            "move": self._cpu.ProxyFunction(self._robot.move),
-            "turn_left": self._cpu.ProxyFunction(self._robot.turn_left)
+            "move": t.ProxyFunction(self._robot.move),
+            "turn_left": t.ProxyFunction(self._robot.turn_left)
         }
 
     def traceLine(self, line):
@@ -77,6 +91,7 @@ move()
             
     def done(self, e):
         print("Done, exception:", e)
+        self._toolbar.ToggleTool(self._stopTool.Id, True)
 
 class MyApp(wx.App):
     def OnInit(self):
