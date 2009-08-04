@@ -7,6 +7,11 @@ Done:
 - abolish CPU.AddFunction in favour of SetGlobals and exposing proxyFunction
 - handle exceptions
 - move timing into CPU object
+- make proper Play, Pause, Step, Stop buttons
+- make Play button work properly
+- make Stop button work
+- make Pause button work
+- make Step button work
 
 Still to do:
 
@@ -19,11 +24,6 @@ Still to do:
 - move window creation into Universe
 - Universe handles UniverseExceptions
 - make speed control work
-- make proper Play, Pause, Step, Stop buttons
-- make Play button work properly
-- make Stop button work
-- make Pause button work
-- make Step button work
 - start with walls on outside
 - only internal walls editable
 - make walls work

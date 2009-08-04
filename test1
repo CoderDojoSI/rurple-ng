@@ -54,8 +54,6 @@ class MyFrame(wx.Frame):
             toBitmap('step'), shortHelp="step")
         self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
-        # Cheat - play anyway, for testing
-        wx.CallLater(1500, self._cpu.Play)
         slider = wx.Slider(self._toolbar, size=(250,-1))
         self._toolbar.AddControl(slider)
         

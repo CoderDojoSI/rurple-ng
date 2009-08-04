@@ -110,6 +110,7 @@ class CPU(object):
             self._stopTimer()
     
     def Stop(self):
+        self._state = "stop"
         self._stopTimer()
         if self._thread:
             self._thread.stop()
@@ -120,4 +121,4 @@ class CPU(object):
     def Step(self):
         self.Pause()
         self._release()
-            
+
