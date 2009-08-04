@@ -10,8 +10,7 @@ import wx.stc
 import wx.lib.wxcairo
 import cairo
 
-import maze
-import cpu
+from rurple import maze, cpu
 
 def toBitmap(name):
     return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
