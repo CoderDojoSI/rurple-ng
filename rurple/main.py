@@ -5,8 +5,6 @@ import math
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 import wx.stc
-import wx.lib.wxcairo
-import cairo
 
 from rurple import maze, cpu
 
@@ -23,10 +21,10 @@ class PythonEditor(wx.stc.StyledTextCtrl):
 
     def mark(self, line):
         if self._marked is not None:
-            self.MarkerDelete(self._marked, self.MARK_RUNNING)
+            self.MarkerDelete(self._marked -1, self.MARK_RUNNING)
         self._marked = line
         if self._marked is not None:
-            self.MarkerAdd(self._marked, self.MARK_RUNNING)
+            self.MarkerAdd(self._marked -1, self.MARK_RUNNING)
 
 class LogScale(object):
     def __init__(self, ticks, lo, hi):
@@ -118,10 +116,7 @@ for i in range(4):
         }
 
     def traceLine(self, line):
-        if line is None:
-            self._stc.mark(None)
-        else:
-            self._stc.mark(line-1)
+        self._stc.mark(line)
     
     def done(self, e):
         print("Done, exception:", e)
