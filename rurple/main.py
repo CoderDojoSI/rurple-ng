@@ -44,6 +44,7 @@ class RurFrame(wx.Frame):
         mymaze = maze.Maze(10, 10)
         self._robot = maze.Robot(mymaze)
         mymaze.AddObject(self._robot)
+        
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
         self._stc.AddText("""
@@ -51,10 +52,13 @@ for i in range(4):
     move()
     turn_left()
 """)
-        sp = ScrolledPanel(sash)
+        hsash = wx.SplitterWindow(sash)
+        sp = ScrolledPanel(hsash)
         maze.EditableMazeWindow(sp, size=(900,900), maze=mymaze)
-        sash.SplitVertically(self._stc, sp)
+        sash.SplitVertically(self._stc, hsash)
+        hsash.SplitHorizontally(sp, PythonEditor(hsash))
         sp.SetupScrolling()
+        
         self.CreateStatusBar()
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
