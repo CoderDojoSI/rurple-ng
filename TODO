@@ -8,12 +8,14 @@ Done:
 - handle exceptions
 - move timing into CPU object
 - make proper Play, Pause, Step, Stop buttons
+- make Play and Pause into ToggleButtons
 - make Play button work properly
 - make Stop button work
 - make Pause button work
 - make Step button work
 - read code from editor window (initializing first)
 - highlight lines instead of printing
+- make speed control work
 
 Still to do:
 
@@ -23,7 +25,6 @@ Still to do:
 - move Universe-CPU linkup into Universe
 - move window creation into Universe
 - Universe handles UniverseExceptions
-- make speed control work
 - start with walls on outside
 - only internal walls editable
 - make walls work
@@ -41,7 +42,7 @@ Still to do:
 - style editor and log window properly
 - make robot look nicer
 
-- make Play and Pause into ToggleButtons
 - highlight exception line
 
 - look into using process instead of thread
+

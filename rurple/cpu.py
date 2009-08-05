@@ -63,7 +63,14 @@ class CPU(object):
         self._partner = partner
         self._lineTime = 1000
         self._state = "stop"
-        
+        self._timer = None
+    
+    def setLineTime(self, t):
+        self._lineTime = t
+        if self._timer is not None:
+            self._timer.Stop()
+            self._timer = wx.CallLater(self._lineTime, self._release)
+    
     def trace(self, rcb, lineno):
         if self._state == "stop":
             return # FIXME: assert out

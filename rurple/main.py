@@ -28,6 +28,17 @@ class PythonEditor(wx.stc.StyledTextCtrl):
         if self._marked is not None:
             self.MarkerAdd(self._marked, self.MARK_RUNNING)
 
+class LogScale(object):
+    def __init__(self, ticks, lo, hi):
+        self._lo = math.log(lo)
+        self._r = (math.log(hi) - self._lo) / ticks
+
+    def toTicks(self, x):
+        return (math.log(x) - self._lo) / self._r
+    
+    def fromTicks(self, x):
+        return math.exp(x * self._r + self._lo)
+
 class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
@@ -72,8 +83,12 @@ for i in range(4):
             toBitmap('step'), shortHelp="step")
         self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
-        slider = wx.Slider(self._toolbar, size=(250,-1))
-        self._toolbar.AddControl(slider)
+        self._slideScale = LogScale(100, 3000, 100)
+        self._slider = wx.Slider(self._toolbar, size=(250,-1), 
+            value=int(0.5 +  self._slideScale.toTicks(1000)))
+        self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
+        self.OnSlide(None)
+        self._toolbar.AddControl(self._slider)
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A test application \n"
@@ -89,6 +104,10 @@ for i in range(4):
         self._toolbar.ToggleTool(self._pauseTool.Id, True)
         self._cpu.Step()
 
+    def OnSlide(self, e):
+        #print(e, dir(e))
+        self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
+
     def program(self):
         return self._stc.GetText()
 
@@ -102,9 +121,8 @@ for i in range(4):
         if line is None:
             self._stc.mark(None)
         else:
-            self._stc.mark(line-1)    
-        print("Line", line)
-            
+            self._stc.mark(line-1)
+    
     def done(self, e):
         print("Done, exception:", e)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
