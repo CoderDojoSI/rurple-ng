@@ -56,7 +56,7 @@ for i in range(4):
         hsash.SplitHorizontally(sp, PythonEditor(hsash))
         sp.SetupScrolling()
         
-        self.CreateStatusBar()
+        #self.CreateStatusBar()
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnAbout,
@@ -117,8 +117,17 @@ for i in range(4):
         self._stc.mark(line)
     
     def done(self, e):
-        print("Done, exception:", e)
+        #print("Done, exception:", e)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
+        if e is None:
+            d = wx.MessageDialog(self, message="Your program finished.",
+                style=wx.ICON_INFORMATION | wx.OK)
+            d.ShowModal()
+        else: 
+            d = wx.MessageDialog(self, message=str(e),
+                caption = "Error running your program",
+                style=wx.ICON_EXCLAMATION | wx.OK)
+            d.ShowModal()
 
 class App(wx.App):
     def OnInit(self):
