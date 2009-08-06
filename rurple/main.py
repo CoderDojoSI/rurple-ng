@@ -110,8 +110,8 @@ for i in range(4):
     def program(self):
         return self._stc.GetText()
 
-    def getGlobals(self, t):
-        return self._world.getGlobals(t)
+    def getWorld(self):
+        return self._world
 
     def traceLine(self, line):
         self._stc.mark(line)

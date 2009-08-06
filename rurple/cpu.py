@@ -4,11 +4,12 @@ import Queue
 import wx
 
 class TraceThread(threading.Thread):
-    def __init__(self, cpu, ui):
+    def __init__(self, cpu, world, ui):
         threading.Thread.__init__(self)
         self._cpu = cpu
+        self._world = world
         self._ui = ui
-        self._globals = self._ui.getGlobals(self)
+        self._globals = self._world.getGlobals(self)
         self._program = self._ui.program()
         self._stopped = False
         self._traceProxy = self.ThreadAwareProxyFunction(self._cpu.trace)
@@ -97,7 +98,7 @@ class CPU(object):
         self._ui.done(e)
 
     def _start(self):
-        self._thread = TraceThread(self, self._ui)
+        self._thread = TraceThread(self, self._ui.getWorld(), self._ui)
         self._thread.start()
     
     def Play(self):
