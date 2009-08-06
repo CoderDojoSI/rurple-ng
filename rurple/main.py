@@ -41,10 +41,7 @@ class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
         self._cpu = cpu.CPU(self)
-        mymaze = maze.Maze(10, 10)
-        self._robot = maze.Robot(mymaze)
-        mymaze.AddObject(self._robot)
-        
+        self._world = maze.World(self)
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
         self._stc.AddText("""
@@ -54,7 +51,7 @@ for i in range(4):
 """)
         hsash = wx.SplitterWindow(sash)
         sp = ScrolledPanel(hsash)
-        maze.EditableMazeWindow(sp, size=(900,900), maze=mymaze)
+        self._world.makeWindow(sp)
         sash.SplitVertically(self._stc, hsash)
         hsash.SplitHorizontally(sp, PythonEditor(hsash))
         sp.SetupScrolling()
@@ -114,10 +111,7 @@ for i in range(4):
         return self._stc.GetText()
 
     def getGlobals(self, t):
-        return {
-            "move": t.ProxyFunction(self._robot.move),
-            "turn_left": t.ProxyFunction(self._robot.turn_left)
-        }
+        return self._world.getGlobals(t)
 
     def traceLine(self, line):
         self._stc.mark(line)

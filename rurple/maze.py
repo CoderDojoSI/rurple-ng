@@ -163,5 +163,23 @@ class EditableMazeWindow(MazeWindow):
         wx.EVT_LEFT_DOWN(self, self.OnClick)
 
     def OnClick(self, e):
-        self._maze.ToggleWall(*self._maze.NearestWall(e.GetX(), e.GetY()))    
+        self._maze.ToggleWall(*self._maze.NearestWall(e.GetX(), e.GetY()))
+
+class World(object):
+    def __init__(self, ui):
+        self._ui = ui
+        self._maze = Maze(10, 10)
+        self._robot = Robot(self._maze)
+        self._maze.AddObject(self._robot)
+        
+    def makeWindow(self, parent):
+        return EditableMazeWindow(parent, size=(900,900), maze=self._maze)
+
+    def getGlobals(self, t):
+        return {
+            "move": t.ProxyFunction(self._robot.move),
+            "turn_left": t.ProxyFunction(self._robot.turn_left)
+        }
+
+
 
