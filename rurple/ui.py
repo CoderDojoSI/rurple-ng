@@ -45,6 +45,7 @@ class RurFrame(wx.Frame):
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
         self._stc.AddText("""
+print(7)
 for i in range(4):
     move()
     turn_left()
