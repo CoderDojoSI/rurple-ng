@@ -4,12 +4,12 @@ import Queue
 import wx
 
 class TraceThread(threading.Thread):
-    def __init__(self, cpu, partner):
+    def __init__(self, cpu, ui):
         threading.Thread.__init__(self)
         self._cpu = cpu
-        self._partner = partner
-        self._globals = self._partner.getGlobals(self)
-        self._program = self._partner.program()
+        self._ui = ui
+        self._globals = self._ui.getGlobals(self)
+        self._program = self._ui.program()
         self._stopped = False
         self._traceProxy = self.ThreadAwareProxyFunction(self._cpu.trace)
     
@@ -59,8 +59,8 @@ class TraceThread(threading.Thread):
         return self._tracefunc
 
 class CPU(object):
-    def __init__(self, partner):
-        self._partner = partner
+    def __init__(self, ui):
+        self._ui = ui
         self._lineTime = 1000
         self._state = "stop"
         self._timer = None
@@ -74,7 +74,7 @@ class CPU(object):
     def trace(self, rcb, lineno):
         if self._state == "stop":
             return # FIXME: assert out
-        self._partner.traceLine(lineno)
+        self._ui.traceLine(lineno)
         self._rcb = rcb
         if self._state == "play":
             self._timer = wx.CallLater(self._lineTime, self._release)
@@ -93,11 +93,11 @@ class CPU(object):
     
     def done(self, e):
         self._state = "stop"
-        self._partner.traceLine(None)
-        self._partner.done(e)
+        self._ui.traceLine(None)
+        self._ui.done(e)
 
     def _start(self):
-        self._thread = TraceThread(self, self._partner)
+        self._thread = TraceThread(self, self._ui)
         self._thread.start()
     
     def Play(self):
@@ -123,7 +123,7 @@ class CPU(object):
             self._thread.stop()
             self._thread = None
         self._rcb = None
-        self._partner.traceLine(None)
+        self._ui.traceLine(None)
         
     def Step(self):
         self.Pause()
