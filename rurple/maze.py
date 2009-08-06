@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import division
+from __future__ import division, print_function
 
 import math
 import wx
@@ -178,7 +178,8 @@ class World(object):
     def getGlobals(self, t):
         return {
             "move": t.ProxyFunction(self._robot.move),
-            "turn_left": t.ProxyFunction(self._robot.turn_left)
+            "turn_left": t.ProxyFunction(self._robot.turn_left),
+            "print": t.ProxyFunction(lambda *a, **kw: print("output", *a, **kw))
         }
 
 
