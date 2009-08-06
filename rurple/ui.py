@@ -26,6 +26,11 @@ class PythonEditor(wx.stc.StyledTextCtrl):
         if self._marked is not None:
             self.MarkerAdd(self._marked -1, self.MARK_RUNNING)
 
+class LogWindow(wx.stc.StyledTextCtrl):
+    def write(self, s):
+        self.AddText(s)
+        self.EnsureCaretVisible()
+
 class LogScale(object):
     def __init__(self, ticks, lo, hi):
         self._lo = math.log(lo)
@@ -54,7 +59,8 @@ for i in range(4):
         sp = ScrolledPanel(hsash)
         self._world.makeWindow(sp)
         sash.SplitVertically(self._stc, hsash)
-        hsash.SplitHorizontally(sp, PythonEditor(hsash))
+        self._logWindow = LogWindow(hsash)
+        hsash.SplitHorizontally(sp, self._logWindow)
         sp.SetupScrolling()
         
         #self.CreateStatusBar()
@@ -107,6 +113,9 @@ for i in range(4):
     def OnSlide(self, e):
         #print(e, dir(e))
         self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
+
+    def getLog(self):
+        return self._logWindow
 
     def program(self):
         return self._stc.GetText()

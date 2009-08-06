@@ -179,7 +179,7 @@ class World(object):
         return {
             "move": t.ProxyFunction(self._robot.move),
             "turn_left": t.ProxyFunction(self._robot.turn_left),
-            "print": t.ProxyFunction(lambda *a, **kw: print("output", *a, **kw))
+            "print": t.ProxyFunction(lambda *a, **kw: print(*a, file=self._ui.getLog(), **kw))
         }
 
 

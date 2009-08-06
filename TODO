@@ -20,15 +20,15 @@ Done:
 - move window creation into world
 - alert instead of printing on finish and exceptions
 - log window
+- "print" prints to log window
 
 Still to do:
 
-- cpu redirect stdout, stderr during run
+- make world loadable and saveable
+- make walls work
 - start with walls on outside
 - only internal walls editable
-- make walls work
 - world handles WorldExceptions
-- make world loadable and saveable
 - make program loadable and saveable
 - load a program by default
 - add beepers
@@ -38,11 +38,12 @@ Still to do:
 - new text for title etc
 - ink trails
 - useful status bar info
-- resize world dialog
+- new world dialog
 - style editor and log window properly
 - make robot look nicer
 
 - highlight exception line
+- log exceptions as well as displaying them
 
 - look into using process instead of thread
 
