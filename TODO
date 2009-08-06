@@ -16,15 +16,15 @@ Done:
 - read code from editor window (initializing first)
 - highlight lines instead of printing
 - make speed control work
+- move world-CPU linkup into world
+- move window creation into world
 
 Still to do:
 
 - alert instead of printing on finish and exceptions
 - log window
 - cpu redirect stdout, stderr during run
-- move Universe-CPU linkup into Universe
-- move window creation into Universe
-- Universe handles UniverseExceptions
+- world handles WorldExceptions
 - start with walls on outside
 - only internal walls editable
 - make walls work
