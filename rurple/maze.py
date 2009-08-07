@@ -25,6 +25,8 @@ class Robot(object):
         self._x = 2
         self._y = 3
         self._dir = 0
+        self._maze.addRobot(self)
+        self._maze.triggerListeners(self._x, self._y, 1, 1)
 
     def paint(self, ctx):
         x, y = self._maze.coordinates(self._x + .5, self._y + .5)
@@ -67,11 +69,7 @@ class Maze(Observable):
         self._width = w
         self._height = h
         self._walls = set()
-        self._objects = set()
-
-    def addObject(self, o):
-        self._objects.add(o)
-        # TriggerSomething?
+        self._robots = []
 
     def toggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
@@ -79,6 +77,9 @@ class Maze(Observable):
             self.triggerListeners(x, y, 1, 0)
         else:
             self.triggerListeners(x, y, 0, 1)
+
+    def addRobot(self, r):
+        self._robots.append(r)
 
     def coordinates(self, x, y):
         return self._offset + self._spacing*2*x, self._offset + self._spacing*2*y
@@ -124,9 +125,9 @@ class Maze(Observable):
         ctx.set_source_rgb(1, 0, 0)
         ctx.set_line_width(4)
         ctx.stroke()
-        for obj in self._objects:
+        for r in self._robots:
             ctx.save()
-            obj.paint(ctx)
+            r.paint(ctx)
             ctx.restore()
 
     def paintSquares(self, ctx, x, y, w, h):
@@ -168,7 +169,6 @@ class World(object):
         self._ui = ui
         self._maze = Maze(10, 10)
         self._robot = Robot(self._maze)
-        self._maze.addObject(self._robot)
         
     def makeWindow(self, parent):
         return EditableMazeWindow(parent, size=(900,900), maze=self._maze)
