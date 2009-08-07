@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+import wx
+
+class Frame(wx.Frame):
+    def __init__(self, *args, **kw):
+        wx.Frame.__init__(self, *args, **kw)
+        b = wx.Button(self, label="Press me")
+        self.Bind(wx.EVT_BUTTON, self.OnButton, b)
+        print "hello"
+    
+    def OnButton(self, e):
+        d = wx.MessageDialog(self, message="test",
+                style=wx.ICON_INFORMATION | wx.OK)
+        wx.CallLater(2000, d.EndModal, 0)
+        d.ShowModal()
+
+class App(wx.App):
+    def OnInit(self):
+        print "hello"
+        frame = Frame(None, title="This is a test")
+        frame.Show(True)
+        self.SetTopWindow(frame)
+        return True
+
+def main():
+    app = App(0)
+    app.MainLoop()
+
+main()
