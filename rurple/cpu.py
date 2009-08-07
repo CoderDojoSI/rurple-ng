@@ -100,7 +100,7 @@ class CPU(object):
 
     def _start(self):
         self._ui.starting()
-        self._thread = TraceThread(self, self._ui.getWorld(), self._ui.program())
+        self._thread = TraceThread(self, self._ui.world, self._ui.program)
         self._thread.start()
     
     def play(self):

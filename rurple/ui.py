@@ -117,13 +117,16 @@ for i in range(4):
         #print(e, dir(e))
         self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
 
-    def getLog(self):
+    @property
+    def log(self):
         return self._logWindow
 
+    @property
     def program(self):
         return self._stc.GetText()
 
-    def getWorld(self):
+    @property
+    def world(self):
         return self._world
 
     def traceLine(self, line):
