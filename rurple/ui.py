@@ -136,7 +136,8 @@ for i in range(4):
         #print("Done, exception:", e)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
         if e is None:
-            d = wx.MessageDialog(self, message="Your program finished.",
+            d = wx.MessageDialog(self, message="Your program finished",
+                caption = "Program finished",
                 style=wx.ICON_INFORMATION | wx.OK)
             d.ShowModal()
         else: 
