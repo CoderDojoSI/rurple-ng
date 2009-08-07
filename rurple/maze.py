@@ -69,6 +69,7 @@ class Maze(Observable):
         self._width = w
         self._height = h
         self._walls = set()
+        self._beepers = {(1, 2): 99}
         self._robots = []
 
     def toggleWall(self, x, y, d):
@@ -101,6 +102,8 @@ class Maze(Observable):
             return (x, y, 'h')
 
     def paint(self, ctx):
+        ctx.select_font_face("DejaVu Sans",
+            cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         ctx.set_source_rgb(1, 1, 1)
         ctx.paint()
         ctx.set_source_rgb(0, 0, 0)
@@ -125,6 +128,20 @@ class Maze(Observable):
         ctx.set_source_rgb(1, 0, 0)
         ctx.set_line_width(4)
         ctx.stroke()
+        ctx.set_font_size(15)
+        for k, v in self._beepers.iteritems():
+            x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
+            ctx.set_source_rgb(0.7, 0.7, 1)
+            ctx.arc(x, y, 14, 0, 2*math.pi)
+            ctx.fill()
+            ctx.set_source_rgb(1, 1, 1)
+            ctx.arc(x, y, 11, 0, 2*math.pi)
+            ctx.fill()
+            ctx.set_source_rgb(0, 0, 0)
+            t = str(v)
+            exts = ctx.text_extents(t)
+            ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
+            ctx.show_text(t)
         for r in self._robots:
             ctx.save()
             r.paint(ctx)
