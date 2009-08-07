@@ -100,6 +100,7 @@ class CPU(object):
         self._ui.done(e)
 
     def _start(self):
+        self._ui.starting()
         self._thread = TraceThread(self, self._ui.getWorld(), self._ui)
         self._thread.start()
     

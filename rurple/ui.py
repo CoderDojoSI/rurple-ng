@@ -30,6 +30,9 @@ class LogWindow(wx.stc.StyledTextCtrl):
     def write(self, s):
         self.AddText(s)
         self.EnsureCaretVisible()
+        
+    def clear(self):
+        self.SetText("")
 
 class LogScale(object):
     def __init__(self, ticks, lo, hi):
@@ -125,6 +128,9 @@ for i in range(4):
 
     def traceLine(self, line):
         self._stc.mark(line)
+    
+    def starting(self):
+        self._logWindow.clear()
     
     def done(self, e):
         #print("Done, exception:", e)
