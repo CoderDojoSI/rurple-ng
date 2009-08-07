@@ -9,13 +9,13 @@ class Observable(object):
     def __init__(self):
         self._listeners = set()
     
-    def AddListener(self, l):
+    def addListener(self, l):
         self._listeners.add(l)
         
-    def RemoveListener(self, l):
+    def removeListener(self, l):
         self._listeners.remove(l)
 
-    def TriggerListeners(self, *args, **kw):
+    def triggerListeners(self, *args, **kw):
         for l in self._listeners:
             l(self, *args, **kw)
 
@@ -26,8 +26,8 @@ class Robot(object):
         self._y = 3
         self._dir = 0
 
-    def Paint(self, ctx):
-        x, y = self._maze.Coordinates(self._x + .5, self._y + .5)
+    def paint(self, ctx):
+        x, y = self._maze.coordinates(self._x + .5, self._y + .5)
         ctx.translate(x, y)
         ctx.rotate(math.pi * 0.5 * self._dir)
         ctx.set_source_rgb(0, 0, 1)
@@ -43,21 +43,21 @@ class Robot(object):
     def move(self):
         if self._dir == 0:
             self._x += 1
-            self._maze.TriggerListeners(self._x -1, self._y, 2, 1)
+            self._maze.triggerListeners(self._x -1, self._y, 2, 1)
         elif self._dir == 1:
             self._y += 1
-            self._maze.TriggerListeners(self._x, self._y -1, 1, 2)
+            self._maze.triggerListeners(self._x, self._y -1, 1, 2)
         elif self._dir == 2:
             self._x -= 1
-            self._maze.TriggerListeners(self._x, self._y, 2, 1)
+            self._maze.triggerListeners(self._x, self._y, 2, 1)
         else:
             self._y -= 1
-            self._maze.TriggerListeners(self._x, self._y, 1, 2)
+            self._maze.triggerListeners(self._x, self._y, 1, 2)
     
     def turn_left(self):
         self._dir -= 1
         self._dir %= 4
-        self._maze.TriggerListeners(self._x, self._y, 1, 1)
+        self._maze.triggerListeners(self._x, self._y, 1, 1)
 
 class Maze(Observable):
     def __init__(self, w, h):
@@ -69,21 +69,21 @@ class Maze(Observable):
         self._walls = set()
         self._objects = set()
 
-    def AddObject(self, o):
+    def addObject(self, o):
         self._objects.add(o)
         # TriggerSomething?
 
-    def ToggleWall(self, x, y, d):
+    def toggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
         if d == 'h':
-            self.TriggerListeners(x, y, 1, 0)
+            self.triggerListeners(x, y, 1, 0)
         else:
-            self.TriggerListeners(x, y, 0, 1)
+            self.triggerListeners(x, y, 0, 1)
 
-    def Coordinates(self, x, y):
+    def coordinates(self, x, y):
         return self._offset + self._spacing*2*x, self._offset + self._spacing*2*y
         
-    def NearestWall(self, x, y):
+    def nearestWall(self, x, y):
         x -= self._offset
         y -= self._offset
         xx = (x % (self._spacing*2)) - self._spacing
@@ -99,25 +99,25 @@ class Maze(Observable):
         else:
             return (x, y, 'h')
 
-    def Paint(self, ctx):
+    def paint(self, ctx):
         ctx.set_source_rgb(1, 1, 1)
         ctx.paint()
         ctx.set_source_rgb(0, 0, 0)
         ctx.set_line_width(0.3)
         for i in range(self._height +1):
-            ctx.move_to(*self.Coordinates(0, i))
-            ctx.line_to(*self.Coordinates(self._width, i))
+            ctx.move_to(*self.coordinates(0, i))
+            ctx.line_to(*self.coordinates(self._width, i))
         for i in range(self._width +1):
-            ctx.move_to(*self.Coordinates(i, 0))
-            ctx.line_to(*self.Coordinates(i, self._width))
+            ctx.move_to(*self.coordinates(i, 0))
+            ctx.line_to(*self.coordinates(i, self._width))
         ctx.stroke()
         ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
         for x, y, d in self._walls:
-            ctx.move_to(*self.Coordinates(x, y))
+            ctx.move_to(*self.coordinates(x, y))
             if d == 'v':
-               ctx.line_to(*self.Coordinates(x, y+1))
+               ctx.line_to(*self.coordinates(x, y+1))
             else:
-               ctx.line_to(*self.Coordinates(x+1, y))
+               ctx.line_to(*self.coordinates(x+1, y))
         ctx.set_source_rgb(0, 0, 0)
         ctx.set_line_width(10)
         ctx.stroke_preserve()    
@@ -126,13 +126,13 @@ class Maze(Observable):
         ctx.stroke()
         for obj in self._objects:
             ctx.save()
-            obj.Paint(ctx)
+            obj.paint(ctx)
             ctx.restore()
 
-    def PaintSquares(self, ctx, x, y, w, h):
-        ctx.rectangle(*(self.Coordinates(x-0.5, y-0.5) + self.Coordinates(x + w + 0.5, y + h + 0.5)))
+    def paintSquares(self, ctx, x, y, w, h):
+        ctx.rectangle(*(self.coordinates(x-0.5, y-0.5) + self.coordinates(x + w + 0.5, y + h + 0.5)))
         ctx.clip()
-        self.Paint(ctx)
+        self.paint(ctx)
 
 class MazeWindow(wx.Window):
     def __init__(self, *args, **kw):
@@ -140,20 +140,20 @@ class MazeWindow(wx.Window):
         del kw['maze']
         wx.Window.__init__(self, *args, **kw)
         wx.EVT_PAINT(self, self.OnPaint)
-        self._maze.AddListener(self.OnMazeChange)
+        self._maze.addListener(self.onMazeChange)
     
     def OnPaint(self, e):
-        self.Paint(self.GetUpdateRegion().GetBox())
+        self.paint(self.GetUpdateRegion().GetBox())
         
-    def Paint(self, box):
+    def paint(self, box):
         ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
         ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
         ctx.clip()
-        self._maze.Paint(ctx)
+        self._maze.paint(ctx)
                 
-    def OnMazeChange(self, maze, *args, **kw):
+    def onMazeChange(self, maze, *args, **kw):
         ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
-        self._maze.PaintSquares(ctx, *args, **kw)
+        self._maze.paintSquares(ctx, *args, **kw)
 
 class EditableMazeWindow(MazeWindow):
     def __init__(self, *args, **kw):
@@ -161,23 +161,23 @@ class EditableMazeWindow(MazeWindow):
         wx.EVT_LEFT_DOWN(self, self.OnClick)
 
     def OnClick(self, e):
-        self._maze.ToggleWall(*self._maze.NearestWall(e.GetX(), e.GetY()))
+        self._maze.toggleWall(*self._maze.nearestWall(e.GetX(), e.GetY()))
 
 class World(object):
     def __init__(self, ui):
         self._ui = ui
         self._maze = Maze(10, 10)
         self._robot = Robot(self._maze)
-        self._maze.AddObject(self._robot)
+        self._maze.addObject(self._robot)
         
     def makeWindow(self, parent):
         return EditableMazeWindow(parent, size=(900,900), maze=self._maze)
 
     def getGlobals(self, t):
         return {
-            "move": t.ProxyFunction(self._robot.move),
-            "turn_left": t.ProxyFunction(self._robot.turn_left),
-            "print": t.ProxyFunction(lambda *a, **kw: print(*a, file=self._ui.getLog(), **kw))
+            "move": t.proxyFunction(self._robot.move),
+            "turn_left": t.proxyFunction(self._robot.turn_left),
+            "print": t.proxyFunction(lambda *a, **kw: print(*a, file=self._ui.getLog(), **kw))
         }
 
 

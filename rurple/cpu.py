@@ -14,7 +14,7 @@ class TraceThread(threading.Thread):
         self._globals = self._world.getGlobals(self)
         self._program = self._ui.program()
         self._stopped = False
-        self._traceProxy = self.ThreadAwareProxyFunction(self._cpu.trace)
+        self._traceProxy = self.threadAwareProxyFunction(self._cpu.trace)
     
     def run(self):
         try:
@@ -32,7 +32,7 @@ class TraceThread(threading.Thread):
     def stop(self):
         self._stopped = True
         
-    def ThreadAwareProxyFunction(self, f):
+    def threadAwareProxyFunction(self, f):
         def guardF(*a, **kw):
             if not self._stopped:
                 return f(*a, **kw)
@@ -45,13 +45,13 @@ class TraceThread(threading.Thread):
             return res
         return callF
 
-    def ProxyFunction(self, f):
+    def proxyFunction(self, f):
         def callBlocking(rcb, *a, **kw):
             try:
                 rcb((f(*a, **kw), None))
             except Exception, e:
                 rcb((None, e))
-        return self.ThreadAwareProxyFunction(callBlocking)
+        return self.threadAwareProxyFunction(callBlocking)
 
     def _tracefunc(self, frame, event, arg):
         # FIXME: shame to stop only on the lines in string if stopped
@@ -103,7 +103,7 @@ class CPU(object):
         self._thread = TraceThread(self, self._ui.getWorld(), self._ui)
         self._thread.start()
     
-    def Play(self):
+    def play(self):
         if self._state == "stop":
             self._state = "play"
             self._start()
@@ -111,7 +111,7 @@ class CPU(object):
             self._state = "play"
             self._release()
     
-    def Pause(self):
+    def pause(self):
         if self._state == "stop":
             self._state = "pause"
             self._start()
@@ -119,7 +119,7 @@ class CPU(object):
             self._state = "pause"
             self._stopTimer()
     
-    def Stop(self):
+    def stop(self):
         self._state = "stop"
         self._stopTimer()
         if self._thread:
@@ -128,7 +128,7 @@ class CPU(object):
         self._rcb = None
         self._ui.traceLine(None)
         
-    def Step(self):
-        self.Pause()
+    def step(self):
+        self.pause()
         self._release()
 
