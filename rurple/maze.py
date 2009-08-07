@@ -164,6 +164,8 @@ class Maze(Observable):
     @property
     def staterep(self):
         return {
+            "width": self._width,
+            "height": self._height,
             "walls": list(self._walls),
             "beepers": [(k, v) for k, v in self._beepers.iteritems()],
             "robots": [r.staterep for r in self._robots],
