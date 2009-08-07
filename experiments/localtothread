@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+import threading
+
+x = threading.local()
+def foo():
+    x.st = 1
+    print x.st
+
+t = threading.Thread(target = foo)
+t.start()
+
+print getattr(x, "st", 4)
+print x.st
+

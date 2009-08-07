@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import multiprocessing
+import wx
+
+def more(label, i):
+    label.SetValue("go around: " + str(i))
+    wx.CallLater(1000, more, label, i+1)
+
+class App(wx.App):
+    def OnInit(self):
+        frame = wx.Frame(None, title="This is a test")
+        label = wx.TextCtrl(frame, wx.ID_ANY)
+        more(label, 0)
+        frame.Show(True)
+        self.SetTopWindow(frame)
+        return True
+
+def main():
+    app = App(0)
+    app.MainLoop()
+
+if __name__ == "__main__":
+    main()
+
