@@ -4,6 +4,7 @@ import math
 import wx
 import wx.lib.wxcairo
 import cairo
+import json
 
 class Observable(object):
     def __init__(self):
@@ -60,6 +61,14 @@ class Robot(object):
         self._dir -= 1
         self._dir %= 4
         self._maze.triggerListeners(self._x, self._y, 1, 1)
+    
+    @property
+    def staterep(self):
+        return {
+            "x": self._x, "y": self._y, "dir": self._dir, 
+            "beepers": 0,
+        }
+
 
 class Maze(Observable):
     def __init__(self, w, h):
@@ -152,6 +161,14 @@ class Maze(Observable):
         ctx.clip()
         self.paint(ctx)
 
+    @property
+    def staterep(self):
+        return {
+            "walls": list(self._walls),
+            "beepers": [(k, v) for k, v in self._beepers.iteritems()],
+            "robots": [r.staterep for r in self._robots],
+        }
+
 class MazeWindow(wx.Window):
     def __init__(self, *args, **kw):
         self._maze = kw['maze']
@@ -186,6 +203,10 @@ class World(object):
         self._ui = ui
         self._maze = Maze(10, 10)
         self._robot = Robot(self._maze)
+
+    @property
+    def staterep(self):
+        return json.dumps(self._maze.staterep)
         
     def makeWindow(self, parent):
         return EditableMazeWindow(parent, size=(900,900), maze=self._maze)
