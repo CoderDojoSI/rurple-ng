@@ -27,6 +27,7 @@ class Robot(object):
         self._x = state['x']
         self._y = state['y']
         self._dir = state['dir']
+        self._beepers = state['beepers']
         self._maze.addRobot(self)
         self._maze.triggerListeners(self._x, self._y, 1, 1)
 
@@ -62,6 +63,10 @@ class Robot(object):
         self._dir += 1
         self._dir %= 4
         self._maze.triggerListeners(self._x, self._y, 1, 1)
+
+    def pick_beeper(self):
+        self._maze.pickBeeper(self._x, self._y)
+        self._beepers += 1
 
     @property
     def name(self):
@@ -103,24 +108,42 @@ class Maze(Observable):
         self._robots[n] = r
         self._defaultRobot = r
 
+    def pickBeeper(self, x, y):
+        b = self._beepers.get((x, y), 0)
+        if b == 0:
+            raise Exception("I'm not next to a beeper")
+        b -= 1
+        self.setBeepers(x, y, b)
+
+    def setBeepers(self, x, y, i):
+        assert i >= 0
+        if i == 0:
+            if (x, y) in self._beepers:
+                del self._beepers[(x, y)]
+        else:
+            self._beepers[(x, y)] = i
+        self.triggerListeners(x, y, 1, 1)
+
     def coordinates(self, x, y):
         return self._offset + self._spacing*2*x, self._offset + self._spacing*2*(self._height - y)
         
-    def nearestWall(self, x, y):
+    def nearest(self, x, y):
         x -= self._offset
         y -= self._offset
         xx = (x % (self._spacing*2)) - self._spacing
-        yy = (y % (self._spacing*2)) - self._spacing
+        yy = -((y % (self._spacing*2)) - self._spacing)
         x = x // (self._spacing*2)
-        y = y // (self._spacing*2)
-        if xx >= yy and xx >= -yy:
-            return (x +1, self._height - y-1, 'v')
+        y = self._height - (y // (self._spacing*2)) -1
+        if max(abs(xx), abs(yy)) < self._spacing * 0.58:
+            return (x, y)
+        elif xx >= yy and xx >= -yy:
+            return (x +1, y, 'v')
         elif xx <= yy and xx <= -yy:
-            return (x, self._height - y-1, 'v')
+            return (x, y, 'v')
         elif yy >= 0:
-            return (x, self._height - y- 1, 'h')
+            return (x, y +1, 'h')
         else:
-            return (x, self._height - y, 'h')
+            return (x, y, 'h')
 
     def paint(self, ctx):
         ctx.select_font_face("DejaVu Sans",
@@ -218,8 +241,23 @@ class EditableMazeWindow(MazeWindow):
         MazeWindow.__init__(self, *args, **kw)
         wx.EVT_LEFT_DOWN(self, self.OnClick)
 
+    def _beeperSetter(self, x, y, i):
+        def f(e):
+            self._maze.setBeepers(x, y, i)
+        return f
+
     def OnClick(self, e):
-        self._maze.toggleWall(*self._maze.nearestWall(e.GetX(), e.GetY()))
+        near = self._maze.nearest(e.GetX(), e.GetY())
+        if len(near) == 3:
+            self._maze.toggleWall(*near)
+        else:
+            x, y = near
+            menu = wx.Menu()
+            for i in range(10):
+                self.Bind(wx.EVT_MENU, 
+                    self._beeperSetter(x, y, i),
+                    menu.Append(wx.ID_ANY, str(i)))
+            self.PopupMenu(menu, e.GetPosition())
 
 class World(object):
     _initstate = {
@@ -254,6 +292,8 @@ class World(object):
                 lambda: self._maze.defaultRobot.move()),
             "turn_left": t.proxyFunction(
                 lambda: self._maze.defaultRobot.turn_left()),
+            "pick_beeper": t.proxyFunction(
+                lambda: self._maze.defaultRobot.pick_beeper()),
             "print": t.proxyFunction(
                 lambda *a, **kw: print(*a, file=self._ui.log, **kw))
         }
