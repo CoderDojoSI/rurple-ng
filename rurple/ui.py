@@ -75,12 +75,7 @@ class RurFrame(wx.Frame):
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
-        self._stc.AddText("""
-print(7)
-for i in range(4):
-    move()
-    turn_left()
-""")
+        self._stc.AddText(self._dotPath.read("program.rur", ""))
         hsash = wx.SplitterWindow(sash)
         self._worldParent = ScrolledPanel(hsash)
         self._worldWindow = None
@@ -175,6 +170,7 @@ for i in range(4):
         self._stc.mark(line)
     
     def starting(self):
+        self._dotPath.write("program.rur", self.program)
         self._dotPath.write("world.wld", self.world.staterep)
         self._logWindow.clear()
     
