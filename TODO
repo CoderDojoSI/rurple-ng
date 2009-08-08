@@ -27,15 +27,16 @@ Done:
 - add beepers
 - world handles WorldExceptions
 - make walls work
+- add World menu with set beepers option
 
 Still to do:
 
-- add World menu with set beepers option
 - useful status bar info
 - new world dialog
 - Move json into ui
 
 - no editing during playback (world or program)
+- disable world menu items during playback
 - start with walls on outside
 - only internal walls editable
 - only internal beepers editable

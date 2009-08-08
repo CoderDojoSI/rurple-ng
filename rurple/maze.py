@@ -89,11 +89,21 @@ class Robot(object):
         return self._name
     
     @property
+    def beepers(self):
+        return self._beepers
+    
+    @beepers.setter
+    def beepers(self, x):
+        assert x >= 0
+        assert x == int(x)
+        self._beepers = int(x)
+    
+    @property
     def staterep(self):
         return {
             "name": self._name,
             "x": self._x, "y": self._y, "dir": self._dir, 
-            "beepers": 0,
+            "beepers": self._beepers,
         }
 
 class Maze(Observable):
@@ -283,6 +293,37 @@ class EditableMazeWindow(MazeWindow):
                     menu.Append(wx.ID_ANY, str(i)))
             self.PopupMenu(menu, e.GetPosition())
 
+class BeeperDialog(wx.Dialog):
+    def __init__(self, *a, **kw):
+        self._maze = kw['maze']
+        del kw['maze']
+        wx.Dialog.__init__(self, *a, **kw)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        label = wx.StaticText(self, wx.ID_ANY, "Beepers for robot to start with")
+        sizer.Add(label, 0, wx.ALL, 5)
+        self._spin = wx.SpinCtrl(self,
+            initial=self._maze.defaultRobot.beepers)
+        sizer.Add(self._spin, 0, wx.ALL, 5)
+        btnsizer = wx.StdDialogButtonSizer()
+                
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        self.Bind(wx.EVT_BUTTON, self.OnOK, btn)
+        btnsizer.AddButton(btn)
+
+        btn = wx.Button(self, wx.ID_CANCEL)
+        btnsizer.AddButton(btn)
+        btnsizer.Realize()
+
+        sizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+        
+        sizer.Layout()
+        sizer.Fit(self)
+    
+    def OnOK(self, e):
+        self._maze.defaultRobot.beepers = self._spin.Value
+        e.Skip()
+
 class World(object):
     _initstate = {
         "width": 10, 
@@ -316,7 +357,8 @@ class World(object):
         ]
 
     def OnBeeperMenu(self, e):
-        print("beepers")
+        d = BeeperDialog(self._ui, maze=self._maze)
+        d.ShowModal()
 
     def getGlobals(self, t):
         res = {}
