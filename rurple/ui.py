@@ -5,6 +5,7 @@ import sys
 import math
 import os
 import os.path
+import json
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 import wx.stc
@@ -124,7 +125,8 @@ class RurFrame(wx.Frame):
         self.reset()
 
     def reset(self):
-        self.world = maze.World(self, self._dotPath.read("world.wld"))
+        self.world = maze.World(self, 
+            json.loads(self._dotPath.read("world.wld")))
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A Python Learning Environment \n"
@@ -180,7 +182,10 @@ class RurFrame(wx.Frame):
     
     def starting(self):
         self._dotPath.write("program.rur", self.program)
-        self._dotPath.write("world.wld", self.world.staterep)
+        sr = self.world.staterep
+        self._dotPath.write("world.wld", 
+            json.dumps(sr,
+                indent=4, sort_keys = True))
         self._logWindow.clear()
     
     def done(self, e):

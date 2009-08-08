@@ -4,7 +4,6 @@ import math
 import wx
 import wx.lib.wxcairo
 import cairo
-import json
 
 from rurple import world
 
@@ -335,18 +334,13 @@ class World(object):
         "height": 10
     }
     
-    def __init__(self, ui, state=None):
-        if state is None:
-            state = self._initstate
-        else:
-            state = json.loads(state)
+    def __init__(self, ui, state=_initstate):
         self._ui = ui
         self._maze = Maze(state)
 
     @property
     def staterep(self):
-        return json.dumps(self._maze.staterep, 
-            indent=4, sort_keys = True)
+        return self._maze.staterep 
         
     def makeWindow(self, parent):
         return EditableMazeWindow(parent, maze=self._maze)
