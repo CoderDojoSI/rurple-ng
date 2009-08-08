@@ -310,6 +310,14 @@ class World(object):
     def makeWindow(self, parent):
         return EditableMazeWindow(parent, maze=self._maze)
 
+    def menu(self, menu):
+        return [
+            (self.OnBeeperMenu, menu.Append(wx.ID_ANY, "Set beepers...")),
+        ]
+
+    def OnBeeperMenu(self, e):
+        print("beepers")
+
     def getGlobals(self, t):
         res = {}
         res.update(dict([

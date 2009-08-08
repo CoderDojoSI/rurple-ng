@@ -35,10 +35,10 @@ Still to do:
 - new world dialog
 - Move json into ui
 
+- no editing during playback (world or program)
 - start with walls on outside
 - only internal walls editable
 - only internal beepers editable
-- no editing during playback
 - add hyperlink to help in about
 - new text for title etc
 - ink trails

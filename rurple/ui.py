@@ -83,7 +83,6 @@ class RurFrame(wx.Frame):
         self._logWindow = LogWindow(hsash)
         hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
-        self.reset()
         
         #self.CreateStatusBar()
         menuBar = wx.MenuBar()
@@ -94,6 +93,8 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnExit,
             filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
         menuBar.Append(filemenu,"&File")
+        self._worldMenu = wx.Menu()
+        menuBar.Append(self._worldMenu,"&World")
         self.SetMenuBar(menuBar)
         self._toolbar = self.CreateToolBar()
         tsize = (24,24)
@@ -120,6 +121,7 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
+        self.reset()
 
     def reset(self):
         self.world = maze.World(self, self._dotPath.read("world.wld"))
@@ -164,6 +166,13 @@ class RurFrame(wx.Frame):
         self._worldWindow = self._world.makeWindow(self._worldParent)
         sps.Add(self._worldWindow)
         self._worldParent.SetSizer(sps)
+        while True:
+            mi = self._worldMenu.FindItemByPosition(0)
+            if mi is None:
+                break
+            self._worldMenu.Delete(mi.Id)
+        for b, e in self._world.menu(self._worldMenu):
+            self.Bind(wx.EVT_MENU, b, e)
         #sps.SetSizeHints(sp)
 
     def traceLine(self, line):
