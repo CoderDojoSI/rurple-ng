@@ -232,13 +232,18 @@ class World(object):
         "height": 10
     }
     
-    def __init__(self, ui):
+    def __init__(self, ui, state=None):
+        if state is None:
+            state = self._initstate
+        else:
+            state = json.loads(state)
         self._ui = ui
-        self._maze = Maze(self._initstate)
+        self._maze = Maze(state)
 
     @property
     def staterep(self):
-        return json.dumps(self._maze.staterep)
+        return json.dumps(self._maze.staterep, 
+            indent=4, sort_keys = True)
         
     def makeWindow(self, parent):
         return EditableMazeWindow(parent, maze=self._maze)
