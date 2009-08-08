@@ -92,7 +92,7 @@ class Maze(Observable):
         self._robots.append(r)
 
     def coordinates(self, x, y):
-        return self._offset + self._spacing*2*x, self._offset + self._spacing*2*y
+        return self._offset + self._spacing*2*x, self._offset + self._spacing*2*(self._height - y)
         
     def nearestWall(self, x, y):
         x -= self._offset
