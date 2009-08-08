@@ -175,7 +175,7 @@ class Maze(Observable):
             "robots": [r.staterep for r in self._robots],
         }
 
-class MazeWindow(wx.Window):
+class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
         self._maze = kw['maze']
         del kw['maze']
