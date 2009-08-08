@@ -21,12 +21,12 @@ class Observable(object):
             l(self, *args, **kw)
 
 class Robot(object):
-    def __init__(self, maze, name):
+    def __init__(self, maze, state):
         self._maze = maze
-        self._name = name
-        self._x = 2
-        self._y = 3
-        self._dir = 0
+        self._name = state['name']
+        self._x = state['x']
+        self._y = state['y']
+        self._dir = state['dir']
         self._maze.addRobot(self)
         self._maze.triggerListeners(self._x, self._y, 1, 1)
 
@@ -70,20 +70,24 @@ class Robot(object):
     @property
     def staterep(self):
         return {
+            "name": self._name,
             "x": self._x, "y": self._y, "dir": self._dir, 
             "beepers": 0,
         }
 
 class Maze(Observable):
-    def __init__(self, w, h):
+    def __init__(self, state):
         Observable.__init__(self)
         self._spacing = 20
         self._offset = 20
-        self._width = w
-        self._height = h
-        self._walls = set()
-        self._beepers = {(1, 2): 99}
+        self._width = state['width']
+        self._height = state['height']
+        self._walls = set(state['walls'])
+        self._beepers = dict(
+            (tuple(k), v) for k, v in state['beepers'])
         self._robots = {}
+        for r in state['robots']:
+            Robot(self, r)
 
     def toggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
@@ -184,7 +188,7 @@ class Maze(Observable):
             "height": self._height,
             "walls": list(self._walls),
             "beepers": [(k, v) for k, v in self._beepers.iteritems()],
-            "robots": [(k, v.staterep) for k, v in self._robots.iteritems()],
+            "robots": [v.staterep for v in self._robots.itervalues()],
         }
 
 class MazeWindow(wx.PyControl):
@@ -218,10 +222,19 @@ class EditableMazeWindow(MazeWindow):
         self._maze.toggleWall(*self._maze.nearestWall(e.GetX(), e.GetY()))
 
 class World(object):
+    _initstate = {
+        "width": 10, 
+        "walls": [], 
+        "beepers": [], 
+        "robots": [
+            {"name": "robot", "y": 0, "x": 0, "dir": 0, "beepers": 0}
+        ],
+        "height": 10
+    }
+    
     def __init__(self, ui):
         self._ui = ui
-        self._maze = Maze(10, 10)
-        Robot(self._maze, "robot")
+        self._maze = Maze(self._initstate)
 
     @property
     def staterep(self):
