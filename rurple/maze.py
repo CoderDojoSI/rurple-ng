@@ -68,6 +68,12 @@ class Robot(object):
         self._maze.pickBeeper(self._x, self._y)
         self._beepers += 1
 
+    def put_beeper(self):
+        if self._beepers == 0:
+            raise Exception("I don't have any beepers")
+        self._beepers -= 1
+        self._maze.putBeeper(self._x, self._y)
+
     @property
     def name(self):
         return self._name
@@ -114,6 +120,9 @@ class Maze(Observable):
             raise Exception("I'm not next to a beeper")
         b -= 1
         self.setBeepers(x, y, b)
+
+    def putBeeper(self, x, y):
+        self.setBeepers(x, y, 1 + self._beepers.get((x, y), 0))
 
     def setBeepers(self, x, y, i):
         assert i >= 0
@@ -293,9 +302,12 @@ class World(object):
 
     def getGlobals(self, t):
         res = {}
-        res.update(dict([(name, 
-            t.proxyFunction(self._maze.proxyRobot(name)))
-            for name in ["move", "turn_left", "pick_beeper"]]))
+        res.update(dict([
+            (name, t.proxyFunction(self._maze.proxyRobot(name)))
+            for name in [
+                "move", "turn_left", 
+                "pick_beeper", "put_beeper"
+            ]]))
         res.update({
             "print": t.proxyFunction(
                 lambda *a, **kw: print(*a, file=self._ui.log, **kw))
