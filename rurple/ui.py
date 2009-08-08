@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals, with_statement
 
 import sys
@@ -104,8 +105,8 @@ for i in range(4):
         self._toolbar.AddControl(self._slider)
         
     def OnAbout(self, e):
-        d = wx.MessageDialog(self, " A test application \n"
-                            " in wxPython","About test app", wx.OK)
+        d = wx.MessageDialog(self, " A Python Learning Environment \n"
+                            " by André Roberge and Paul Crowley","About RUR-PLE 2", wx.OK)
         d.ShowModal()
         d.Destroy()
     
@@ -155,7 +156,7 @@ for i in range(4):
 
 class App(wx.App):
     def OnInit(self):
-        frame = RurFrame(None, title="This is a test", size=(900,1000))
+        frame = RurFrame(None, title="RUR-PLE 2", size=(900,1000))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
