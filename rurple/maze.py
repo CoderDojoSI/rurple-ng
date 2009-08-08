@@ -114,13 +114,13 @@ class Maze(Observable):
         x = x // (self._spacing*2)
         y = y // (self._spacing*2)
         if xx >= yy and xx >= -yy:
-            return (x +1, y, 'v')
+            return (x +1, self._height - y-1, 'v')
         elif xx <= yy and xx <= -yy:
-            return (x, y, 'v')
+            return (x, self._height - y-1, 'v')
         elif yy >= 0:
-            return (x, y+1, 'h')
+            return (x, self._height - y- 1, 'h')
         else:
-            return (x, y, 'h')
+            return (x, self._height - y, 'h')
 
     def paint(self, ctx):
         ctx.select_font_face("DejaVu Sans",
