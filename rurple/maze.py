@@ -6,6 +6,8 @@ import wx.lib.wxcairo
 import cairo
 import json
 
+from rurple import world
+
 class Observable(object):
     def __init__(self):
         self._listeners = set()
@@ -70,7 +72,7 @@ class Robot(object):
 
     def put_beeper(self):
         if self._beepers == 0:
-            raise Exception("I don't have any beepers")
+            raise world.WorldException("I don't have any beepers")
         self._beepers -= 1
         self._maze.putBeeper(self._x, self._y)
 
@@ -110,14 +112,14 @@ class Maze(Observable):
     def addRobot(self, r):
         n = r.name
         if n in self._robots:
-            raise Exception("Already got a robot called %s" % n)
+            raise world.WorldException("Already got a robot called %s" % n)
         self._robots[n] = r
         self._defaultRobot = r
 
     def pickBeeper(self, x, y):
         b = self._beepers.get((x, y), 0)
         if b == 0:
-            raise Exception("I'm not next to a beeper")
+            raise world.WorldException("I'm not next to a beeper")
         b -= 1
         self.setBeepers(x, y, b)
 
@@ -314,3 +316,9 @@ class World(object):
         })
         return res
 
+    def handleException(self, frame, e):
+        d = wx.MessageDialog(frame, message=str(e),
+            caption = "Not right with the world",
+            style=wx.ICON_EXCLAMATION | wx.OK)
+        d.ShowModal()
+    

@@ -22,6 +22,10 @@ Done:
 - log window
 - "print" prints to log window
 - make world loadable and saveable
+- make program loadable and saveable
+- load a program by default
+- add beepers
+- world handles WorldExceptions
 
 Still to do:
 
@@ -29,12 +33,7 @@ Still to do:
 - start with walls on outside
 - only internal walls editable
 - no editing during playback
-- world handles WorldExceptions
-- make program loadable and saveable
-- load a program by default
-- add beepers
 - add World menu with set beepers option
-- add reset world button
 - add hyperlink to help in about
 - new text for title etc
 - ink trails
@@ -42,6 +41,7 @@ Still to do:
 - new world dialog
 - style editor and log window properly
 - make robot look nicer
+- add real load and save menu items/buttons
 
 - highlight exception line
 - log exceptions as well as displaying them

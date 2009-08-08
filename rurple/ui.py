@@ -9,7 +9,7 @@ import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 import wx.stc
 
-from rurple import maze, cpu
+from rurple import maze, cpu, world
 
 def toBitmap(name):
     return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
@@ -182,6 +182,8 @@ class RurFrame(wx.Frame):
                 caption = "Program finished",
                 style=wx.ICON_INFORMATION | wx.OK)
             d.ShowModal()
+        elif isinstance(e, world.WorldException):
+            self._world.handleException(self, e)
         else: 
             d = wx.MessageDialog(self, message=str(e),
                 caption = "Error running your program",
