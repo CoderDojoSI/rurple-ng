@@ -82,7 +82,7 @@ class Maze(Observable):
         self._offset = 20
         self._width = state['width']
         self._height = state['height']
-        self._walls = set(state['walls'])
+        self._walls = set(tuple(w) for w in state['walls'])
         self._beepers = dict(
             (tuple(k), v) for k, v in state['beepers'])
         self._robots = {}

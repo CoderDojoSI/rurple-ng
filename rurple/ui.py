@@ -50,7 +50,6 @@ class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
         self._cpu = cpu.CPU(self)
-        self._world = maze.World(self)
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
         self._stc.AddText("""
@@ -61,15 +60,13 @@ for i in range(4):
 """)
         hsash = wx.SplitterWindow(sash)
         self._worldParent = ScrolledPanel(hsash)
-        sps = wx.BoxSizer()
-        w = self._world.makeWindow(self._worldParent)
-        sps.Add(w)
-        self._worldParent.SetSizer(sps)
-        #sps.SetSizeHints(sp)
+        self._worldWindow = None
         sash.SplitVertically(self._stc, hsash)
         self._logWindow = LogWindow(hsash)
         hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
+        self.world = maze.World(self)
+        self._checkpoint = self.world.staterep
         
         #self.CreateStatusBar()
         menuBar = wx.MenuBar()
@@ -84,6 +81,9 @@ for i in range(4):
         self._toolbar = self.CreateToolBar()
         tsize = (24,24)
         self._toolbar.SetToolBitmapSize(tsize)
+        self.Bind(wx.EVT_TOOL, self.OnReset,
+            self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
+                toBitmap('reset_world')))
         self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
             toBitmap('play'), shortHelp="Play")
         self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.play()), self._playTool)
@@ -103,6 +103,9 @@ for i in range(4):
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
+
+    def OnReset(self, e):
+        self.world = maze.World(self, self._checkpoint)
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A Python Learning Environment \n"
@@ -134,10 +137,23 @@ for i in range(4):
     def world(self):
         return self._world
 
+    @world.setter
+    def world(self, world):
+        if self._worldWindow is not None:
+            self._worldWindow.Close()
+            self._worldWindow = None
+        self._world = world
+        sps = wx.BoxSizer()
+        self._worldWindow = self._world.makeWindow(self._worldParent)
+        sps.Add(self._worldWindow)
+        self._worldParent.SetSizer(sps)
+        #sps.SetSizeHints(sp)
+
     def traceLine(self, line):
         self._stc.mark(line)
     
     def starting(self):
+        self._checkpoint = self.world.staterep
         self._logWindow.clear()
     
     def done(self, e):
