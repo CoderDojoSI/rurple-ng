@@ -21,8 +21,9 @@ class Observable(object):
             l(self, *args, **kw)
 
 class Robot(object):
-    def __init__(self, maze):
+    def __init__(self, maze, name):
         self._maze = maze
+        self._name = name
         self._x = 2
         self._y = 3
         self._dir = 0
@@ -61,6 +62,10 @@ class Robot(object):
         self._dir += 1
         self._dir %= 4
         self._maze.triggerListeners(self._x, self._y, 1, 1)
+
+    @property
+    def name(self):
+        return self._name
     
     @property
     def staterep(self):
@@ -68,7 +73,6 @@ class Robot(object):
             "x": self._x, "y": self._y, "dir": self._dir, 
             "beepers": 0,
         }
-
 
 class Maze(Observable):
     def __init__(self, w, h):
@@ -79,7 +83,7 @@ class Maze(Observable):
         self._height = h
         self._walls = set()
         self._beepers = {(1, 2): 99}
-        self._robots = []
+        self._robots = {}
 
     def toggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
@@ -89,7 +93,11 @@ class Maze(Observable):
             self.triggerListeners(x, y, 0, 1)
 
     def addRobot(self, r):
-        self._robots.append(r)
+        n = r.name
+        if n in self._robots:
+            raise Exception("Already got a robot called %s" % n)
+        self._robots[n] = r
+        self._defaultRobot = r
 
     def coordinates(self, x, y):
         return self._offset + self._spacing*2*x, self._offset + self._spacing*2*(self._height - y)
@@ -151,7 +159,7 @@ class Maze(Observable):
             exts = ctx.text_extents(t)
             ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
             ctx.show_text(t)
-        for r in self._robots:
+        for r in self._robots.itervalues():
             ctx.save()
             r.paint(ctx)
             ctx.restore()
@@ -166,13 +174,17 @@ class Maze(Observable):
             2*self._offset + 2*self._height*self._spacing)
 
     @property
+    def defaultRobot(self):
+        return self._defaultRobot
+
+    @property
     def staterep(self):
         return {
             "width": self._width,
             "height": self._height,
             "walls": list(self._walls),
             "beepers": [(k, v) for k, v in self._beepers.iteritems()],
-            "robots": [r.staterep for r in self._robots],
+            "robots": [(k, v.staterep) for k, v in self._robots.iteritems()],
         }
 
 class MazeWindow(wx.PyControl):
@@ -209,7 +221,7 @@ class World(object):
     def __init__(self, ui):
         self._ui = ui
         self._maze = Maze(10, 10)
-        self._robot = Robot(self._maze)
+        Robot(self._maze, "robot")
 
     @property
     def staterep(self):
@@ -220,8 +232,11 @@ class World(object):
 
     def getGlobals(self, t):
         return {
-            "move": t.proxyFunction(self._robot.move),
-            "turn_left": t.proxyFunction(self._robot.turn_left),
-            "print": t.proxyFunction(lambda *a, **kw: print(*a, file=self._ui.log, **kw))
+            "move": t.proxyFunction(
+                lambda: self._maze.defaultRobot.move()),
+            "turn_left": t.proxyFunction(
+                lambda: self._maze.defaultRobot.turn_left()),
+            "print": t.proxyFunction(
+                lambda *a, **kw: print(*a, file=self._ui.log, **kw))
         }
 
