@@ -14,6 +14,25 @@ from rurple import maze, cpu
 def toBitmap(name):
     return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
+class DotDir(object):
+    def __init__(self, path):
+        self._path = path
+    
+    def read(self, name, default=None):
+        f = os.path.join(self._path, name)
+        if os.path.exists(f):
+            with open(f) as h:
+                return h.read()
+        else:
+            return default
+    
+    def write(self, name, text):
+        if not os.path.isdir(self._path):
+            os.mkdir(self._path)
+        f = os.path.join(self._path, name)
+        with open(f, "w") as h:
+            h.write(text)
+
 class PythonEditor(wx.stc.StyledTextCtrl):
     MARK_RUNNING = 7
 
@@ -52,7 +71,7 @@ class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
         # FIXME: not right for Windows or MacOS X
-        self._dotPath = os.path.expanduser("~/.rurple")
+        self._dotPath = DotDir(os.path.expanduser("~/.rurple"))
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
@@ -108,13 +127,7 @@ for i in range(4):
         self._toolbar.AddControl(self._slider)
 
     def reset(self):
-        f = os.path.join(self._dotPath, "world.wld")
-        if os.path.exists(f):
-            with open(f) as h:
-                w = h.read()
-        else:
-            w = None
-        self.world = maze.World(self, w)
+        self.world = maze.World(self, self._dotPath.read("world.wld"))
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A Python Learning Environment \n"
@@ -162,11 +175,7 @@ for i in range(4):
         self._stc.mark(line)
     
     def starting(self):
-        if not os.path.isdir(self._dotPath):
-            os.mkdir(self._dotPath)
-        f = os.path.join(self._dotPath, "world.wld")
-        with open(f, "w") as h:
-            h.write(self.world.staterep)
+        self._dotPath.write("world.wld", self.world.staterep)
         self._logWindow.clear()
     
     def done(self, e):
