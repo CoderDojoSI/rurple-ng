@@ -179,7 +179,8 @@ class MazeWindow(wx.Window):
     def __init__(self, *args, **kw):
         self._maze = kw['maze']
         del kw['maze']
-        wx.Window.__init__(self, *args, size = self._maze.size(), **kw)
+        wx.Window.__init__(self, *args, **kw)
+        self.SetBestSize(self._maze.size())
         wx.EVT_PAINT(self, self.OnPaint)
         self._maze.addListener(self.onMazeChange)
     
