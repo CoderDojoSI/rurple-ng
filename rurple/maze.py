@@ -32,7 +32,7 @@ class Robot(object):
     def paint(self, ctx):
         x, y = self._maze.coordinates(self._x + .5, self._y + .5)
         ctx.translate(x, y)
-        ctx.rotate(math.pi * 0.5 * self._dir)
+        ctx.rotate(-math.pi * 0.5 * self._dir)
         ctx.set_source_rgb(0, 0, 1)
         ctx.arc(0, 0, 7, 0, 2*math.pi)
         ctx.fill()
@@ -58,7 +58,7 @@ class Robot(object):
             self._maze.triggerListeners(self._x, self._y, 1, 2)
     
     def turn_left(self):
-        self._dir -= 1
+        self._dir += 1
         self._dir %= 4
         self._maze.triggerListeners(self._x, self._y, 1, 1)
     
@@ -157,7 +157,7 @@ class Maze(Observable):
             ctx.restore()
 
     def paintSquares(self, ctx, x, y, w, h):
-        ctx.rectangle(*(self.coordinates(x-0.5, y-0.5) + self.coordinates(x + w + 0.5, y + h + 0.5)))
+        ctx.rectangle(*(self.coordinates(x-0.5, y + h + 0.5) + self.coordinates(x + w + 0.5, y - 0.5)))
         ctx.clip()
         self.paint(ctx)
 
