@@ -73,8 +73,8 @@ class Robot(object):
 class Maze(Observable):
     def __init__(self, w, h):
         Observable.__init__(self)
-        self._spacing = 25
-        self._offset = 25
+        self._spacing = 20
+        self._offset = 20
         self._width = w
         self._height = h
         self._walls = set()
@@ -161,6 +161,10 @@ class Maze(Observable):
         ctx.clip()
         self.paint(ctx)
 
+    def size(self):
+        return (2*self._offset + 2*self._width*self._spacing,
+            2*self._offset + 2*self._height*self._spacing)
+
     @property
     def staterep(self):
         return {
@@ -175,7 +179,7 @@ class MazeWindow(wx.Window):
     def __init__(self, *args, **kw):
         self._maze = kw['maze']
         del kw['maze']
-        wx.Window.__init__(self, *args, **kw)
+        wx.Window.__init__(self, *args, size = self._maze.size(), **kw)
         wx.EVT_PAINT(self, self.OnPaint)
         self._maze.addListener(self.onMazeChange)
     
@@ -211,7 +215,7 @@ class World(object):
         return json.dumps(self._maze.staterep)
         
     def makeWindow(self, parent):
-        return EditableMazeWindow(parent, size=(900,900), maze=self._maze)
+        return EditableMazeWindow(parent, maze=self._maze)
 
     def getGlobals(self, t):
         return {
