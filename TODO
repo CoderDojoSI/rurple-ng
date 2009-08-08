@@ -30,23 +30,39 @@ Done:
 
 Still to do:
 
+- add World menu with set beepers option
+- useful status bar info
+- new world dialog
+- Move json into ui
+
 - start with walls on outside
 - only internal walls editable
+- only internal beepers editable
 - no editing during playback
-- add World menu with set beepers option
 - add hyperlink to help in about
 - new text for title etc
 - ink trails
-- useful status bar info
-- new world dialog
-- style editor and log window properly
-- make robot look nicer
 - add real load and save menu items/buttons
+
+- on_beeper, got_beeper
+- front_is_clear, left_is_clear
+- facing_north
+- input_int, input_string
+- roll_dice
+
+- style editor and log window properly
+- style exceptions properly
+- make robot look nicer
 
 - highlight exception line
 - log exceptions as well as displaying them
 - add menu items that mirror buttons
-- add accellerators for menu items
+- add accelerators for menu items
+
+- Windows installer
+
+Enhancements:
 
 - look into using process instead of thread
+- gradual movement
 
