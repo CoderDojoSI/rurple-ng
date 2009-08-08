@@ -213,6 +213,11 @@ class Maze(Observable):
             "beepers": [(k, v) for k, v in self._beepers.iteritems()],
             "robots": [v.staterep for v in self._robots.itervalues()],
         }
+    
+    def proxyRobot(self, name):
+        return eval(
+            "lambda *a, **kw: self.defaultRobot.%s(*a, **kw)" % name,
+            {"self": self})
 
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
@@ -287,14 +292,13 @@ class World(object):
         return EditableMazeWindow(parent, maze=self._maze)
 
     def getGlobals(self, t):
-        return {
-            "move": t.proxyFunction(
-                lambda: self._maze.defaultRobot.move()),
-            "turn_left": t.proxyFunction(
-                lambda: self._maze.defaultRobot.turn_left()),
-            "pick_beeper": t.proxyFunction(
-                lambda: self._maze.defaultRobot.pick_beeper()),
+        res = {}
+        res.update(dict([(name, 
+            t.proxyFunction(self._maze.proxyRobot(name)))
+            for name in ["move", "turn_left", "pick_beeper"]]))
+        res.update({
             "print": t.proxyFunction(
                 lambda *a, **kw: print(*a, file=self._ui.log, **kw))
-        }
+        })
+        return res
 
