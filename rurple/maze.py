@@ -49,15 +49,23 @@ class Robot(object):
     
     def move(self):
         if self._dir == 0:
+            if (self._x +1, self._y, 'v') in self._maze._walls:
+                raise world.WorldException("Hit a wall")
             self._x += 1
             self._maze.triggerListeners(self._x -1, self._y, 2, 1)
         elif self._dir == 1:
+            if (self._x, self._y +1, 'h') in self._maze._walls:
+                raise world.WorldException("Hit a wall")
             self._y += 1
             self._maze.triggerListeners(self._x, self._y -1, 1, 2)
         elif self._dir == 2:
+            if (self._x, self._y, 'v') in self._maze._walls:
+                raise world.WorldException("Hit a wall")
             self._x -= 1
             self._maze.triggerListeners(self._x, self._y, 2, 1)
         else:
+            if (self._x, self._y, 'h') in self._maze._walls:
+                raise world.WorldException("Hit a wall")
             self._y -= 1
             self._maze.triggerListeners(self._x, self._y, 1, 2)
     

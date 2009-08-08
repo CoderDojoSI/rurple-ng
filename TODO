@@ -26,10 +26,10 @@ Done:
 - load a program by default
 - add beepers
 - world handles WorldExceptions
+- make walls work
 
 Still to do:
 
-- make walls work
 - start with walls on outside
 - only internal walls editable
 - no editing during playback
@@ -45,6 +45,8 @@ Still to do:
 
 - highlight exception line
 - log exceptions as well as displaying them
+- add menu items that mirror buttons
+- add accellerators for menu items
 
 - look into using process instead of thread
 
