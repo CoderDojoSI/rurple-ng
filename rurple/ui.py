@@ -3,6 +3,8 @@ from __future__ import division, print_function, unicode_literals, with_statemen
 
 import sys
 import math
+import os
+import os.path
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 import wx.stc
@@ -49,6 +51,8 @@ class LogScale(object):
 class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
+        # FIXME: not right for Windows or MacOS X
+        self._dotPath = os.path.expanduser("~/.rurple")
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._stc = PythonEditor(sash)
@@ -65,8 +69,7 @@ for i in range(4):
         self._logWindow = LogWindow(hsash)
         hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
-        self.world = maze.World(self)
-        self._checkpoint = self.world.staterep
+        self.reset()
         
         #self.CreateStatusBar()
         menuBar = wx.MenuBar()
@@ -81,7 +84,7 @@ for i in range(4):
         self._toolbar = self.CreateToolBar()
         tsize = (24,24)
         self._toolbar.SetToolBitmapSize(tsize)
-        self.Bind(wx.EVT_TOOL, self.OnReset,
+        self.Bind(wx.EVT_TOOL, lambda e: self.reset(),
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
                 toBitmap('reset_world')))
         self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
@@ -104,8 +107,14 @@ for i in range(4):
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
 
-    def OnReset(self, e):
-        self.world = maze.World(self, self._checkpoint)
+    def reset(self):
+        f = os.path.join(self._dotPath, "world.wld")
+        if os.path.exists(f):
+            with open(f) as h:
+                w = h.read()
+        else:
+            w = None
+        self.world = maze.World(self, w)
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, " A Python Learning Environment \n"
@@ -153,7 +162,11 @@ for i in range(4):
         self._stc.mark(line)
     
     def starting(self):
-        self._checkpoint = self.world.staterep
+        if not os.path.isdir(self._dotPath):
+            os.mkdir(self._dotPath)
+        f = os.path.join(self._dotPath, "world.wld")
+        with open(f, "w") as h:
+            h.write(self.world.staterep)
         self._logWindow.clear()
     
     def done(self, e):

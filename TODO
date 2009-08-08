@@ -21,13 +21,14 @@ Done:
 - alert instead of printing on finish and exceptions
 - log window
 - "print" prints to log window
+- make world loadable and saveable
 
 Still to do:
 
-- make world loadable and saveable
 - make walls work
 - start with walls on outside
 - only internal walls editable
+- no editing during playback
 - world handles WorldExceptions
 - make program loadable and saveable
 - load a program by default
