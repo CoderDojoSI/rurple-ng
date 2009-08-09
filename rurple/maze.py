@@ -47,7 +47,7 @@ class Robot(object):
         ctx.stroke()
     
     def move(self):
-        if not self._maze.isPassable(self._x, self._y, self._dir):
+        if not self.front_is_clear():
             raise world.WorldException("Hit a wall")
         if self._dir == 0:
             self._x += 1
@@ -76,6 +76,26 @@ class Robot(object):
             raise world.WorldException("I don't have any beepers")
         self._beepers -= 1
         self._maze.putBeeper(self._x, self._y)
+
+    def on_beeper(self):
+        return self._maze.countBeepers(self._x, self._y) != 0
+
+    def got_beeper(self):
+        return self._beepers != 0
+    
+    def front_is_clear(self):
+        return self._maze.isPassable(self._x, self._y, self._dir)
+
+    def left_is_clear(self):
+        return self._maze.isPassable(self._x, self._y, 
+            (self._dir +1) % 4)
+
+    def right_is_clear(self):
+        return self._maze.isPassable(self._x, self._y, 
+            (self._dir -1) % 4)
+
+    def facing_north(self):
+        return self._dir == 1
 
     @property
     def name(self):
@@ -155,14 +175,14 @@ class Maze(Observable):
         self._defaultRobot = r
 
     def pickBeeper(self, x, y):
-        b = self._beepers.get((x, y), 0)
+        b = self.countBeepers(x, y)
         if b == 0:
             raise world.WorldException("I'm not next to a beeper")
         b -= 1
         self.setBeepers(x, y, b)
 
     def putBeeper(self, x, y):
-        self.setBeepers(x, y, 1 + self._beepers.get((x, y), 0))
+        self.setBeepers(x, y, 1 + self.countBeepers(x, y))
 
     def setBeepers(self, x, y, i):
         assert i >= 0
@@ -172,6 +192,9 @@ class Maze(Observable):
         else:
             self._beepers[(x, y)] = i
         self.triggerListeners(x, y, 1, 1)
+
+    def countBeepers(self, x, y):
+        return self._beepers.get((x, y), 0)
 
     def coordinates(self, x, y):
         return self._offset + self._spacing*2*x, self._offset + self._spacing*2*(self._height - y)
@@ -451,7 +474,10 @@ class World(object):
             (name, t.proxyFunction(self._maze.proxyRobot(name)))
             for name in [
                 "move", "turn_left", 
-                "pick_beeper", "put_beeper"
+                "pick_beeper", "put_beeper",
+                "on_beeper", "got_beeper",
+                "front_is_clear", "left_is_clear", "right_is_clear",
+                "facing_north",
             ]]))
         res.update({
             "print": t.proxyFunction(

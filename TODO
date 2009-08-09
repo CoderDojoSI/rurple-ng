@@ -33,6 +33,9 @@ Done:
 - start with walls on outside
 - only internal walls editable
 - only internal beepers editable
+- on_beeper, got_beeper
+- front_is_clear, left_is_clear
+- facing_north
 
 Still to do:
 
@@ -45,9 +48,6 @@ Still to do:
 - ink trails
 - add real load and save menu items/buttons
 
-- on_beeper, got_beeper
-- front_is_clear, left_is_clear
-- facing_north
 - input_int, input_string
 - roll_dice
 
