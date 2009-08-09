@@ -33,6 +33,7 @@ class Robot(object):
         self._y = state['y']
         self._dir = state['dir']
         self._beepers = state['beepers']
+        self.runStart()
         self._maze.addRobot(self)
         self._maze.triggerListeners(self._x, self._y, 1, 1)
 
@@ -49,26 +50,55 @@ class Robot(object):
         ctx.line_to(10, 10)
         ctx.set_line_width(4)
         ctx.stroke()
+
+    def _trailPoint(self, p):
+        x, y, d = p
+        s = 0.1
+        if d == 0:
+            x -= s; y -= s
+        elif d == 1:
+            x += s; y -= s
+        elif d == 2:
+            x += s; y += s
+        else:
+            x -= s; y += s
+        return self._maze.coordinates(x + 0.5, y + 0.5)
+
+    def paintTrail(self, ctx):
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_line_width(1)
+        ctx.move_to(*self._trailPoint(self._trail[0]))
+        for p in self._trail[1:]:
+            ctx.line_to(*self._trailPoint(p))
+        ctx.stroke()
+
+    def runStart(self):
+        self._trail = [(self._x, self._y, self._dir)]
     
     def move(self):
         if not self.front_is_clear():
             raise world.WorldException("Hit a wall")
         if self._dir == 0:
             self._x += 1
+            self._trail.append((self._x, self._y, self._dir))
             self._maze.triggerListeners(self._x -1, self._y, 2, 1)
         elif self._dir == 1:
             self._y += 1
+            self._trail.append((self._x, self._y, self._dir))
             self._maze.triggerListeners(self._x, self._y -1, 1, 2)
         elif self._dir == 2:
             self._x -= 1
+            self._trail.append((self._x, self._y, self._dir))
             self._maze.triggerListeners(self._x, self._y, 2, 1)
         else:
             self._y -= 1
+            self._trail.append((self._x, self._y, self._dir))
             self._maze.triggerListeners(self._x, self._y, 1, 2)
     
     def turn_left(self):
         self._dir += 1
         self._dir %= 4
+        self._trail.append((self._x, self._y, self._dir))
         self._maze.triggerListeners(self._x, self._y, 1, 1)
 
     def pick_beeper(self):
@@ -249,6 +279,10 @@ class Maze(Observable):
         ctx.set_line_width(2)
         ctx.stroke()
         ctx.set_font_size(15)
+        for r in self._robots.itervalues():
+            ctx.save()
+            r.paintTrail(ctx)
+            ctx.restore()
         for k, v in self._beepers.iteritems():
             x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
             ctx.set_source_rgb(0.7, 0.7, 1)
@@ -294,6 +328,12 @@ class Maze(Observable):
         return eval(
             "lambda *a, **kw: self.defaultRobot.%s(*a, **kw)" % name,
             {"self": self})
+
+    def runStart(self):
+        for r in self._robots.itervalues():
+            r.runStart()
+        # after deleting ink trails, redraw all
+        self.triggerListeners(0, 0, self._width, self._height)
 
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
@@ -465,6 +505,10 @@ class World(object):
             (self.OnBeeperMenu, menu.Append(wx.ID_ANY, "Set beepers...")),
             (self.OnNewMenu, menu.Append(wx.ID_ANY, "New...")),
         ]
+
+    def runStart(self):
+        print("start")
+        self._maze.runStart()
 
     def OnBeeperMenu(self, e):
         if not self.editable:

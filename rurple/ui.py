@@ -194,6 +194,7 @@ class RurFrame(wx.Frame):
             json.dumps(sr,
                 indent=4, sort_keys = True))
         self._logWindow.clear()
+        self._world.runStart()
     
     # called by cpu
     def done(self, e):

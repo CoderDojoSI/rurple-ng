@@ -38,6 +38,7 @@ Done:
 - facing_north
 - no editing during playback (world or program)
 - disable world menu items during playback
+- ink trails
 
 Still to do:
 
@@ -45,7 +46,6 @@ Still to do:
 
 - add hyperlink to help in about
 - new text for title etc
-- ink trails
 - add real load and save menu items/buttons
 
 - input_int, input_string
