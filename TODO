@@ -2,7 +2,6 @@ Still to do:
 
 - add real load and save menu items/buttons
 
-- style editor and log window properly
 - style exceptions properly
 
 - add menu items that mirror buttons
@@ -65,4 +64,5 @@ Done:
 - new text for title etc
 - highlight exception line
 - log exceptions as well as displaying them
+- style editor and log window properly
 

@@ -24,37 +24,38 @@ class PythonEditor(stc.StyledTextCtrl):
     MARK_RUNNING = 7
 
     _styleSpecs = [
-        # Default
-        (stc.STC_P_DEFAULT, "fore:#000000,face:%(mono)s,size:%(size)d"),
-        # Comments
-        (stc.STC_P_COMMENTLINE, "fore:#009900,face:%(mono)s,size:%(size)d"),
-        # Number
-        (stc.STC_P_NUMBER, "fore:#FF0000,bold,size:%(size)d"),
-        # String
-        (stc.STC_P_STRING, "fore:#660066,face:%(mono)s,size:%(size)d"),
-        # Single quoted string
-        (stc.STC_P_CHARACTER, "fore:#660066,face:%(mono)s,size:%(size)d"),
-        # Keyword
-        (stc.STC_P_WORD, "fore:#336699,bold,face:%(mono)s,size:%(size)d"),
-        # Triple quotes
-        (stc.STC_P_TRIPLE, "fore:#660066,size:%(size)d"),
-        # Triple double quotes
-        (stc.STC_P_TRIPLEDOUBLE, "fore:#660066,size:%(size)d"),
-        # Class name definition
-        (stc.STC_P_CLASSNAME, "fore:#000099,bold,underline,face:%(mono)s,size:%(size)d"),
-        # Function or method name definition
-        (stc.STC_P_DEFNAME, "fore:#3333ff,bold,face:%(mono)s,size:%(size)d"),
-        # Operators
-        (stc.STC_P_OPERATOR, "bold,size:%(size)d"),
-        # Identifiers
-        (stc.STC_P_IDENTIFIER, "fore:#000000,face:%(mono)s,size:%(size)d"),
-        # Comment-blocks
-        (stc.STC_P_COMMENTBLOCK, "fore:#7F7F7F,size:%(size)d"),
-        # End of line where string is not closed
-        (stc.STC_P_STRINGEOL, "fore:#000000,face:%(mono)s,back:#E0C0E0,eol,size:%(size)d"),
+        (stc.STC_P_DEFAULT, 
+            "fore:#000000,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_COMMENTLINE,
+            "fore:#009900,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_NUMBER,
+            "fore:#FF0000,bold,size:%(size)d"),
+        (stc.STC_P_STRING,
+            "fore:#660066,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_CHARACTER, # Single quoted string
+            "fore:#660066,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_WORD, # Keyword
+            "fore:#336699,bold,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_TRIPLE, # Triple quotes
+            "fore:#660066,size:%(size)d"),
+        (stc.STC_P_TRIPLEDOUBLE, # Triple double quotes
+            "fore:#660066,size:%(size)d"),
+        (stc.STC_P_CLASSNAME, # Class name definition
+            "fore:#000099,bold,underline,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_DEFNAME, # Function or method name definition
+            "fore:#3333ff,bold,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_OPERATOR,
+            "bold,size:%(size)d"),
+        (stc.STC_P_IDENTIFIER, 
+            "fore:#000000,face:%(mono)s,size:%(size)d"),
+        (stc.STC_P_COMMENTBLOCK,
+            "fore:#7F7F7F,size:%(size)d"),
+        (stc.STC_P_STRINGEOL, # End of line where string is not closed
+            "fore:#000000,face:%(mono)s,back:#E0C0E0,eol,size:%(size)d"),
         (stc.STC_STYLE_INDENTGUIDE, "fore:#333333"),
-        (stc.STC_STYLE_LINENUMBER, "back:#99AACC,face:%(helv)s,size:%(size2)d")
-    ]    
+        (stc.STC_STYLE_LINENUMBER, 
+            "back:#99AACC,face:%(helv)s,size:%(size2)d"),
+    ]
 
     def __init__(self, *a, **kw):
         stc.StyledTextCtrl.__init__(self, *a, **kw)
@@ -78,9 +79,8 @@ class PythonEditor(stc.StyledTextCtrl):
         self.IndentationGuides = True
         self.BackSpaceUnIndents = True
         self.TabIndents = True
-        self.TabWidth= 4
+        self.TabWidth = 4
         self.UseTabs = False
-        self.ViewWhiteSpace = True
 
         self._mark = None
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPressed)
@@ -96,8 +96,8 @@ class PythonEditor(stc.StyledTextCtrl):
             if chr(self.GetCharAt(self.GetCurrentPos()-1)) == ":":
                 ind += "    "
             self.AddText(ind)
-            return
-        event.Skip(True)
+        else:
+            event.Skip(True)
 
     @property
     def mark(self):
