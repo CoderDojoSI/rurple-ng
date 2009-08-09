@@ -39,6 +39,7 @@ Done:
 - no editing during playback (world or program)
 - disable world menu items during playback
 - ink trails
+- roll_dice
 
 Still to do:
 
@@ -49,7 +50,6 @@ Still to do:
 - add real load and save menu items/buttons
 
 - input_int, input_string
-- roll_dice
 
 - style editor and log window properly
 - style exceptions properly

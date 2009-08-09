@@ -1,6 +1,7 @@
 from __future__ import division, print_function, unicode_literals, with_statement
 
 import math
+import random
 import wx
 import wx.lib.wxcairo
 import cairo
@@ -531,6 +532,12 @@ class World(object):
     def replace(self, w, h):
         self._ui.world = World(self._ui, self._initstate(w, h))
 
+    def _print(self, *a, **kw):
+        print(*a, file=self._ui.log, **kw)
+
+    def _roll_dice(self):
+        return random.randint(1, 6)
+    
     def getGlobals(self, t):
         res = {}
         res.update(dict([
@@ -543,8 +550,8 @@ class World(object):
                 "facing_north",
             ]]))
         res.update({
-            "print": t.proxyFunction(
-                lambda *a, **kw: print(*a, file=self._ui.log, **kw))
+            "print": t.proxyFunction(self._print),
+            "roll_dice": t.proxyFunction(self._roll_dice),
         })
         return res
 
