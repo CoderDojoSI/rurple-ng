@@ -189,7 +189,18 @@ class RurFrame(wx.Frame):
         self._world.newDialog()
         
     def OnWorldOpen(self, e):
-        pass
+        dlg = wx.FileDialog(self,
+            message="Open world...",
+            wildcard="Worlds (*.wld)|*.wld",
+            style = wx.OPEN | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        with open(dlg.GetPath()) as f:
+            w = json.load(f)
+        dlg.Destroy()
+        self._cpu.stop()
+        self.world = maze.World(self, w)
+        # FIXME: reset back to this
         
     def OnWorldSave(self, e):
         pass
