@@ -302,12 +302,14 @@ class EditableMazeWindow(MazeWindow):
             self._maze.toggleWall(*near)
         else:
             x, y = near
-            menu = wx.Menu()
-            for i in range(10):
-                self.Bind(wx.EVT_MENU, 
-                    self._beeperSetter(x, y, i),
-                    menu.Append(wx.ID_ANY, str(i)))
-            self.PopupMenu(menu, e.GetPosition())
+            if (x >= 0 and x < self._maze._width 
+                and y >= 0 and y < self._maze._height):
+                menu = wx.Menu()
+                for i in range(10):
+                    self.Bind(wx.EVT_MENU, 
+                        self._beeperSetter(x, y, i),
+                        menu.Append(wx.ID_ANY, str(i)))
+                self.PopupMenu(menu, e.GetPosition())
 
 class BeeperDialog(wx.Dialog):
     def __init__(self, *a, **kw):
