@@ -1,11 +1,10 @@
 Still to do:
 
 - add real load and save menu items/buttons
-
-- style exceptions properly
-
 - add menu items that mirror buttons
 - add accelerators for menu items
+
+- style exceptions properly
 
 - input_int, input_string
 

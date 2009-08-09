@@ -504,7 +504,6 @@ class World(object):
     def menu(self, menu):
         return [
             (self.OnBeeperMenu, menu.Append(wx.ID_ANY, "Set beepers...")),
-            (self.OnNewMenu, menu.Append(wx.ID_ANY, "New...")),
         ]
 
     def runStart(self):
@@ -519,7 +518,7 @@ class World(object):
         d = BeeperDialog(self._ui, maze=self._maze)
         d.ShowModal()
 
-    def OnNewMenu(self, e):
+    def newDialog(self):
         if not self.editable:
             wx.MessageDialog(self._ui, caption="Program running",
                 message = "Cannot edit world while program is running",

@@ -66,14 +66,34 @@ class RurFrame(wx.Frame):
         self._statusBar.SetStatusWidths([-1,-1])
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
-        self.Bind(wx.EVT_MENU, self.OnAbout,
-            filemenu.Append(wx.ID_ABOUT, "&About..."," Information about this program"))
+        self.Bind(wx.EVT_MENU, self.OnNew,
+            filemenu.Append(wx.ID_NEW,"&New", "Start a new program"))
+        self.Bind(wx.EVT_MENU, self.OnOpen,
+            filemenu.Append(wx.ID_OPEN,"&Open...", "Open a program"))
+        self.Bind(wx.EVT_MENU, self.OnSave,
+            filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
+        self.Bind(wx.EVT_MENU, self.OnSaveAs,
+            filemenu.Append(wx.ID_SAVEAS,"Save &As...", "Save the current program with a different filename"))
         filemenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnExit,
-            filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
+            filemenu.Append(wx.ID_EXIT,"E&xit","Close RUR-PLE"))
         menuBar.Append(filemenu,"&File")
         self._worldMenu = wx.Menu()
+        self.Bind(wx.EVT_MENU, self.OnWorldNew,
+            self._worldMenu.Append(wx.ID_ANY,"&New...", "Start a new world"))
+        self.Bind(wx.EVT_MENU, self.OnWorldOpen,
+            self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
+        self.Bind(wx.EVT_MENU, self.OnWorldSave,
+            self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
+        self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
+            self._worldMenu.Append(wx.ID_ANY,"Save &As...", "Save the current world with a different filename"))
+        self._worldMenu.AppendSeparator()
+        self._worldMenuItems = self._worldMenu.MenuItemCount
         menuBar.Append(self._worldMenu,"&World")
+        helpmenu = wx.Menu()
+        self.Bind(wx.EVT_MENU, self.OnAbout,
+            helpmenu.Append(wx.ID_ABOUT, "&About..."," Information about RUR-PLE"))
+        menuBar.Append(helpmenu,"&Help")
         self.SetMenuBar(menuBar)
         self._toolbar = self.CreateToolBar()
         tsize = (24,24)
@@ -105,10 +125,34 @@ class RurFrame(wx.Frame):
     def _reset(self):
         self.world = maze.World(self, 
             json.loads(self._dotPath.read("world.wld")))
+
+    def OnNew(self, e):
+        pass
+        
+    def OnOpen(self, e):
+        pass
+        
+    def OnSave(self, e):
+        pass
+    
+    def OnSaveAs(self, e):
+        pass
+        
+    def OnWorldNew(self, e):
+        self._world.newDialog()
+        
+    def OnWorldOpen(self, e):
+        pass
+        
+    def OnWorldSave(self, e):
+        pass
+    
+    def OnWorldSaveAs(self, e):
+        pass
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, "RUR-PLE 2, A Python Learning Environment \n"
-                            " by André Roberge and Paul Crowley","About RUR-PLE 2", wx.OK)
+                            "by André Roberge and Paul Crowley","About RUR-PLE 2", wx.OK)
         d.ShowModal()
         d.Destroy()
     
@@ -149,7 +193,7 @@ class RurFrame(wx.Frame):
         sps.Add(self._worldWindow)
         self._worldParent.SetSizer(sps)
         while True:
-            mi = self._worldMenu.FindItemByPosition(0)
+            mi = self._worldMenu.FindItemByPosition(self._worldMenuItems)
             if mi is None:
                 break
             self._worldMenu.Delete(mi.Id)
