@@ -50,9 +50,12 @@ class RurFrame(wx.Frame):
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnNew,
-            filemenu.Append(wx.ID_NEW,"&New", "Start a new program"))
+            filemenu.Append(wx.ID_NEW, "&New", "Start a new program"))
         self.Bind(wx.EVT_MENU, self.OnOpen,
-            filemenu.Append(wx.ID_OPEN,"&Open...", "Open a program"))
+            filemenu.Append(wx.ID_OPEN, "&Open...", "Open a program"))
+        self.Bind(wx.EVT_MENU, self.OnOpenSample,
+            filemenu.Append(wx.ID_ANY, "&Open sample...", 
+                "Open a sample program"))
         #self.Bind(wx.EVT_MENU, self.OnSave,
         #    filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
         self.Bind(wx.EVT_MENU, self.OnSaveAs,
@@ -63,13 +66,15 @@ class RurFrame(wx.Frame):
         menuBar.Append(filemenu,"&File")
         runmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnPlay,
-            runmenu.Append(wx.ID_ANY,"&Play", "Start the program running"))
+            runmenu.Append(wx.ID_ANY,"&Play", 
+                "Start the program running"))
         self.Bind(wx.EVT_MENU, self.OnPause,
             runmenu.Append(wx.ID_ANY,"P&ause", "Pause the program"))
         self.Bind(wx.EVT_MENU, self.OnStop,
             runmenu.Append(wx.ID_ANY,"S&top", "Stop the program"))
         self.Bind(wx.EVT_MENU, self.OnStep,
-            runmenu.Append(wx.ID_ANY,"&Step", "Step one line of the program"))
+            runmenu.Append(wx.ID_ANY,"&Step", 
+                "Step one line of the program"))
         menuBar.Append(runmenu,"&Run")
         
         self._worldMenu = wx.Menu()
@@ -77,6 +82,9 @@ class RurFrame(wx.Frame):
             self._worldMenu.Append(wx.ID_ANY,"&New...", "Start a new world"))
         self.Bind(wx.EVT_MENU, self.OnWorldOpen,
             self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
+        self.Bind(wx.EVT_MENU, self.OnWorldOpenSample,
+            self._worldMenu.Append(wx.ID_ANY, "&Open sample...",
+                "Open a sample world"))
         #self.Bind(wx.EVT_MENU, self.OnWorldSave,
         #    self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
@@ -162,6 +170,17 @@ class RurFrame(wx.Frame):
         self._openProgram(dlg.GetPath())
         dlg.Destroy()
         
+    def OnOpenSample(self, e):
+        dlg = wx.FileDialog(self,
+            message="Open sample program...",
+            wildcard="RUR programs (*.rur)|*.rur",
+            defaultDir = os.path.join(self._sharePath, "programs"),
+            style = wx.OPEN)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        self._openProgram(dlg.GetPath())
+        dlg.Destroy()
+        
     def OnSave(self, e):
         pass
     
@@ -198,6 +217,18 @@ class RurFrame(wx.Frame):
             message="Open world...",
             wildcard="Worlds (*.wld)|*.wld",
             style = wx.OPEN | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        self._openWorld(dlg.GetPath())
+        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
+        dlg.Destroy()
+        
+    def OnWorldOpenSample(self, e):
+        dlg = wx.FileDialog(self,
+            message="Open sample world...",
+            wildcard="Worlds (*.wld)|*.wld",
+            defaultDir = os.path.join(self._sharePath, "worlds"),
+            style = wx.OPEN)
         if dlg.ShowModal() != wx.ID_OK:
             return
         self._openWorld(dlg.GetPath())
