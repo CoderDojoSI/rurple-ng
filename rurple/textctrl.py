@@ -52,12 +52,14 @@ class PythonEditor(stc.StyledTextCtrl):
         (stc.STC_P_COMMENTBLOCK, "fore:#7F7F7F,size:%(size)d"),
         # End of line where string is not closed
         (stc.STC_P_STRINGEOL, "fore:#000000,face:%(mono)s,back:#E0C0E0,eol,size:%(size)d"),
-        (stc.STC_STYLE_INDENTGUIDE, "fore:#333333")
+        (stc.STC_STYLE_INDENTGUIDE, "fore:#333333"),
+        (stc.STC_STYLE_LINENUMBER, "back:#99AACC,face:%(helv)s,size:%(size2)d")
     ]    
 
     def __init__(self, *a, **kw):
         stc.StyledTextCtrl.__init__(self, *a, **kw)
-        self.MarkerDefine(self.MARK_RUNNING, stc.STC_MARK_BACKGROUND, 'white', 'wheat')
+        self.MarkerDefine(self.MARK_RUNNING,
+            stc.STC_MARK_BACKGROUND, 'white', 'wheat')
         self.UseHorizontalScrollBar = False
         self.Margins = (2, 2)
         self.SetMarginType(1, stc.STC_MARGIN_NUMBER)
@@ -66,7 +68,7 @@ class PythonEditor(stc.StyledTextCtrl):
         self.SetProperty("fold", "1")
         self.SetProperty("tab.timmy.whinge.level", "1")
         for styleNum, spec in self._styleSpecs:
-            self.StyleSetSpec(styleNum, spec),
+            self.StyleSetSpec(styleNum, spec % faces),
         # Python styles ----------------------------------------
         self.SetLexer(stc.STC_LEX_PYTHON)
         kl = set(keyword.kwlist) | set(['None', 'True', 'False'])
@@ -115,7 +117,7 @@ class LogWindow(wx.stc.StyledTextCtrl):
         self.ReadOnly = True
         self.UseHorizontalScrollBar = False
         self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
-            "face:%(mono)s,size:%(size)d"),
+            "face:%(mono)s,size:%(size)d" % faces)
 
     def write(self, s):
         self.ReadOnly = False
