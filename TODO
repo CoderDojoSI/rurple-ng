@@ -1,7 +1,5 @@
 Still to do:
 
-- arrow keys to move robot
-
 - input_int, input_string
 
 - add hyperlink to help in about
@@ -69,4 +67,5 @@ Done:
 - add open world menu item
 - same for worlds
 - add open example menu items
+- arrow keys to move robot
 

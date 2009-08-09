@@ -361,7 +361,9 @@ class MazeWindow(wx.PyControl):
 class EditableMazeWindow(MazeWindow):
     def __init__(self, *args, **kw):
         MazeWindow.__init__(self, *args, **kw)
-        wx.EVT_LEFT_DOWN(self, self.OnClick)
+        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
+        self.Bind(wx.EVT_CHAR, self.OnKey, self)
+        self.SetFocus()
 
     def _beeperSetter(self, x, y, i):
         def f(e):
@@ -384,6 +386,19 @@ class EditableMazeWindow(MazeWindow):
                         self._beeperSetter(x, y, i),
                         menu.Append(wx.ID_ANY, str(i)))
                 self.PopupMenu(menu, e.GetPosition())
+
+    def OnKey(self, e):
+        code = e.GetKeyCode()
+        if code == wx.WXK_UP:
+            try:
+                self._world._maze.defaultRobot.move()
+            except world.WorldException, e:
+                self._world.handleException(self, e)
+        elif code == wx.WXK_LEFT:
+            try:
+                self._world._maze.defaultRobot.turn_left()
+            except world.WorldException, e:
+                self._world.handleException(self, e)
 
 class BeeperDialog(wx.Dialog):
     def __init__(self, *a, **kw):
