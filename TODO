@@ -30,6 +30,8 @@ Done:
 - add World menu with set beepers option
 - Move json into ui
 - new world dialog
+- start with walls on outside
+- only internal walls editable
 
 Still to do:
 
@@ -37,8 +39,6 @@ Still to do:
 
 - no editing during playback (world or program)
 - disable world menu items during playback
-- start with walls on outside
-- only internal walls editable
 - only internal beepers editable
 - add hyperlink to help in about
 - new text for title etc

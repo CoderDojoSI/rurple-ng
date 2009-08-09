@@ -212,10 +212,10 @@ class Maze(Observable):
             else:
                ctx.line_to(*self.coordinates(x+1, y))
         ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(10)
+        ctx.set_line_width(6)
         ctx.stroke_preserve()    
         ctx.set_source_rgb(1, 0, 0)
-        ctx.set_line_width(4)
+        ctx.set_line_width(2)
         ctx.stroke()
         ctx.set_font_size(15)
         for k, v in self._beepers.iteritems():
