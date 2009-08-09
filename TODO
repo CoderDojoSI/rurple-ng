@@ -5,7 +5,6 @@ Still to do:
 - add hyperlink to help in about
 - useful status bar info
 
-- add accelerators for run menu items
 - add save (not save as) menu items
 - style exceptions properly
 - make robot look nicer
@@ -68,4 +67,5 @@ Done:
 - same for worlds
 - add open example menu items
 - arrow keys to move robot
+- add accelerators for run menu items
 
