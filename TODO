@@ -1,6 +1,28 @@
+Still to do:
+
+- add real load and save menu items/buttons
+
+- style editor and log window properly
+- style exceptions properly
+
+- add menu items that mirror buttons
+- add accelerators for menu items
+
+- input_int, input_string
+
+- add hyperlink to help in about
+- useful status bar info
+
+- make robot look nicer
+- Windows installer
+
+Enhancements:
+
+- look into using process instead of thread
+- gradual movement
+
 Done:
 
-- automatically start program, to speed debugging
 - switch from thread to threading
 - pass return-callbacks instead of queues
 - cpu tells main thread when it's finished
@@ -43,26 +65,4 @@ Done:
 - new text for title etc
 - highlight exception line
 - log exceptions as well as displaying them
-
-Still to do:
-
-- add hyperlink to help in about
-- add real load and save menu items/buttons
-
-- input_int, input_string
-
-- style editor and log window properly
-- style exceptions properly
-
-- add menu items that mirror buttons
-- add accelerators for menu items
-
-- useful status bar info
-- make robot look nicer
-- Windows installer
-
-Enhancements:
-
-- look into using process instead of thread
-- gradual movement
 
