@@ -135,6 +135,8 @@ class Maze(Observable):
             return x > 0 and y >= 0
 
     def toggleWall(self, x, y, d):
+        if not self.isInterior(x, y, d):
+            return
         self._walls ^= set([(x, y, d)])
         if d == 'h':
             self.triggerListeners(x, y, 1, 0)
