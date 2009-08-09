@@ -1,0 +1,9 @@
+while True:
+    if right_is_clear():
+        turn_left()
+        turn_left()
+        turn_left()
+    else:
+        while not front_is_clear():
+            turn_left()
+    move()
