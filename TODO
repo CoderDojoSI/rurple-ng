@@ -36,13 +36,13 @@ Done:
 - on_beeper, got_beeper
 - front_is_clear, left_is_clear
 - facing_north
+- no editing during playback (world or program)
+- disable world menu items during playback
 
 Still to do:
 
 - useful status bar info
 
-- no editing during playback (world or program)
-- disable world menu items during playback
 - add hyperlink to help in about
 - new text for title etc
 - ink trails

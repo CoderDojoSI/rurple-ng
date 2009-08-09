@@ -121,6 +121,8 @@ class CPU(object):
             self._stopTimer()
     
     def stop(self):
+        if self._state == "stop":
+            return
         self._state = "stop"
         self._stopTimer()
         if self._thread:
@@ -128,6 +130,7 @@ class CPU(object):
             self._thread = None
         self._rcb = None
         self._ui.traceLine(None)
+        self._ui.stopped()
         
     def step(self):
         self.pause()

@@ -100,7 +100,7 @@ class RurFrame(wx.Frame):
         self._toolbar = self.CreateToolBar()
         tsize = (24,24)
         self._toolbar.SetToolBitmapSize(tsize)
-        self.Bind(wx.EVT_TOOL, lambda e: self.reset(),
+        self.Bind(wx.EVT_TOOL, lambda e: self._reset(),
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
                 toBitmap('reset_world')))
         self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
@@ -122,9 +122,9 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
-        self.reset()
+        self._reset()
 
-    def reset(self):
+    def _reset(self):
         self.world = maze.World(self, 
             json.loads(self._dotPath.read("world.wld")))
         
@@ -146,14 +146,17 @@ class RurFrame(wx.Frame):
         #print(e, dir(e))
         self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
 
+    # read by world
     @property
     def log(self):
         return self._logWindow
 
+    # read by cpu
     @property
     def program(self):
         return self._stc.GetText()
 
+    # read by cpu
     @property
     def world(self):
         return self._world
@@ -177,10 +180,13 @@ class RurFrame(wx.Frame):
             self.Bind(wx.EVT_MENU, b, e)
         #sps.SetSizeHints(sp)
 
+    # called by cpu
     def traceLine(self, line):
         self._stc.mark(line)
     
+    # called by cpu
     def starting(self):
+        self._world.editable = False
         self._dotPath.write("program.rur", self.program)
         sr = self.world.staterep
         self._dotPath.write("world.wld", 
@@ -188,6 +194,7 @@ class RurFrame(wx.Frame):
                 indent=4, sort_keys = True))
         self._logWindow.clear()
     
+    # called by cpu
     def done(self, e):
         #print("Done, exception:", e)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
@@ -203,6 +210,12 @@ class RurFrame(wx.Frame):
                 caption = "Error running your program",
                 style=wx.ICON_EXCLAMATION | wx.OK)
             d.ShowModal()
+        self._world.editable = True
+
+    # called by cpu
+    def stopped(self):
+        self._world.editable = True
+        
 
 class App(wx.App):
     def OnInit(self):

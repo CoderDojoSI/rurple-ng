@@ -7,6 +7,10 @@ import cairo
 
 from rurple import world
 
+# FIXME: the Observer pattern is overkill here, and
+# the separation between Maze and World probably not
+# useful or well thought out.
+
 class Observable(object):
     def __init__(self):
         self._listeners = set()
@@ -293,12 +297,12 @@ class Maze(Observable):
 
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
-        self._maze = kw['maze']
-        del kw['maze']
+        self._world = kw['world']
+        del kw['world']
         wx.Window.__init__(self, *args, **kw)
-        self.SetBestSize(self._maze.size())
+        self.SetBestSize(self._world._maze.size())
         wx.EVT_PAINT(self, self.OnPaint)
-        self._maze.addListener(self.onMazeChange)
+        self._world._maze.addListener(self.onMazeChange)
     
     def OnPaint(self, e):
         self.paint(self.GetUpdateRegion().GetBox())
@@ -307,11 +311,11 @@ class MazeWindow(wx.PyControl):
         ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
         ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
         ctx.clip()
-        self._maze.paint(ctx)
+        self._world._maze.paint(ctx)
                 
     def onMazeChange(self, maze, *args, **kw):
         ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
-        self._maze.paintSquares(ctx, *args, **kw)
+        self._world._maze.paintSquares(ctx, *args, **kw)
 
 class EditableMazeWindow(MazeWindow):
     def __init__(self, *args, **kw):
@@ -320,17 +324,19 @@ class EditableMazeWindow(MazeWindow):
 
     def _beeperSetter(self, x, y, i):
         def f(e):
-            self._maze.setBeepers(x, y, i)
+            self._world._maze.setBeepers(x, y, i)
         return f
 
     def OnClick(self, e):
-        near = self._maze.nearest(e.GetX(), e.GetY())
+        if not self._world.editable:
+            return
+        near = self._world._maze.nearest(e.GetX(), e.GetY())
         if len(near) == 3:
-            self._maze.toggleWall(*near)
+            self._world._maze.toggleWall(*near)
         else:
             x, y = near
-            if (x >= 0 and x < self._maze._width 
-                and y >= 0 and y < self._maze._height):
+            if (x >= 0 and x < self._world._maze._width 
+                and y >= 0 and y < self._world._maze._height):
                 menu = wx.Menu()
                 for i in range(10):
                     self.Bind(wx.EVT_MENU, 
@@ -423,8 +429,9 @@ class NewDialog(wx.Dialog):
         sizer.Fit(self)
     
     def OnOK(self, e):
-        self._world.replace(self._w.Value, self._h.Value)
-        e.Skip()
+        if self._world.editable:
+            self._world.replace(self._w.Value, self._h.Value)
+            e.Skip()
 
 class World(object):
     def __init__(self, ui, state=None):
@@ -432,6 +439,8 @@ class World(object):
             state = self._initstate(10, 10)
         self._ui = ui
         self._maze = Maze(state)
+        # cheat - use a var instead of a property
+        self.editable = True
 
     def _initstate(self, w, h):
         return {
@@ -449,7 +458,7 @@ class World(object):
         return self._maze.staterep 
         
     def makeWindow(self, parent):
-        return EditableMazeWindow(parent, maze=self._maze)
+        return EditableMazeWindow(parent, world=self)
 
     def menu(self, menu):
         return [
@@ -458,10 +467,20 @@ class World(object):
         ]
 
     def OnBeeperMenu(self, e):
+        if not self.editable:
+            wx.MessageDialog(self._ui, caption="Program running",
+                message = "Cannot edit world while program is running",
+                style=wx.ICON_ERROR | wx.OK).ShowModal()
+            return
         d = BeeperDialog(self._ui, maze=self._maze)
         d.ShowModal()
 
     def OnNewMenu(self, e):
+        if not self.editable:
+            wx.MessageDialog(self._ui, caption="Program running",
+                message = "Cannot edit world while program is running",
+                style=wx.ICON_ERROR | wx.OK).ShowModal()
+            return
         d = NewDialog(self._ui, world=self)
         d.ShowModal()
 
