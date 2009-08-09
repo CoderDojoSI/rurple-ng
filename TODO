@@ -1,16 +1,20 @@
 Still to do:
 
-- add real load and save menu items/buttons
-- add menu items that mirror buttons
-- add accelerators for menu items
+- add open example menu item
+- add save as menu item
+- add save menu item
+- add open world menu item
+- same for worlds
+- add accelerators for run menu items
 
-- style exceptions properly
+- arrow keys to move robot
 
 - input_int, input_string
 
 - add hyperlink to help in about
 - useful status bar info
 
+- style exceptions properly
 - make robot look nicer
 - Windows installer
 
@@ -64,4 +68,5 @@ Done:
 - highlight exception line
 - log exceptions as well as displaying them
 - style editor and log window properly
+- add menu items that mirror buttons
 

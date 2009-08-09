@@ -68,8 +68,8 @@ class RurFrame(wx.Frame):
             filemenu.Append(wx.ID_NEW,"&New", "Start a new program"))
         self.Bind(wx.EVT_MENU, self.OnOpen,
             filemenu.Append(wx.ID_OPEN,"&Open...", "Open a program"))
-        self.Bind(wx.EVT_MENU, self.OnSave,
-            filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
+        #self.Bind(wx.EVT_MENU, self.OnSave,
+        #    filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
         self.Bind(wx.EVT_MENU, self.OnSaveAs,
             filemenu.Append(wx.ID_SAVEAS,"Save &As...", "Save the current program with a different filename"))
         filemenu.AppendSeparator()
@@ -92,8 +92,8 @@ class RurFrame(wx.Frame):
             self._worldMenu.Append(wx.ID_ANY,"&New...", "Start a new world"))
         self.Bind(wx.EVT_MENU, self.OnWorldOpen,
             self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
-        self.Bind(wx.EVT_MENU, self.OnWorldSave,
-            self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
+        #self.Bind(wx.EVT_MENU, self.OnWorldSave,
+        #    self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
             self._worldMenu.Append(wx.ID_ANY,"Save &As...", "Save the current world with a different filename"))
         self._worldMenu.AppendSeparator()
@@ -140,16 +140,35 @@ class RurFrame(wx.Frame):
             json.loads(self._dotPath.read("world.wld")))
 
     def OnNew(self, e):
-        pass
-        
+        self._cpu.stop()
+        self._editor.Text = ""
+
     def OnOpen(self, e):
-        pass
+        dlg = wx.FileDialog(self,
+            message="Open program...",
+            wildcard="RUR programs (*.rur)|*.rur",
+            style = wx.OPEN | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        with open(dlg.GetPath()) as f:
+            p = f.read()
+        dlg.Destroy()
+        self._cpu.stop()
+        self._editor.Text = p
         
     def OnSave(self, e):
         pass
     
     def OnSaveAs(self, e):
-        pass
+        dlg = wx.FileDialog(self,
+            message="Save program as...",
+            wildcard="RUR programs (*.rur)|*.rur",
+            style = wx.SAVE | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        with open(dlg.GetPath(), "w") as f:
+            p = f.write(self._editor.Text)
+        dlg.Destroy()
         
     def OnExit(self, e):
         self.Close(True)
