@@ -51,12 +51,12 @@ class RurFrame(wx.Frame):
         self._dotPath = DotDir(os.path.expanduser("~/.rurple"))
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
-        self._stc = textctrl.PythonEditor(sash)
-        self._stc.AddText(self._dotPath.read("program.rur", ""))
+        self._editor = textctrl.PythonEditor(sash)
+        self._editor.Text = self._dotPath.read("program.rur", "")
         hsash = wx.SplitterWindow(sash)
         self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(hsash)
         self._worldWindow = None
-        sash.SplitVertically(self._stc, hsash)
+        sash.SplitVertically(self._editor, hsash)
         self._logWindow = textctrl.LogWindow(hsash)
         hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
@@ -131,7 +131,7 @@ class RurFrame(wx.Frame):
     # read by cpu
     @property
     def program(self):
-        return self._stc.GetText()
+        return self._editor.Text
 
     # read by cpu
     @property
@@ -159,12 +159,12 @@ class RurFrame(wx.Frame):
 
     # called by cpu
     def traceLine(self, line):
-        self._stc.mark = line
+        self._editor.mark = line
     
     # called by cpu
     def starting(self):
         self._world.editable = False
-        self._stc.ReadOnly = True
+        self._editor.ReadOnly = True
         self._dotPath.write("program.rur", self.program)
         sr = self.world.staterep
         self._dotPath.write("world.wld", 
@@ -184,16 +184,16 @@ class RurFrame(wx.Frame):
     # called by cpu
     def failed(self, e):
         if isinstance(e, world.WorldException):
-            print("Exception on line %s:" % self._stc._mark, 
+            print("Exception on line %s:" % self._editor._mark, 
                 e, file=self._logWindow)
             self._world.handleException(self, e)
         else:
             # exceptions are where isinstance is allowed
             if (isinstance(e, SyntaxError) 
-                and self._stc.mark is None
+                and self._editor.mark is None
                 and e.filename == "<string>"):
-                self._stc.mark = e.lineno
-            print("Exception on line %s:" % self._stc._mark, 
+                self._editor.mark = e.lineno
+            print("Exception on line %s:" % self._editor._mark, 
                 e, file=self._logWindow)
             d = wx.MessageDialog(self, message=str(e),
                 caption = "Error running your program",
@@ -204,9 +204,9 @@ class RurFrame(wx.Frame):
     # called by cpu
     def stopped(self):
         self._toolbar.ToggleTool(self._stopTool.Id, True)
-        self._stc.mark = None
+        self._editor.mark = None
         self._world.editable = True
-        self._stc.ReadOnly = False
+        self._editor.ReadOnly = False
 
     # called by world
     def setWorldStatus(self, s):   
