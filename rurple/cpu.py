@@ -96,7 +96,10 @@ class CPU(object):
     def done(self, e):
         self._state = "stop"
         self._ui.traceLine(None)
-        self._ui.done(e)
+        if e is None:
+            self._ui.done()
+        else:
+            self._ui.failed(e)
 
     def _start(self):
         world = self._ui.world

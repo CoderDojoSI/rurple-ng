@@ -131,7 +131,7 @@ class RurFrame(wx.Frame):
             json.loads(self._dotPath.read("world.wld")))
         
     def OnAbout(self, e):
-        d = wx.MessageDialog(self, " A Python Learning Environment \n"
+        d = wx.MessageDialog(self, "RUR-PLE 2, A Python Learning Environment \n"
                             " by André Roberge and Paul Crowley","About RUR-PLE 2", wx.OK)
         d.ShowModal()
         d.Destroy()
@@ -199,26 +199,27 @@ class RurFrame(wx.Frame):
         self._world.runStart()
     
     # called by cpu
-    def done(self, e):
-        #print("Done, exception:", e)
-        self._toolbar.ToggleTool(self._stopTool.Id, True)
-        if e is None:
-            d = wx.MessageDialog(self, message="Your program finished",
-                caption = "Program finished",
-                style=wx.ICON_INFORMATION | wx.OK)
-            d.ShowModal()
-        elif isinstance(e, world.WorldException):
+    def done(self):
+        d = wx.MessageDialog(self, message="Your program finished",
+            caption = "Program finished",
+            style=wx.ICON_INFORMATION | wx.OK)
+        d.ShowModal()
+        self.stopped()
+    
+    # called by cpu
+    def failed(self, e):
+        if isinstance(e, world.WorldException):
             self._world.handleException(self, e)
         else: 
             d = wx.MessageDialog(self, message=str(e),
                 caption = "Error running your program",
                 style=wx.ICON_EXCLAMATION | wx.OK)
             d.ShowModal()
-        self._world.editable = True
-        self._stc.ReadOnly = False
+        self.stopped()
 
     # called by cpu
     def stopped(self):
+        self._toolbar.ToggleTool(self._stopTool.Id, True)
         self._world.editable = True
         self._stc.ReadOnly = False
 
@@ -228,7 +229,7 @@ class RurFrame(wx.Frame):
 
 class App(wx.App):
     def OnInit(self):
-        frame = RurFrame(None, title="RUR-PLE 2", size=(900,1000))
+        frame = RurFrame(None, title="RUR-PLE", size=(900,1000))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True

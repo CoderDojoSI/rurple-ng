@@ -40,13 +40,12 @@ Done:
 - disable world menu items during playback
 - ink trails
 - roll_dice
+- new text for title etc
 
 Still to do:
 
-- useful status bar info
 
 - add hyperlink to help in about
-- new text for title etc
 - add real load and save menu items/buttons
 
 - input_int, input_string
@@ -60,6 +59,7 @@ Still to do:
 - add menu items that mirror buttons
 - add accelerators for menu items
 
+- useful status bar info
 - Windows installer
 
 Enhancements:
