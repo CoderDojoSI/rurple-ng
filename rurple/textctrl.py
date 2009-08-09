@@ -28,10 +28,13 @@ class PythonEditor(wx.stc.StyledTextCtrl):
 class LogWindow(wx.stc.StyledTextCtrl):
     def __init__(self, *a, **kw):
         wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
+        self.ReadOnly = True
         self.UseHorizontalScrollBar = False
 
     def write(self, s):
+        self.ReadOnly = False
         self.AddText(s)
+        self.ReadOnly = True
         self.EnsureCaretVisible()
         
     def clear(self):
