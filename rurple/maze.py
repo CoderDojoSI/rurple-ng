@@ -47,24 +47,18 @@ class Robot(object):
         ctx.stroke()
     
     def move(self):
+        if not self._maze.isPassable(self._x, self._y, self._dir):
+            raise world.WorldException("Hit a wall")
         if self._dir == 0:
-            if (self._x +1, self._y, 'v') in self._maze._walls:
-                raise world.WorldException("Hit a wall")
             self._x += 1
             self._maze.triggerListeners(self._x -1, self._y, 2, 1)
         elif self._dir == 1:
-            if (self._x, self._y +1, 'h') in self._maze._walls:
-                raise world.WorldException("Hit a wall")
             self._y += 1
             self._maze.triggerListeners(self._x, self._y -1, 1, 2)
         elif self._dir == 2:
-            if (self._x, self._y, 'v') in self._maze._walls:
-                raise world.WorldException("Hit a wall")
             self._x -= 1
             self._maze.triggerListeners(self._x, self._y, 2, 1)
         else:
-            if (self._x, self._y, 'h') in self._maze._walls:
-                raise world.WorldException("Hit a wall")
             self._y -= 1
             self._maze.triggerListeners(self._x, self._y, 1, 2)
     
@@ -133,6 +127,16 @@ class Maze(Observable):
             return x >= 0 and y > 0
         elif d == 'v':
             return x > 0 and y >= 0
+
+    def isPassable(self, x, y, d):
+        if d == 0:
+            return (x +1, y, 'v') not in self._walls
+        elif d == 1:
+            return (x, y +1, 'h') not in self._walls
+        elif d == 2:
+            return (x, y, 'v') not in self._walls
+        else:
+            return (x, y, 'h') not in self._walls
 
     def toggleWall(self, x, y, d):
         if not self.isInterior(x, y, d):
