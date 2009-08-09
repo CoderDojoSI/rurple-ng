@@ -7,10 +7,9 @@ import os
 import os.path
 import json
 import wx
-from wx.lib.scrolledpanel import ScrolledPanel
-import wx.stc
+import wx.lib.scrolledpanel
 
-from rurple import maze, cpu, world
+from rurple import maze, cpu, world, textctrl
 
 def toBitmap(name):
     return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
@@ -34,39 +33,6 @@ class DotDir(object):
         with open(f, "w") as h:
             h.write(text)
 
-class PythonEditor(wx.stc.StyledTextCtrl):
-    MARK_RUNNING = 7
-
-    def __init__(self, *a, **kw):
-        wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
-        self.MarkerDefine(self.MARK_RUNNING, wx.stc.STC_MARK_BACKGROUND, 'white', 'wheat')
-        self.UseHorizontalScrollBar = False
-        self._mark = None
-
-    @property
-    def mark(self):
-        return self._mark
-
-    @mark.setter
-    def mark(self, line):
-        if self._mark is not None:
-            self.MarkerDelete(self._mark -1, self.MARK_RUNNING)
-        self._mark = line
-        if self._mark is not None:
-            self.MarkerAdd(self._mark -1, self.MARK_RUNNING)
-
-class LogWindow(wx.stc.StyledTextCtrl):
-    def __init__(self, *a, **kw):
-        wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
-        self.UseHorizontalScrollBar = False
-
-    def write(self, s):
-        self.AddText(s)
-        self.EnsureCaretVisible()
-        
-    def clear(self):
-        self.SetText("")
-
 class LogScale(object):
     def __init__(self, ticks, lo, hi):
         self._lo = math.log(lo)
@@ -85,13 +51,13 @@ class RurFrame(wx.Frame):
         self._dotPath = DotDir(os.path.expanduser("~/.rurple"))
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
-        self._stc = PythonEditor(sash)
+        self._stc = textctrl.PythonEditor(sash)
         self._stc.AddText(self._dotPath.read("program.rur", ""))
         hsash = wx.SplitterWindow(sash)
-        self._worldParent = ScrolledPanel(hsash)
+        self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(hsash)
         self._worldWindow = None
         sash.SplitVertically(self._stc, hsash)
-        self._logWindow = LogWindow(hsash)
+        self._logWindow = textctrl.LogWindow(hsash)
         hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
         
