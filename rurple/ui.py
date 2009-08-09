@@ -40,6 +40,7 @@ class PythonEditor(wx.stc.StyledTextCtrl):
     def __init__(self, *a, **kw):
         wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
         self.MarkerDefine(self.MARK_RUNNING, wx.stc.STC_MARK_BACKGROUND, 'white', 'wheat')
+        self.UseHorizontalScrollBar = False
         self._mark = None
 
     @property
@@ -55,6 +56,10 @@ class PythonEditor(wx.stc.StyledTextCtrl):
             self.MarkerAdd(self._mark -1, self.MARK_RUNNING)
 
 class LogWindow(wx.stc.StyledTextCtrl):
+    def __init__(self, *a, **kw):
+        wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
+        self.UseHorizontalScrollBar = False
+
     def write(self, s):
         self.AddText(s)
         self.EnsureCaretVisible()
