@@ -40,14 +40,19 @@ class PythonEditor(wx.stc.StyledTextCtrl):
     def __init__(self, *a, **kw):
         wx.stc.StyledTextCtrl.__init__(self, *a, **kw)
         self.MarkerDefine(self.MARK_RUNNING, wx.stc.STC_MARK_BACKGROUND, 'white', 'wheat')
-        self._marked = None
+        self._mark = None
 
+    @property
+    def mark(self):
+        return self._mark
+
+    @mark.setter
     def mark(self, line):
-        if self._marked is not None:
-            self.MarkerDelete(self._marked -1, self.MARK_RUNNING)
-        self._marked = line
-        if self._marked is not None:
-            self.MarkerAdd(self._marked -1, self.MARK_RUNNING)
+        if self._mark is not None:
+            self.MarkerDelete(self._mark -1, self.MARK_RUNNING)
+        self._mark = line
+        if self._mark is not None:
+            self.MarkerAdd(self._mark -1, self.MARK_RUNNING)
 
 class LogWindow(wx.stc.StyledTextCtrl):
     def write(self, s):
@@ -145,7 +150,6 @@ class RurFrame(wx.Frame):
         self._cpu.step()
 
     def OnSlide(self, e):
-        #print(e, dir(e))
         self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
 
     # read by world
@@ -184,7 +188,7 @@ class RurFrame(wx.Frame):
 
     # called by cpu
     def traceLine(self, line):
-        self._stc.mark(line)
+        self._stc.mark = line
     
     # called by cpu
     def starting(self):
@@ -207,10 +211,19 @@ class RurFrame(wx.Frame):
         self.stopped()
     
     # called by cpu
-    def failed(self, e, t):
+    def failed(self, e):
         if isinstance(e, world.WorldException):
+            print("Exception on line %s:" % self._stc._mark, 
+                e, file=self._logWindow)
             self._world.handleException(self, e)
-        else: 
+        else:
+            # exceptions are where isinstance is allowed
+            if (isinstance(e, SyntaxError) 
+                and self._stc.mark is None
+                and e.filename == "<string>"):
+                self._stc.mark = e.lineno
+            print("Exception on line %s:" % self._stc._mark, 
+                e, file=self._logWindow)
             d = wx.MessageDialog(self, message=str(e),
                 caption = "Error running your program",
                 style=wx.ICON_EXCLAMATION | wx.OK)
@@ -220,6 +233,7 @@ class RurFrame(wx.Frame):
     # called by cpu
     def stopped(self):
         self._toolbar.ToggleTool(self._stopTool.Id, True)
+        self._stc.mark = None
         self._world.editable = True
         self._stc.ReadOnly = False
 

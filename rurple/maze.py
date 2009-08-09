@@ -508,7 +508,6 @@ class World(object):
         ]
 
     def runStart(self):
-        print("start")
         self._maze.runStart()
 
     def OnBeeperMenu(self, e):

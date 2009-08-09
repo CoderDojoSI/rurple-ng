@@ -41,9 +41,10 @@ Done:
 - ink trails
 - roll_dice
 - new text for title etc
+- highlight exception line
+- log exceptions as well as displaying them
 
 Still to do:
-
 
 - add hyperlink to help in about
 - add real load and save menu items/buttons
@@ -52,14 +53,12 @@ Still to do:
 
 - style editor and log window properly
 - style exceptions properly
-- make robot look nicer
 
-- highlight exception line
-- log exceptions as well as displaying them
 - add menu items that mirror buttons
 - add accelerators for menu items
 
 - useful status bar info
+- make robot look nicer
 - Windows installer
 
 Enhancements:

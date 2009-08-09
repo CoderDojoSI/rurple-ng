@@ -22,8 +22,7 @@ class TraceThread(threading.Thread):
                 exec self._program in self._globals
                 wx.CallAfter(self._cpu.done)
             except Exception, e:
-                t, v, trace = sys.exc_info()
-                wx.CallAfter(self._cpu.failed, e, trace)
+                wx.CallAfter(self._cpu.failed, e)
         finally:
             # not really necessary - thread's done anyway
             sys.settrace(None)
@@ -96,13 +95,11 @@ class CPU(object):
     
     def done(self):
         self._state = "stop"
-        self._ui.traceLine(None)
         self._ui.done()
 
-    def failed(self, e, t):
+    def failed(self, e):
         self._state = "stop"
-        self._ui.traceLine(None)
-        self._ui.failed(e, t)
+        self._ui.failed(e)
 
     def _start(self):
         world = self._ui.world
@@ -135,7 +132,6 @@ class CPU(object):
             self._thread.stop()
             self._thread = None
         self._rcb = None
-        self._ui.traceLine(None)
         self._ui.stopped()
         
     def step(self):

@@ -3,9 +3,11 @@
 import sys
 
 try:
-    raise Exception()
+    exec "\n----\n"
 except Exception, e:
+    print repr(e)
     print dir(e)
+    print e.args
     t, v, trace = sys.exc_info()
     print dir(trace), trace
     
