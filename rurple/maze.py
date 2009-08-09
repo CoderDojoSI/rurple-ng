@@ -388,6 +388,9 @@ class EditableMazeWindow(MazeWindow):
                 self.PopupMenu(menu, e.GetPosition())
 
     def OnKey(self, e):
+        if not self._world.editable:
+            e.Skip()
+            return
         code = e.GetKeyCode()
         if code == wx.WXK_UP:
             try:
