@@ -207,7 +207,7 @@ class RurFrame(wx.Frame):
         self.stopped()
     
     # called by cpu
-    def failed(self, e):
+    def failed(self, e, t):
         if isinstance(e, world.WorldException):
             self._world.handleException(self, e)
         else: 
