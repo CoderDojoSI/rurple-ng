@@ -187,6 +187,7 @@ class RurFrame(wx.Frame):
     # called by cpu
     def starting(self):
         self._world.editable = False
+        self._stc.ReadOnly = True
         self._dotPath.write("program.rur", self.program)
         sr = self.world.staterep
         self._dotPath.write("world.wld", 
@@ -211,10 +212,12 @@ class RurFrame(wx.Frame):
                 style=wx.ICON_EXCLAMATION | wx.OK)
             d.ShowModal()
         self._world.editable = True
+        self._stc.ReadOnly = False
 
     # called by cpu
     def stopped(self):
         self._world.editable = True
+        self._stc.ReadOnly = False
         
 
 class App(wx.App):
