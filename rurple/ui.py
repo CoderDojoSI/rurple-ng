@@ -78,6 +78,17 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnExit,
             filemenu.Append(wx.ID_EXIT,"E&xit","Close RUR-PLE"))
         menuBar.Append(filemenu,"&File")
+        runmenu = wx.Menu()
+        self.Bind(wx.EVT_MENU, self.OnPlay,
+            runmenu.Append(wx.ID_ANY,"&Play", "Start the program running"))
+        self.Bind(wx.EVT_MENU, self.OnPause,
+            runmenu.Append(wx.ID_ANY,"P&ause", "Pause the program"))
+        self.Bind(wx.EVT_MENU, self.OnStop,
+            runmenu.Append(wx.ID_ANY,"S&top", "Stop the program"))
+        self.Bind(wx.EVT_MENU, self.OnStep,
+            runmenu.Append(wx.ID_ANY,"&Step", "Step one line of the program"))
+        menuBar.Append(runmenu,"&Run")
+        
         self._worldMenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnWorldNew,
             self._worldMenu.Append(wx.ID_ANY,"&New...", "Start a new world"))
@@ -103,13 +114,13 @@ class RurFrame(wx.Frame):
                 toBitmap('reset_world')))
         self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
             toBitmap('play'), shortHelp="Play")
-        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.play()), self._playTool)
+        self.Bind(wx.EVT_TOOL, self.OnPlay, self._playTool)
         self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "pause",
             toBitmap('pause'), shortHelp="pause")
-        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.pause()), self._pauseTool)
+        self.Bind(wx.EVT_TOOL, self.OnPause, self._pauseTool)
         self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "stop",
             toBitmap('stop'), shortHelp="stop")
-        self.Bind(wx.EVT_TOOL, (lambda e: self._cpu.stop()), self._stopTool)
+        self.Bind(wx.EVT_TOOL, self.OnStop, self._stopTool)
         self._stepTool = self._toolbar.AddLabelTool(wx.ID_ANY, "step",
             toBitmap('step'), shortHelp="step")
         self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
@@ -138,6 +149,21 @@ class RurFrame(wx.Frame):
     def OnSaveAs(self, e):
         pass
         
+    def OnExit(self, e):
+        self.Close(True)
+
+    def OnPlay(self, e):
+        self._cpu.play()
+    
+    def OnPause(self, e):
+        self._cpu.pause()
+
+    def OnStop(self, e):
+        self._cpu.stop()
+
+    def OnStep(self, e):
+        self._cpu.step()
+
     def OnWorldNew(self, e):
         self._world.newDialog()
         
@@ -156,14 +182,6 @@ class RurFrame(wx.Frame):
         d.ShowModal()
         d.Destroy()
     
-    def OnExit(self, e):
-        self.Close(True)
-
-    def OnStep(self, e):
-        # FIXME: bit inelegant this
-        self._toolbar.ToggleTool(self._pauseTool.Id, True)
-        self._cpu.step()
-
     def OnSlide(self, e):
         self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
 
@@ -216,7 +234,21 @@ class RurFrame(wx.Frame):
                 indent=4, sort_keys = True))
         self._logWindow.clear()
         self._world.runStart()
+
+    # called by cpu
+    def playing(self):    
+        self._toolbar.ToggleTool(self._playTool.Id, True)
+
+    def pausing(self):
+        self._toolbar.ToggleTool(self._pauseTool.Id, True)
     
+    # called by cpu
+    def stopped(self):
+        self._toolbar.ToggleTool(self._stopTool.Id, True)
+        self._editor.mark = None
+        self._world.editable = True
+        self._editor.ReadOnly = False
+
     # called by cpu
     def done(self):
         d = wx.MessageDialog(self, message="Your program finished",
@@ -244,13 +276,6 @@ class RurFrame(wx.Frame):
                 style=wx.ICON_EXCLAMATION | wx.OK)
             d.ShowModal()
         self.stopped()
-
-    # called by cpu
-    def stopped(self):
-        self._toolbar.ToggleTool(self._stopTool.Id, True)
-        self._editor.mark = None
-        self._world.editable = True
-        self._editor.ReadOnly = False
 
     # called by world
     def setWorldStatus(self, s):   

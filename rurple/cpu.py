@@ -110,17 +110,21 @@ class CPU(object):
     def play(self):
         if self._state == "stop":
             self._state = "play"
+            self._ui.playing()
             self._start()
         elif self._state == "pause":
             self._state = "play"
+            self._ui.playing()
             self._release()
     
     def pause(self):
         if self._state == "stop":
             self._state = "pause"
+            self._ui.pausing()
             self._start()
         elif self._state == "play":
             self._state = "pause"
+            self._ui.pausing()
             self._stopTimer()
     
     def stop(self):
