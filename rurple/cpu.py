@@ -66,6 +66,7 @@ class CPU(object):
         self._lineTime = 1000
         self._state = "stop"
         self._timer = None
+        self._thread = None
     
     def setLineTime(self, t):
         self._lineTime = t

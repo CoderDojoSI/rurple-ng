@@ -11,25 +11,6 @@ import wx.lib.scrolledpanel
 
 from rurple import maze, cpu, world, textctrl
 
-class DotDir(object):
-    def __init__(self, path):
-        self._path = path
-    
-    def read(self, name, default=None):
-        f = os.path.join(self._path, name)
-        if os.path.exists(f):
-            with open(f) as h:
-                return h.read()
-        else:
-            return default
-    
-    def write(self, name, text):
-        if not os.path.isdir(self._path):
-            os.mkdir(self._path)
-        f = os.path.join(self._path, name)
-        with open(f, "w") as h:
-            h.write(text)
-
 class LogScale(object):
     def __init__(self, ticks, lo, hi):
         self._lo = math.log(lo)
@@ -45,12 +26,16 @@ class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
         # FIXME: not right for Windows or MacOS X
-        self._dotPath = DotDir(os.path.expanduser("~/.rurple"))
+        self._dotPath = os.path.expanduser("~/.rurple")
+        if not os.path.isdir(self._dotPath):
+            os.mkdir(self._dotPath)
         self._sharePath = "share"
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._editor = textctrl.PythonEditor(sash)
-        self._editor.Text = self._dotPath.read("program.rur", "")
+        dp = os.path.join(self._dotPath, "program.rur")
+        if os.path.exists(dp):
+            self._openProgram(dp)
         hsash = wx.SplitterWindow(sash)
         self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(hsash)
         self._worldWindow = None
@@ -136,12 +121,36 @@ class RurFrame(wx.Frame):
         return wx.Image(f, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
     def _reset(self):
-        self.world = maze.World(self, 
-            json.loads(self._dotPath.read("world.wld")))
+        dw = os.path.join(self._dotPath, "world.wld")
+        if os.path.exists(dw):
+            self._openWorld(dw)
+        else:
+            self.world = maze.World(self)
 
     def OnNew(self, e):
         self._cpu.stop()
         self._editor.Text = ""
+
+    def _openProgram(self, fn):
+        with open(fn) as f:
+            p = f.read()
+        self._cpu.stop()
+        self._editor.Text = p
+
+    def _saveProgram(self, fn):
+        with open(fn, "w") as f:
+            f.write(self._editor.Text)
+
+    def _openWorld(self, fn):
+        with open(fn) as f:
+            w = json.load(f)
+        self._cpu.stop()
+        self.world = maze.World(self, w)
+
+    def _saveWorld(self, fn):
+        with open(fn, "w") as f:
+            json.dump(self.world.staterep, f,
+                indent=4, sort_keys = True)
 
     def OnOpen(self, e):
         dlg = wx.FileDialog(self,
@@ -150,11 +159,8 @@ class RurFrame(wx.Frame):
             style = wx.OPEN | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        with open(dlg.GetPath()) as f:
-            p = f.read()
+        self._openProgram(dlg.GetPath())
         dlg.Destroy()
-        self._cpu.stop()
-        self._editor.Text = p
         
     def OnSave(self, e):
         pass
@@ -166,8 +172,7 @@ class RurFrame(wx.Frame):
             style = wx.SAVE | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        with open(dlg.GetPath(), "w") as f:
-            p = f.write(self._editor.Text)
+        self._saveProgram(dlg.GetPath())
         dlg.Destroy()
         
     def OnExit(self, e):
@@ -195,18 +200,22 @@ class RurFrame(wx.Frame):
             style = wx.OPEN | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        with open(dlg.GetPath()) as f:
-            w = json.load(f)
+        self._openWorld(dlg.GetPath())
+        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         dlg.Destroy()
-        self._cpu.stop()
-        self.world = maze.World(self, w)
-        # FIXME: reset back to this
         
     def OnWorldSave(self, e):
         pass
     
     def OnWorldSaveAs(self, e):
-        pass
+        dlg = wx.FileDialog(self,
+            message="Save world as...",
+            wildcard="Worlds (*.wld)|*.wld",
+            style = wx.SAVE | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        self._saveWorld(dlg.GetPath())
+        dlg.Destroy()
         
     def OnAbout(self, e):
         d = wx.MessageDialog(self, "RUR-PLE 2, A Python Learning Environment \n"
@@ -259,11 +268,8 @@ class RurFrame(wx.Frame):
     def starting(self):
         self._world.editable = False
         self._editor.ReadOnly = True
-        self._dotPath.write("program.rur", self.program)
-        sr = self.world.staterep
-        self._dotPath.write("world.wld", 
-            json.dumps(sr,
-                indent=4, sort_keys = True))
+        self._saveProgram(os.path.join(self._dotPath, "program.rur"))
+        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         self._logWindow.clear()
         self._world.runStart()
 
