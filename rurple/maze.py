@@ -112,12 +112,27 @@ class Maze(Observable):
         self._offset = 20
         self._width = state['width']
         self._height = state['height']
-        self._walls = set(tuple(w) for w in state['walls'])
+        self._walls = (
+            set((x, 0, 'h') for x in range(self._width))
+            | set((x, self._height, 'h') for x in range(self._width))
+            | set((0, y, 'v') for y in range(self._height))
+            | set((self._width, y, 'v') for y in range(self._height))
+            | set(
+                tuple(w) for w in state['walls']
+                if self.isInterior(*w)))
         self._beepers = dict(
             (tuple(k), v) for k, v in state['beepers'])
         self._robots = {}
         for r in state['robots']:
             Robot(self, r)
+    
+    def isInterior(self, x, y, d):
+        if x >= self._width or y >= self._height:
+            return False
+        if d == 'h':
+            return x >= 0 and y > 0
+        elif d == 'v':
+            return x > 0 and y >= 0
 
     def toggleWall(self, x, y, d):
         self._walls ^= set([(x, y, d)])
