@@ -1,0 +1,11 @@
+#!/usr/bin/python
+
+import sys
+
+try:
+    raise Exception()
+except Exception, e:
+    print dir(e)
+    t, v, trace = sys.exc_info()
+    print dir(trace), trace
+    
