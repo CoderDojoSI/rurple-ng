@@ -254,7 +254,7 @@ class Maze(Observable):
         return {
             "width": self._width,
             "height": self._height,
-            "walls": list(self._walls),
+            "walls": list(w for w in self._walls if self.isInterior(*w)),
             "beepers": [(k, v) for k, v in self._beepers.iteritems()],
             "robots": [v.staterep for v in self._robots.itervalues()],
         }
