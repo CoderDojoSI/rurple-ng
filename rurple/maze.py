@@ -297,12 +297,22 @@ class BeeperDialog(wx.Dialog):
         self._maze = kw['maze']
         del kw['maze']
         wx.Dialog.__init__(self, *a, **kw)
+
         sizer = wx.BoxSizer(wx.VERTICAL)
+
         label = wx.StaticText(self, wx.ID_ANY, "Beepers for robot to start with")
         sizer.Add(label, 0, wx.ALL, 5)
+
         self._spin = wx.SpinCtrl(self,
             initial=self._maze.defaultRobot.beepers)
         sizer.Add(self._spin, 0, wx.ALL, 5)
+
+        # This line doesn't grow horizontally.  Who knows why?
+        line = wx.StaticLine(self, wx.ID_ANY,
+            size=(1,-1), style=wx.LI_HORIZONTAL)
+        sizer.Add(line, 0, 
+            wx.GROW|wx.ALIGN_CENTER_VERTICAL, 5)
+        
         btnsizer = wx.StdDialogButtonSizer()
                 
         btn = wx.Button(self, wx.ID_OK)
@@ -323,21 +333,71 @@ class BeeperDialog(wx.Dialog):
         self._maze.defaultRobot.beepers = self._spin.Value
         e.Skip()
 
-class World(object):
-    _initstate = {
-        "width": 10, 
-        "walls": [], 
-        "beepers": [], 
-        "robots": [
-            {"name": "robot", "y": 0, "x": 0, "dir": 0, "beepers": 0}
-        ],
-        "height": 10
-    }
+class NewDialog(wx.Dialog):
+    def __init__(self, *a, **kw):
+        self._world = kw['world']
+        del kw['world']
+        wx.Dialog.__init__(self, *a, **kw)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        label = wx.StaticText(self, wx.ID_ANY, "Width and height of new maze")
+        sizer.Add(label, 0, wx.ALL, 5)
+
+        # Cheat - look into private members
+        spinsizer = wx.BoxSizer(wx.HORIZONTAL)
+        self._w = wx.SpinCtrl(self,
+            initial=self._world._maze._width)
+        spinsizer.Add(self._w, 0, wx.ALL, 5)
+        self._h = wx.SpinCtrl(self,
+            initial=self._world._maze._height)
+        spinsizer.Add(self._h, 0, wx.ALL, 5)
+        
+        sizer.Add(spinsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+
+        line = wx.StaticLine(self, wx.ID_ANY,
+            size=(1,-1), style=wx.LI_HORIZONTAL)
+        sizer.Add(line, 0, 
+            wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
+        
+        btnsizer = wx.StdDialogButtonSizer()
+                
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        self.Bind(wx.EVT_BUTTON, self.OnOK, btn)
+        btnsizer.AddButton(btn)
+
+        btn = wx.Button(self, wx.ID_CANCEL)
+        btnsizer.AddButton(btn)
+        btnsizer.Realize()
+
+        sizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+        
+        sizer.Layout()
+        sizer.Fit(self)
     
-    def __init__(self, ui, state=_initstate):
+    def OnOK(self, e):
+        self._world.replace(self._w.Value, self._h.Value)
+        e.Skip()
+
+class World(object):
+    def __init__(self, ui, state=None):
+        if state is None:
+            state = self._initstate(10, 10)
         self._ui = ui
         self._maze = Maze(state)
 
+    def _initstate(self, w, h):
+        return {
+            "width": w, 
+            "walls": [], 
+            "beepers": [], 
+            "robots": [
+                {"name": "robot", "y": 0, "x": 0, "dir": 0, "beepers": 0}
+            ],
+            "height": h
+        }
+    
     @property
     def staterep(self):
         return self._maze.staterep 
@@ -348,11 +408,19 @@ class World(object):
     def menu(self, menu):
         return [
             (self.OnBeeperMenu, menu.Append(wx.ID_ANY, "Set beepers...")),
+            (self.OnNewMenu, menu.Append(wx.ID_ANY, "New...")),
         ]
 
     def OnBeeperMenu(self, e):
         d = BeeperDialog(self._ui, maze=self._maze)
         d.ShowModal()
+
+    def OnNewMenu(self, e):
+        d = NewDialog(self._ui, world=self)
+        d.ShowModal()
+
+    def replace(self, w, h):
+        self._ui.world = World(self._ui, self._initstate(w, h))
 
     def getGlobals(self, t):
         res = {}

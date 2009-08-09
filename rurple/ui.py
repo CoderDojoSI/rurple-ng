@@ -161,7 +161,7 @@ class RurFrame(wx.Frame):
     @world.setter
     def world(self, world):
         if self._worldWindow is not None:
-            self._worldWindow.Close()
+            self._worldWindow.Destroy()
             self._worldWindow = None
         self._world = world
         sps = wx.BoxSizer()

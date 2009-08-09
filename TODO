@@ -29,11 +29,11 @@ Done:
 - make walls work
 - add World menu with set beepers option
 - Move json into ui
+- new world dialog
 
 Still to do:
 
 - useful status bar info
-- new world dialog
 
 - no editing during playback (world or program)
 - disable world menu items during playback
