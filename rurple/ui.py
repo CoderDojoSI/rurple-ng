@@ -11,9 +11,6 @@ import wx.lib.scrolledpanel
 
 from rurple import maze, cpu, world, textctrl
 
-def toBitmap(name):
-    return wx.Image('images/%s.png' % name, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-
 class DotDir(object):
     def __init__(self, path):
         self._path = path
@@ -49,6 +46,7 @@ class RurFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kw)
         # FIXME: not right for Windows or MacOS X
         self._dotPath = DotDir(os.path.expanduser("~/.rurple"))
+        self._sharePath = "share"
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._editor = textctrl.PythonEditor(sash)
@@ -111,18 +109,18 @@ class RurFrame(wx.Frame):
         self._toolbar.SetToolBitmapSize(tsize)
         self.Bind(wx.EVT_TOOL, lambda e: self._reset(),
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
-                toBitmap('reset_world')))
+                self._toBitmap('reset_world')))
         self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
-            toBitmap('play'), shortHelp="Play")
+            self._toBitmap('play'), shortHelp="Play")
         self.Bind(wx.EVT_TOOL, self.OnPlay, self._playTool)
         self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "pause",
-            toBitmap('pause'), shortHelp="pause")
+            self._toBitmap('pause'), shortHelp="pause")
         self.Bind(wx.EVT_TOOL, self.OnPause, self._pauseTool)
         self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "stop",
-            toBitmap('stop'), shortHelp="stop")
+            self._toBitmap('stop'), shortHelp="stop")
         self.Bind(wx.EVT_TOOL, self.OnStop, self._stopTool)
         self._stepTool = self._toolbar.AddLabelTool(wx.ID_ANY, "step",
-            toBitmap('step'), shortHelp="step")
+            self._toBitmap('step'), shortHelp="step")
         self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
         self._slideScale = LogScale(100, 3000, 100)
@@ -132,6 +130,10 @@ class RurFrame(wx.Frame):
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
         self._reset()
+
+    def _toBitmap(self, name):
+        f = os.path.join(self._sharePath, 'images', '%s.png' % name)
+        return wx.Image(f, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
     def _reset(self):
         self.world = maze.World(self, 
