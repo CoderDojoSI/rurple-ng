@@ -85,7 +85,9 @@ class RurFrame(wx.Frame):
         hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
         
-        #self.CreateStatusBar()
+        self._statusBar = self.CreateStatusBar()
+        self._statusBar.SetFieldsCount(2)
+        self._statusBar.SetStatusWidths([-1,-1])
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnAbout,
@@ -219,7 +221,10 @@ class RurFrame(wx.Frame):
     def stopped(self):
         self._world.editable = True
         self._stc.ReadOnly = False
-        
+
+    # called by world
+    def setWorldStatus(self, s):   
+        self._statusBar.SetStatusText(s, 1)
 
 class App(wx.App):
     def OnInit(self):
