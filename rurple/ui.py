@@ -31,7 +31,7 @@ class RurFrame(wx.Frame):
         self._dotPath = os.path.expanduser("~/.rurple")
         if not os.path.isdir(self._dotPath):
             os.mkdir(self._dotPath)
-        self._sharePath = "share"
+        self._sharePath = os.path.abspath("share")
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._editor = textctrl.PythonEditor(sash)
@@ -56,7 +56,7 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnOpen,
             filemenu.Append(wx.ID_OPEN, "&Open...", "Open a program"))
         self.Bind(wx.EVT_MENU, self.OnOpenSample,
-            filemenu.Append(wx.ID_ANY, "&Open sample...", 
+            filemenu.Append(wx.ID_ANY, "Open sa&mple...", 
                 "Open a sample program"))
         #self.Bind(wx.EVT_MENU, self.OnSave,
         #    filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
@@ -92,7 +92,7 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnWorldOpen,
             self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
         self.Bind(wx.EVT_MENU, self.OnWorldOpenSample,
-            self._worldMenu.Append(wx.ID_ANY, "&Open sample...",
+            self._worldMenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample world"))
         #self.Bind(wx.EVT_MENU, self.OnWorldSave,
         #    self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
