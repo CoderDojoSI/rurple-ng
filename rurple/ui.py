@@ -8,6 +8,7 @@ import os.path
 import json
 import wx
 import wx.lib.scrolledpanel
+import wx.lib.wordwrap
 
 from rurple import maze, cpu, world, textctrl
 
@@ -249,11 +250,23 @@ class RurFrame(wx.Frame):
         dlg.Destroy()
         
     def OnAbout(self, e):
-        d = wx.MessageDialog(self, "RUR-PLE 2, A Python Learning Environment \n"
-                            "by André Roberge and Paul Crowley","About RUR-PLE 2", wx.OK)
-        d.ShowModal()
-        d.Destroy()
-    
+        info = wx.AboutDialogInfo()
+        info.Name = "RUR-PLE 2"
+        info.Version = "0.1"
+        info.Copyright = "Copyright 2009 André Roberge and Paul Crowley"
+        info.Description = wx.lib.wordwrap.wordwrap(
+            "A friendly learning environment for beginners to programming."
+            "To get started, have a look at the manual",
+            350, wx.ClientDC(self))
+        manual = os.path.join(self._sharePath, "html", "index.html")
+        info.WebSite = (os.path.abspath(manual), "RUR-PLE 2 manual")
+        info.Developers = ["André Roberge", "Paul Crowley"]
+        with open(os.path.join(self._sharePath, "COPYING.txt")) as f:
+            #info.License = wx.lib.wordwrap.wordwrap(
+            #    f.read(), 500, wx.ClientDC(self))
+            info.License = f.read().replace("\f", "")
+        wx.AboutBox(info)
+        
     def OnSlide(self, e):
         self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
 

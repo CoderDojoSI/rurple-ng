@@ -2,7 +2,6 @@ Still to do:
 
 - input_int, input_string
 
-- add hyperlink to help in about
 - useful status bar info
 
 - fix scrolling world window problem
@@ -74,4 +73,5 @@ Done:
 - add open example menu items
 - arrow keys to move robot
 - add accelerators for run menu items
+- add hyperlink to help in about
 
