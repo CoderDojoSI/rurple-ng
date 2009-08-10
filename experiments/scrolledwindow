@@ -49,14 +49,28 @@ class MyFrame(wx.Frame):
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") 
         self.SetMenuBar(menuBar)
-        MyWindow(self)
+        self._vsash = wx.SplitterWindow(self)
+        vpanel = wx.Panel(self._vsash)
+        hsash = wx.SplitterWindow(self._vsash)
+        my = MyWindow(hsash)
+        hpanel = wx.Panel(hsash)
+        hsash.SplitHorizontally(my, hpanel)
+        self._vsash.SplitVertically(vpanel, hsash)
+        self._vsash.SetSashGravity(1.0)
+        wx.CallAfter(self.adjust)
+        
+    def adjust(self):
+        w, h = self._vsash.GetSizeTuple()
+        self._vsash.SetSashPosition(w - 200)
+        
 
     def OnExit(self, e):
         self.Close(True)
 
 class MyApp(wx.App):
     def OnInit(self):
-        frame = MyFrame(None, title="This is a test")
+        frame = MyFrame(None, title="This is a test",
+            size=(1000, 800))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
