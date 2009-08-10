@@ -118,7 +118,7 @@ class RurFrame(wx.Frame):
             self._toBitmap('step'), shortHelp="step")
         self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
         self._toolbar.ToggleTool(self._stopTool.Id, True)
-        self._slideScale = LogScale(100, 3000, 100)
+        self._slideScale = LogScale(20, 3000, 100)
         self._slider = wx.Slider(self._toolbar, size=(250,-1), 
             value=int(0.5 +  self._slideScale.toTicks(300)))
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
