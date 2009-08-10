@@ -264,7 +264,7 @@ class Maze(Observable):
             ctx.line_to(*self.coordinates(self._width, i))
         for i in range(self._width +1):
             ctx.move_to(*self.coordinates(i, 0))
-            ctx.line_to(*self.coordinates(i, self._width))
+            ctx.line_to(*self.coordinates(i, self._height))
         ctx.stroke()
         ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
         for x, y, d in self._walls:
