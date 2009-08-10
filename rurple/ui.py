@@ -75,7 +75,7 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnStop,
             runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2", "Stop the program"))
         self.Bind(wx.EVT_MENU, self.OnStep,
-            runmenu.Append(wx.ID_ANY,"&Step\tF6", 
+            runmenu.Append(wx.ID_ANY,"&Step\tF5", 
                 "Step one line of the program"))
         menuBar.Append(runmenu,"&Run")
         
