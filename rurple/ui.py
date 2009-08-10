@@ -72,7 +72,7 @@ class RurFrame(wx.Frame):
             runmenu.Append(wx.ID_ANY,"&Run\tF8", 
                 "Start the program running"))
         self.Bind(wx.EVT_MENU, self.OnPause,
-            runmenu.Append(wx.ID_ANY,"P&ause", "Pause the program"))
+            runmenu.Append(wx.ID_ANY,"&Pause", "Pause the program"))
         self.Bind(wx.EVT_MENU, self.OnStop,
             runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2", 
                 "Stop the program"))
