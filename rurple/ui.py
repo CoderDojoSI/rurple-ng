@@ -341,6 +341,7 @@ class RurFrame(wx.Frame):
     def playing(self):    
         self._toolbar.ToggleTool(self._playTool.Id, True)
 
+    # called by cpu
     def pausing(self):
         self._toolbar.ToggleTool(self._pauseTool.Id, True)
     
@@ -362,7 +363,7 @@ class RurFrame(wx.Frame):
     # called by cpu
     def failed(self, e):
         if isinstance(e, world.WorldException):
-            print("Exception on line %s:" % self._editor._mark, 
+            print("Exception on line %s:" % self._editor.mark, 
                 e, file=self._logWindow)
             self._world.handleException(self, e)
         else:
@@ -371,7 +372,7 @@ class RurFrame(wx.Frame):
                 and self._editor.mark is None
                 and e.filename == "<string>"):
                 self._editor.mark = e.lineno
-            print("Exception on line %s:" % self._editor._mark, 
+            print("Exception on line %s:" % self._editor.mark, 
                 e, file=self._logWindow)
             d = wx.MessageDialog(self, message=str(e),
                 caption = "Error running your program",
