@@ -15,7 +15,6 @@ Still to do:
 
 - support multiple robots better
 
-- tighter redraw of world
 - index robots rather than naming them
 - follow moving robot in scrolled window
 
@@ -80,4 +79,5 @@ Done:
 - add hyperlink to help in about
 - move maze into worlds namespace
 - write __name__ into world dict
+- tighter redraw of world
 

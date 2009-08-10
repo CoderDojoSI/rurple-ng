@@ -198,9 +198,9 @@ class Maze(Observable):
             return
         self._walls ^= set([(x, y, d)])
         if d == 'h':
-            self.triggerListeners(x, y, 1, 0)
+            self.triggerListeners(x-0.5, y-0.5, 2, 1)
         else:
-            self.triggerListeners(x, y, 0, 1)
+            self.triggerListeners(x-0.5, y-0.5, 1, 2)
 
     def addRobot(self, r):
         n = r.name
@@ -303,7 +303,7 @@ class Maze(Observable):
             ctx.restore()
 
     def paintSquares(self, ctx, x, y, w, h):
-        ctx.rectangle(*(self.coordinates(x-0.5, y + h + 0.5) + self.coordinates(x + w + 0.5, y - 0.5)))
+        ctx.rectangle(*(self.coordinates(x, y + h) + self.coordinates(x + w, y)))
         ctx.clip()
         self.paint(ctx)
 
