@@ -10,7 +10,8 @@ import wx
 import wx.lib.scrolledpanel
 import wx.lib.wordwrap
 
-from rurple import maze, cpu, world, textctrl
+from rurple import cpu, world, textctrl
+import rurple.worlds.maze
 
 class LogScale(object):
     def __init__(self, ticks, lo, hi):
@@ -134,7 +135,7 @@ class RurFrame(wx.Frame):
         if os.path.exists(dw):
             self._openWorld(dw)
         else:
-            self.world = maze.World(self)
+            self.world = rurple.worlds.maze.World(self)
 
     def OnNew(self, e):
         self._cpu.stop()
@@ -154,7 +155,7 @@ class RurFrame(wx.Frame):
         with open(fn) as f:
             w = json.load(f)
         self._cpu.stop()
-        self.world = maze.World(self, w)
+        self.world = rurple.worlds.maze.World(self, w)
 
     def _saveWorld(self, fn):
         with open(fn, "w") as f:

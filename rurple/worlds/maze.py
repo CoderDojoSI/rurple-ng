@@ -6,7 +6,7 @@ import wx
 import wx.lib.wxcairo
 import cairo
 
-from rurple import world
+import rurple.world
 
 # FIXME: the Observer pattern is overkill here, and
 # the separation between Maze and World probably not
@@ -78,7 +78,7 @@ class Robot(object):
     
     def move(self):
         if not self.front_is_clear():
-            raise world.WorldException("Hit a wall")
+            raise rurple.world.WorldException("Hit a wall")
         if self._dir == 0:
             self._x += 1
             self._trail.append((self._x, self._y, self._dir))
@@ -108,7 +108,7 @@ class Robot(object):
 
     def put_beeper(self):
         if self._beepers == 0:
-            raise world.WorldException("I don't have any beepers")
+            raise rurple.world.WorldException("I don't have any beepers")
         self._beepers -= 1
         self._maze.putBeeper(self._x, self._y)
 
@@ -205,14 +205,14 @@ class Maze(Observable):
     def addRobot(self, r):
         n = r.name
         if n in self._robots:
-            raise world.WorldException("Already got a robot called %s" % n)
+            raise rurple.world.WorldException("Already got a robot called %s" % n)
         self._robots[n] = r
         self._defaultRobot = r
 
     def pickBeeper(self, x, y):
         b = self.countBeepers(x, y)
         if b == 0:
-            raise world.WorldException("I'm not next to a beeper")
+            raise rurple.world.WorldException("I'm not next to a beeper")
         b -= 1
         self.setBeepers(x, y, b)
 
@@ -395,12 +395,12 @@ class EditableMazeWindow(MazeWindow):
         if code == wx.WXK_UP:
             try:
                 self._world._maze.defaultRobot.move()
-            except world.WorldException, e:
+            except rurple.world.WorldException, e:
                 self._world.handleException(self, e)
         elif code == wx.WXK_LEFT:
             try:
                 self._world._maze.defaultRobot.turn_left()
-            except world.WorldException, e:
+            except rurple.world.WorldException, e:
                 self._world.handleException(self, e)
 
 class BeeperDialog(wx.Dialog):

@@ -19,7 +19,6 @@ Still to do:
 - tighter redraw of world
 - index robots rather than naming them
 - follow moving robot in scrolled window
-- move maze into worlds namespace
 
 Enhancements:
 
@@ -80,4 +79,5 @@ Done:
 - arrow keys to move robot
 - add accelerators for run menu items
 - add hyperlink to help in about
+- move maze into worlds namespace
 
