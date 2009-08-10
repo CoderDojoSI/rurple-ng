@@ -9,23 +9,36 @@ class MyWindow(wx.ScrolledWindow):
         self.Bind(wx.EVT_LEFT_DOWN, self.OnClick)
         self._radius = 10
         self._dots = [(10,10), (100,100)]
-        self.SetScrollbars(1, 1, 500, 500, 0, 0)
+        self.SetScrollbars(100, 100, 20, 20, 0, 0)
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
+
+    def Offset(self):
+        xm, ym = self.GetScrollPixelsPerUnit()
+        tx, ty = self.ViewStart
+        return -tx * xm, -ty * ym
 
     def OnPaint(self, e):
         dc = wx.PaintDC(self)
-        self.PrepareDC(dc)
+        #self.DoPrepareDC(dc) doesn't seem to work
         gc = wx.GraphicsContext.Create(dc)
+        gc.Translate(*self.Offset())
         gc.SetBrush(wx.Brush("cyan"))
         for dot in self._dots:
             path = gc.CreatePath()
             path.AddCircle(dot[0], dot[1], self._radius)
             gc.FillPath(path)
+
+    def SRefresh(self, x, y, w, h):
+        tx, ty = self.Offset()
+        self.RefreshRect(wx.Rect(x + tx, y + ty, w, h))
                 
     def OnClick(self, e):
-        self._dots.append((e.m_x, e.m_y))
+        tx, ty = self.Offset()
+        x, y = e.GetX() - tx, e.GetY() - ty
+        self._dots.append((x, y))
         #self.Refresh()
-        self.RefreshRect(wx.Rect(e.m_x - self._radius, e.m_y - self._radius, self._radius *2, self._radius *2))
+        self.SRefresh(x - self._radius, y - self._radius,
+            self._radius *2, self._radius *2)
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
