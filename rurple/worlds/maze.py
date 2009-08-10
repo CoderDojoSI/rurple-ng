@@ -317,7 +317,12 @@ class Maze(Observable):
 
     @property
     def staterep(self):
+        p = "rurple.worlds."
+        n =  __name__
+        if not n.startswith(p):
+            raise Exception("Module in wrong namespace, can't save")
         return {
+            "world": n[len(p):],
             "width": self._width,
             "height": self._height,
             "walls": list(w for w in self._walls if self.isInterior(*w)),
