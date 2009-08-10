@@ -68,14 +68,14 @@ class RurFrame(wx.Frame):
         menuBar.Append(filemenu,"&File")
         runmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnPlay,
-            runmenu.Append(wx.ID_ANY,"&Play\tF5", 
+            runmenu.Append(wx.ID_ANY,"&Play\tF8", 
                 "Start the program running"))
         self.Bind(wx.EVT_MENU, self.OnPause,
-            runmenu.Append(wx.ID_ANY,"P&ause\tF6", "Pause the program"))
+            runmenu.Append(wx.ID_ANY,"P&ause", "Pause the program"))
         self.Bind(wx.EVT_MENU, self.OnStop,
-            runmenu.Append(wx.ID_ANY,"S&top\tF7", "Stop the program"))
+            runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2", "Stop the program"))
         self.Bind(wx.EVT_MENU, self.OnStep,
-            runmenu.Append(wx.ID_ANY,"&Step\tF8", 
+            runmenu.Append(wx.ID_ANY,"&Step\tF6", 
                 "Step one line of the program"))
         menuBar.Append(runmenu,"&Run")
         
