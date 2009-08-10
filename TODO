@@ -5,10 +5,16 @@ Still to do:
 - add hyperlink to help in about
 - useful status bar info
 
+- fix scrolling world window problem
+- fix sash gravity problems
+
 - add save (not save as) menu items
 - style exceptions properly
 - make robot look nicer
 - Windows installer
+- make installer find share directory properly
+
+- support multiple robots better
 
 Enhancements:
 
