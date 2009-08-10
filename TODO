@@ -1,7 +1,5 @@
 Still to do:
 
-- input_int, input_string
-
 - useful status bar info
 
 - fix scrolling world window problem
@@ -82,4 +80,5 @@ Done:
 - move maze into worlds namespace
 - write __name__ into world dict
 - tighter redraw of world
+- input_int, input_string
 

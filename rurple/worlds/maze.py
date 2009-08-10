@@ -556,8 +556,30 @@ class World(object):
     def _print(self, *a, **kw):
         print(*a, file=self._ui.log, **kw)
 
-    def _roll_dice(self):
+    def _rollDice(self):
         return random.randint(1, 6)
+    
+    def _inputInt(self, text='Please enter an integer'):
+        dlg = wx.TextEntryDialog(self._ui,
+            message=text)
+        try:
+            if dlg.ShowModal() == wx.ID_OK:
+                return int(dlg.GetValue())
+            else:
+                return None
+        finally:
+            dlg.Destroy()
+        
+    def _inputString(self, text='Please enter some text'):
+        dlg = wx.TextEntryDialog(self._ui,
+            message=text)
+        try:
+            if dlg.ShowModal() == wx.ID_OK:
+                return dlg.GetValue()
+            else:
+                return None
+        finally:
+            dlg.Destroy()
     
     def getGlobals(self, t):
         res = {}
@@ -572,7 +594,9 @@ class World(object):
             ]]))
         res.update({
             "print": t.proxyFunction(self._print),
-            "roll_dice": t.proxyFunction(self._roll_dice),
+            "roll_dice": t.proxyFunction(self._rollDice),
+            "input_int": t.proxyFunction(self._inputInt),
+            "input_string": t.proxyFunction(self._inputString),
         })
         return res
 
