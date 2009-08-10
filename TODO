@@ -15,6 +15,12 @@ Still to do:
 
 - support multiple robots better
 
+- write __name__ into world dict
+- tighter redraw of world
+- index robots rather than naming them
+- follow moving robot in scrolled window
+- move maze into worlds namespace
+
 Enhancements:
 
 - look into using process instead of thread
