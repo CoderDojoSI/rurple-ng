@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+import math
+import wx
+
+class MyWindow(wx.Window):
+    def __init__(self, *args, **kw):
+        wx.Window.__init__(self, *args, **kw)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick)
+        self._radius = 10
+        self._dots = [(10,10), (100,100)]
+    
+    def OnPaint(self, e):
+        dc = wx.PaintDC(self)
+        gc = wx.GraphicsContext.Create(dc)
+        gc.SetBrush(wx.Brush("cyan"))
+        path = gc.CreatePath()
+        for dot in self._dots:
+            path.AddCircle(dot[0], dot[1], self._radius)
+        gc.FillPath(path)
+                
+    def OnClick(self, e):
+        self._dots.append((e.m_x, e.m_y))
+        self.RefreshRect(wx.Rect(e.m_x - self._radius, e.m_y - self._radius, self._radius *2, self._radius *2))
+
+class MyFrame(wx.Frame):
+    def __init__(self, *args, **kw):
+        wx.Frame.__init__(self, *args, **kw)
+        self.CreateStatusBar()
+        filemenu= wx.Menu()
+        self.Bind(wx.EVT_MENU, self.OnAbout,
+            filemenu.Append(wx.ID_ABOUT, "&About..."," Information about this program"))
+        filemenu.AppendSeparator()
+        self.Bind(wx.EVT_MENU, self.OnExit,
+            filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
+        # Creating the menubar.
+        menuBar = wx.MenuBar()
+        menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
+        self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
+        MyWindow(self)
+
+    def OnAbout(self, e):
+        d = wx.MessageDialog( self, " A sample editor \n"
+                            " in wxPython","About Sample Editor", wx.OK)
+                            # Create a message dialog box
+        d.ShowModal() # Shows it
+        d.Destroy() # finally destroy it when finished.
+
+    def OnExit(self, e):
+        self.Close(True)
+
+class MyApp(wx.App):
+    def OnInit(self):
+        frame = MyFrame(None, title="This is a test")
+        frame.Show(True)
+        self.SetTopWindow(frame)
+        return True
+
+def main():
+    app = MyApp(0)
+    app.MainLoop()
+
+if __name__ == "__main__":
+    main()
+
+
