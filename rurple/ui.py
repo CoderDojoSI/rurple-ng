@@ -211,6 +211,8 @@ class RurFrame(wx.Frame):
         dlg.Destroy()
         
     def OnExit(self, e):
+        self._saveProgram(os.path.join(self._dotPath, "program.rur"))
+        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         self.Close(True)
 
     def OnPlay(self, e):
