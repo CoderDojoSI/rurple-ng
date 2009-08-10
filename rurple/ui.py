@@ -68,8 +68,8 @@ class RurFrame(wx.Frame):
             filemenu.Append(wx.ID_EXIT,"E&xit", "Close RUR-PLE"))
         menuBar.Append(filemenu,"&File")
         runmenu = wx.Menu()
-        self.Bind(wx.EVT_MENU, self.OnPlay,
-            runmenu.Append(wx.ID_ANY,"&Play\tF8", 
+        self.Bind(wx.EVT_MENU, self.OnRun,
+            runmenu.Append(wx.ID_ANY,"&Run\tF8", 
                 "Start the program running"))
         self.Bind(wx.EVT_MENU, self.OnPause,
             runmenu.Append(wx.ID_ANY,"P&ause", "Pause the program"))
@@ -84,7 +84,7 @@ class RurFrame(wx.Frame):
         self._worldMenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnWorldReset,
             self._worldMenu.Append(wx.ID_ANY,"&Reset\tCtrl+R", 
-                "Reset world to before program was played"))
+                "Reset world to before program was run"))
         self._worldMenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnWorldNew,
             self._worldMenu.Append(wx.ID_ANY,"&New...", 
@@ -115,10 +115,10 @@ class RurFrame(wx.Frame):
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
                 self._toBitmap('reset_world'),
                 shortHelp = "Reset world (Ctrl+R)"))
-        self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
-            "Play", self._toBitmap('play'),
-            shortHelp="Play program (F8)")
-        self.Bind(wx.EVT_TOOL, self.OnPlay, self._playTool)
+        self._runTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
+            "Run", self._toBitmap('run'),
+            shortHelp="Run program (F8)")
+        self.Bind(wx.EVT_TOOL, self.OnRun, self._runTool)
         self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
              "Pause", self._toBitmap('pause'),
              shortHelp="Pause program")
@@ -215,8 +215,8 @@ class RurFrame(wx.Frame):
         self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         self.Close(True)
 
-    def OnPlay(self, e):
-        self._cpu.play()
+    def OnRun(self, e):
+        self._cpu.run()
     
     def OnPause(self, e):
         self._cpu.pause()
@@ -338,8 +338,8 @@ class RurFrame(wx.Frame):
         self._world.runStart()
 
     # called by cpu
-    def playing(self):    
-        self._toolbar.ToggleTool(self._playTool.Id, True)
+    def running(self):    
+        self._toolbar.ToggleTool(self._runTool.Id, True)
 
     # called by cpu
     def pausing(self):

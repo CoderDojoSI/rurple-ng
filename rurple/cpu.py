@@ -83,7 +83,7 @@ class CPU(object):
             return # FIXME: assert out
         self._ui.traceLine(lineno)
         self._rcb = rcb
-        if self._state == "play":
+        if self._state == "run":
             self._timer = wx.CallLater(self._lineTime, self._release)
     
     def _stopTimer(self):
@@ -112,14 +112,14 @@ class CPU(object):
         self._thread = TraceThread(self, world, self._ui.program)
         self._thread.start()
     
-    def play(self):
+    def run(self):
         if self._state == "stop":
-            self._state = "play"
-            self._ui.playing()
+            self._state = "run"
+            self._ui.running()
             self._start()
         elif self._state == "pause":
-            self._state = "play"
-            self._ui.playing()
+            self._state = "run"
+            self._ui.running()
             self._release()
     
     def pause(self):
@@ -127,7 +127,7 @@ class CPU(object):
             self._state = "pause"
             self._ui.pausing()
             self._start()
-        elif self._state == "play":
+        elif self._state == "run":
             self._state = "pause"
             self._ui.pausing()
             self._stopTimer()

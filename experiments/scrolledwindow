@@ -40,6 +40,19 @@ class MyWindow(wx.ScrolledWindow):
         self.SRefresh(x - self._radius, y - self._radius,
             self._radius *2, self._radius *2)
 
+class MagicSash(wx.SplitterWindow):
+    def __init__(self, *args, **kw):
+        wx.SplitterWindow.__init__(self, *args, **kw)
+        self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.OnSashDragged, self)
+        self.Bind(wx.EVT_SIZE, self.OnSize, self)
+        
+    def OnSashDragged(self, e):
+        print "Pos:", e.SashPosition
+    
+    def OnSize(self, e):
+        print "Size:", e.Size
+        e.Skip()
+
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
@@ -49,7 +62,7 @@ class MyFrame(wx.Frame):
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") 
         self.SetMenuBar(menuBar)
-        self._vsash = wx.SplitterWindow(self)
+        self._vsash = MagicSash(self)
         vpanel = wx.Panel(self._vsash)
         hsash = wx.SplitterWindow(self._vsash)
         my = MyWindow(hsash)
@@ -57,7 +70,6 @@ class MyFrame(wx.Frame):
         hsash.SplitHorizontally(my, hpanel)
         self._vsash.SplitVertically(vpanel, hsash)
         self._vsash.SetSashGravity(1.0)
-        wx.CallAfter(self.adjust)
         
     def adjust(self):
         w, h = self._vsash.GetSizeTuple()
@@ -70,7 +82,7 @@ class MyFrame(wx.Frame):
 class MyApp(wx.App):
     def OnInit(self):
         frame = MyFrame(None, title="This is a test",
-            size=(1000, 800))
+            size=(500, 400))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
