@@ -64,9 +64,13 @@ class CPU(object):
     def __init__(self, ui):
         self._ui = ui
         self._lineTime = 1000
+        self._clear()
+    
+    def _clear(self):
         self._state = "stop"
         self._timer = None
         self._thread = None
+        self._rcb = None
     
     def setLineTime(self, t):
         self._lineTime = t
@@ -95,11 +99,11 @@ class CPU(object):
             r((None, None))
     
     def done(self):
-        self._state = "stop"
+        self._clear()
         self._ui.done()
 
     def failed(self, e):
-        self._state = "stop"
+        self._clear()
         self._ui.failed(e)
 
     def _start(self):
@@ -131,12 +135,10 @@ class CPU(object):
     def stop(self):
         if self._state == "stop":
             return
-        self._state = "stop"
         self._stopTimer()
         if self._thread:
             self._thread.stop()
-            self._thread = None
-        self._rcb = None
+        self._clear()
         self._ui.stopped()
         
     def step(self):
