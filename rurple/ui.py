@@ -61,10 +61,11 @@ class RurFrame(wx.Frame):
         #self.Bind(wx.EVT_MENU, self.OnSave,
         #    filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
         self.Bind(wx.EVT_MENU, self.OnSaveAs,
-            filemenu.Append(wx.ID_SAVEAS,"Save &As...", "Save the current program with a different filename"))
+            filemenu.Append(wx.ID_SAVEAS,"Save &As...", 
+                "Save the current program with a different filename"))
         filemenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnExit,
-            filemenu.Append(wx.ID_EXIT,"E&xit","Close RUR-PLE"))
+            filemenu.Append(wx.ID_EXIT,"E&xit", "Close RUR-PLE"))
         menuBar.Append(filemenu,"&File")
         runmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnPlay,
@@ -73,15 +74,21 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnPause,
             runmenu.Append(wx.ID_ANY,"P&ause", "Pause the program"))
         self.Bind(wx.EVT_MENU, self.OnStop,
-            runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2", "Stop the program"))
+            runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2", 
+                "Stop the program"))
         self.Bind(wx.EVT_MENU, self.OnStep,
             runmenu.Append(wx.ID_ANY,"&Step\tF5", 
                 "Step one line of the program"))
         menuBar.Append(runmenu,"&Run")
         
         self._worldMenu = wx.Menu()
+        self.Bind(wx.EVT_MENU, self.OnWorldReset,
+            self._worldMenu.Append(wx.ID_ANY,"&Reset\tCtrl+R", 
+                "Reset world to before program was played"))
+        self._worldMenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnWorldNew,
-            self._worldMenu.Append(wx.ID_ANY,"&New...", "Start a new world"))
+            self._worldMenu.Append(wx.ID_ANY,"&New...", 
+                "Start a new world"))
         self.Bind(wx.EVT_MENU, self.OnWorldOpen,
             self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
         self.Bind(wx.EVT_MENU, self.OnWorldOpenSample,
@@ -90,33 +97,40 @@ class RurFrame(wx.Frame):
         #self.Bind(wx.EVT_MENU, self.OnWorldSave,
         #    self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
-            self._worldMenu.Append(wx.ID_ANY,"Save &As...", "Save the current world with a different filename"))
+            self._worldMenu.Append(wx.ID_ANY,"Save &As...", 
+                "Save the current world with a different filename"))
         self._worldMenu.AppendSeparator()
         self._worldMenuItems = self._worldMenu.MenuItemCount
         menuBar.Append(self._worldMenu,"&World")
         helpmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnAbout,
-            helpmenu.Append(wx.ID_ABOUT, "&About..."," Information about RUR-PLE"))
+            helpmenu.Append(wx.ID_ABOUT, "&About...\tF1", 
+                "Information about RUR-PLE"))
         menuBar.Append(helpmenu,"&Help")
         self.SetMenuBar(menuBar)
         self._toolbar = self.CreateToolBar()
         tsize = (24,24)
         self._toolbar.SetToolBitmapSize(tsize)
-        self.Bind(wx.EVT_TOOL, lambda e: self._reset(),
+        self.Bind(wx.EVT_TOOL, self.OnWorldReset,
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
-                self._toBitmap('reset_world')))
-        self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "Play",
-            self._toBitmap('play'), shortHelp="Play")
+                self._toBitmap('reset_world'),
+                shortHelp = "Reset world (Ctrl+R)"))
+        self._playTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
+            "Play", self._toBitmap('play'),
+            shortHelp="Play program (F8)")
         self.Bind(wx.EVT_TOOL, self.OnPlay, self._playTool)
-        self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "pause",
-            self._toBitmap('pause'), shortHelp="pause")
+        self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
+             "Pause", self._toBitmap('pause'),
+             shortHelp="Pause program")
         self.Bind(wx.EVT_TOOL, self.OnPause, self._pauseTool)
-        self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY, "stop",
-            self._toBitmap('stop'), shortHelp="stop")
+        self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
+             "Stop", self._toBitmap('stop'),
+             shortHelp="Stop program (Ctrl+F2)")
         self.Bind(wx.EVT_TOOL, self.OnStop, self._stopTool)
-        self._stepTool = self._toolbar.AddLabelTool(wx.ID_ANY, "step",
-            self._toBitmap('step'), shortHelp="step")
-        self.Bind(wx.EVT_TOOL, self.OnStep, self._stepTool)
+        self.Bind(wx.EVT_TOOL, self.OnStep, 
+            self._toolbar.AddLabelTool(wx.ID_ANY, "step",
+                self._toBitmap('step'),
+                shortHelp="Step program (F5)"))
         self._toolbar.ToggleTool(self._stopTool.Id, True)
         self._slideScale = LogScale(20, 3000, 100)
         self._slider = wx.Slider(self._toolbar, size=(250,-1), 
@@ -210,6 +224,9 @@ class RurFrame(wx.Frame):
 
     def OnStep(self, e):
         self._cpu.step()
+
+    def OnWorldReset(self, e):
+        self._reset()
 
     def OnWorldNew(self, e):
         self._world.newDialog()
