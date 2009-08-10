@@ -462,10 +462,10 @@ class NewDialog(wx.Dialog):
 
         # Cheat - look into private members
         spinsizer = wx.BoxSizer(wx.HORIZONTAL)
-        self._w = wx.SpinCtrl(self,
+        self._w = wx.SpinCtrl(self, min=1,
             initial=self._world._maze._width)
         spinsizer.Add(self._w, 0, wx.ALL, 5)
-        self._h = wx.SpinCtrl(self,
+        self._h = wx.SpinCtrl(self, min=1,
             initial=self._world._maze._height)
         spinsizer.Add(self._h, 0, wx.ALL, 5)
         
