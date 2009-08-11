@@ -279,7 +279,7 @@ class RurFrame(wx.Frame):
             "To get started, have a look at the manual",
             350, wx.ClientDC(self))
         manual = os.path.join(self._sharePath, "html", "index.html")
-        info.WebSite = (os.path.abspath(manual), "RUR-PLE 2 manual")
+        info.WebSite = (manual, "RUR-PLE 2 manual")
         info.Developers = ["André Roberge", "Paul Crowley"]
         with open(os.path.join(self._sharePath, "COPYING.txt")) as f:
             #info.License = wx.lib.wordwrap.wordwrap(
