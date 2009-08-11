@@ -255,8 +255,6 @@ class Maze(Observable):
     def paint(self, ctx):
         ctx.select_font_face("DejaVu Sans",
             cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        ctx.set_source_rgb(1, 1, 1)
-        ctx.paint()
         ctx.set_source_rgb(0, 0, 0)
         ctx.set_line_width(0.3)
         for i in range(self._height +1):
@@ -365,6 +363,7 @@ class MazeWindow(wx.PyControl):
 class EditableMazeWindow(MazeWindow):
     def __init__(self, *args, **kw):
         MazeWindow.__init__(self, *args, **kw)
+        self.SetBackgroundColour('white')
         self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
         self.Bind(wx.EVT_CHAR, self.OnKey, self)
         self.SetFocus()
