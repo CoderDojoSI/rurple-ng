@@ -302,10 +302,10 @@ class Maze(Observable):
             r.paint(ctx)
             ctx.restore()
 
-    def paintSquares(self, ctx, x, y, w, h):
-        ctx.rectangle(*(self.coordinates(x, y + h) + self.coordinates(x + w, y)))
-        ctx.clip()
-        self.paint(ctx)
+    def paintBounds(self, x, y, w, h):
+        xl, yl = self.coordinates(x, y + h)
+        xh, yh = self.coordinates(x + w, y)
+        return xl, yl, xh - xl, yh - yl
 
     def size(self):
         return (2*self._offset + 2*self._width*self._spacing,
@@ -360,8 +360,7 @@ class MazeWindow(wx.PyControl):
         self._world._maze.paint(ctx)
                 
     def onMazeChange(self, maze, *args, **kw):
-        ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
-        self._world._maze.paintSquares(ctx, *args, **kw)
+        self.RefreshRect(self._world._maze.paintBounds(*args, **kw))
 
 class EditableMazeWindow(MazeWindow):
     def __init__(self, *args, **kw):
