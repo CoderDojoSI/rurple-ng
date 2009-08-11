@@ -18,6 +18,10 @@ Still to do:
 - index robots rather than naming them
 - follow moving robot in scrolled window
 
+- rename beepers to coins
+
+- adapt old manual!
+
 Enhancements:
 
 - look into using process instead of thread
