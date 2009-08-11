@@ -65,7 +65,7 @@ class RurFrame(wx.Frame):
                 "Save the current program with a different filename"))
         filemenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnExit,
-            filemenu.Append(wx.ID_EXIT,"E&xit", "Close RUR-PLE"))
+            filemenu.Append(wx.ID_EXIT,"E&xit", "Close Rurple"))
         menuBar.Append(filemenu,"&File")
         runmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnRun,
@@ -105,7 +105,7 @@ class RurFrame(wx.Frame):
         helpmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnAbout,
             helpmenu.Append(wx.ID_ABOUT, "&About...\tF1", 
-                "Information about RUR-PLE"))
+                "Information about Rurple"))
         menuBar.Append(helpmenu,"&Help")
         self.SetMenuBar(menuBar)
         self._toolbar = self.CreateToolBar()
@@ -271,7 +271,7 @@ class RurFrame(wx.Frame):
         
     def OnAbout(self, e):
         info = wx.AboutDialogInfo()
-        info.Name = "RUR-PLE 2"
+        info.Name = "Rurple NG"
         info.Version = "0.1"
         info.Copyright = "Copyright 2009 André Roberge and Paul Crowley"
         info.Description = wx.lib.wordwrap.wordwrap(
@@ -279,7 +279,7 @@ class RurFrame(wx.Frame):
             "To get started, have a look at the manual",
             350, wx.ClientDC(self))
         manual = os.path.join(self._sharePath, "html", "index.html")
-        info.WebSite = (manual, "RUR-PLE 2 manual")
+        info.WebSite = (manual, "Rurple NG manual")
         info.Developers = ["André Roberge", "Paul Crowley"]
         with open(os.path.join(self._sharePath, "COPYING.txt")) as f:
             #info.License = wx.lib.wordwrap.wordwrap(
@@ -386,7 +386,7 @@ class RurFrame(wx.Frame):
 
 class App(wx.App):
     def OnInit(self):
-        frame = RurFrame(None, title="RUR-PLE", size=(900,1000))
+        frame = RurFrame(None, title="Rurple", size=(900,1000))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
