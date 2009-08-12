@@ -557,6 +557,7 @@ class World(object):
         d = BeeperDialog(self._ui, maze=self._maze)
         d.ShowModal()
 
+    # FIXME: not properly a part of this class
     def newDialog(self):
         if not self.editable:
             wx.MessageDialog(self._ui, caption="Program running",
@@ -621,4 +622,5 @@ class World(object):
             caption = "Not right with the world",
             style=wx.ICON_EXCLAMATION | wx.OK)
         d.ShowModal()
-    
+
+__all__ = [World]
