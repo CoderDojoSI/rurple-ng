@@ -331,10 +331,8 @@ class RurFrame(wx.Frame):
         self._worldWindow = self._world.makeWindow(self._worldParent)
         sps.Add(self._worldWindow)
         self._worldParent.SetSizer(sps)
-        while True:
+        while self._worldMenuItems < self._worldMenu.MenuItemCount:
             mi = self._worldMenu.FindItemByPosition(self._worldMenuItems)
-            if mi is None:
-                break
             self._worldMenu.Delete(mi.Id)
         for b, e in self._world.menu(self._worldMenu):
             self.Bind(wx.EVT_MENU, b, e)
