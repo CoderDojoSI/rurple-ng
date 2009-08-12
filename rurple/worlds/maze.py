@@ -189,6 +189,8 @@ class Maze(Observable):
         self._wallPen2 = wx.Pen('red')
         self._wallPen2.SetWidth(2)
         self._wallPen2.SetCap(wx.CAP_PROJECTING)
+        self._beeperBrush1 = wx.Brush('cyan')
+        self._beeperBrush2 = wx.Brush('white')
     
     def isInterior(self, x, y, d):
         if x >= self._width or y >= self._height:
@@ -292,19 +294,20 @@ class Maze(Observable):
             gc.PushState()
             r.paintTrail(gc)
             gc.PopState()
-        #for k, v in self._beepers.iteritems():
-        #    x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
-        #    ctx.set_source_rgb(0.7, 0.7, 1)
-        #    ctx.arc(x, y, 14, 0, 2*math.pi)
-        #    ctx.fill()
-        #    ctx.set_source_rgb(1, 1, 1)
-        #    ctx.arc(x, y, 11, 0, 2*math.pi)
-        #    ctx.fill()
-        #    ctx.set_source_rgb(0, 0, 0)
-        #    t = str(v)
-        #    exts = ctx.text_extents(t)
-        #    ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
-        #    ctx.show_text(t)
+        for k, v in self._beepers.iteritems():
+            x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
+            gc.SetBrush(self._beeperBrush1)
+            p = gc.CreatePath()
+            p.AddCircle(x, y, 14)
+            gc.FillPath(p)
+            gc.SetBrush(self._beeperBrush2)
+            p = gc.CreatePath()
+            p.AddCircle(x, y, 11)
+            gc.FillPath(p)
+            #t = str(v)
+            #exts = ctx.text_extents(t)
+            #ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
+            #ctx.show_text(t)
         for r in self._robots.itervalues():
             gc.PushState()
             r.paint(gc)
