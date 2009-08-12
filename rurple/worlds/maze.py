@@ -191,6 +191,10 @@ class Maze(Observable):
         self._wallPen2.SetCap(wx.CAP_PROJECTING)
         self._beeperBrush1 = wx.Brush('cyan')
         self._beeperBrush2 = wx.Brush('white')
+        self._textBrush = wx.Brush('black')
+        self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self._font.SetWeight(wx.BOLD)
+        self._font.SetPointSize(18)
     
     def isInterior(self, x, y, d):
         if x >= self._width or y >= self._height:
@@ -294,6 +298,8 @@ class Maze(Observable):
             gc.PushState()
             r.paintTrail(gc)
             gc.PopState()
+        gc.SetFont(self._font)
+
         for k, v in self._beepers.iteritems():
             x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
             gc.SetBrush(self._beeperBrush1)
@@ -304,8 +310,10 @@ class Maze(Observable):
             p = gc.CreatePath()
             p.AddCircle(x, y, 11)
             gc.FillPath(p)
-            #t = str(v)
-            #exts = ctx.text_extents(t)
+            gc.SetBrush(self._textBrush)
+            t = str(v)
+            exts = gc.GetFullTextExtent(t)
+            gc.DrawText(t, x - 0.5*exts[0], y - 0.5*exts[1])
             #ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
             #ctx.show_text(t)
         for r in self._robots.itervalues():
