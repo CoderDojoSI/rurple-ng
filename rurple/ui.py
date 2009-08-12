@@ -5,6 +5,7 @@ import sys
 import math
 import os
 import os.path
+import codecs
 import json
 import wx
 import wx.lib.scrolledpanel
@@ -156,13 +157,13 @@ class RurFrame(wx.Frame):
         self._editor.Text = ""
 
     def _openProgram(self, fn):
-        with open(fn) as f:
+        with codecs.open(fn, encoding="utf-8") as f:
             p = f.read()
         self._cpu.stop()
         self._editor.Text = p
 
     def _saveProgram(self, fn):
-        with open(fn, "w") as f:
+        with codecs.open(fn, "w", encoding="utf-8") as f:
             f.write(self._editor.Text)
 
     def _openWorld(self, fn):
