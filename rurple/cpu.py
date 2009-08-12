@@ -76,12 +76,26 @@ class CPU(object):
         self._thread = None
         self._rcb = None
     
-    def setLineTime(self, t):
-        self._lineTime = t
+    def _start(self):
+        world = self._ui.world
+        self._ui.starting()
+        self._thread = TraceThread(self, world, self._ui.program)
+        self._thread.start()
+
+    def _release(self):
+        r = self._rcb
+        if r is not None:
+            self._rcb = None
+            self._timer = None
+            r((None, None))
+    
+    def _stopTimer(self):
         if self._timer is not None:
             self._timer.Stop()
-            self._timer = wx.CallLater(self._lineTime, self._release)
+            self._timer = None
     
+    # ----- Thread methods ------
+
     def trace(self, rcb, lineno):
         if self._state == self._STOP:
             return # FIXME: assert out
@@ -89,18 +103,6 @@ class CPU(object):
         self._rcb = rcb
         if self._state == self._RUN:
             self._timer = wx.CallLater(self._lineTime, self._release)
-    
-    def _stopTimer(self):
-        if self._timer is not None:
-            self._timer.Stop()
-            self._timer = None
-    
-    def _release(self):
-        r = self._rcb
-        if r is not None:
-            self._rcb = None
-            self._timer = None
-            r((None, None))
     
     def done(self):
         self._clear()
@@ -110,11 +112,7 @@ class CPU(object):
         self._clear()
         self._ui.failed(e)
 
-    def _start(self):
-        world = self._ui.world
-        self._ui.starting()
-        self._thread = TraceThread(self, world, self._ui.program)
-        self._thread.start()
+    # ----- UI methods -----
     
     def run(self):
         if self._state == self._STOP:
@@ -148,4 +146,11 @@ class CPU(object):
     def step(self):
         self.pause()
         self._release()
+
+    def setLineTime(self, t):
+        self._lineTime = t
+        if self._timer is not None:
+            self._timer.Stop()
+            self._timer = wx.CallLater(self._lineTime, self._release)
+    
 
