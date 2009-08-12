@@ -5,7 +5,7 @@ Still to do:
 - fix scrolling world window problem
 - fix sash gravity problems
 
-- add save (not save as) menu items
+- make Save As warn if a filename exists already
 - style exceptions properly
 - make robot look nicer
 - Windows installer
@@ -85,4 +85,5 @@ Done:
 - input_int, input_string
 - use Refresh on windows
 - use wx.GraphicsContext rather than Cairo
+- add save (not save as) menu items
 

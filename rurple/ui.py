@@ -33,6 +33,8 @@ class RurFrame(wx.Frame):
         if not os.path.isdir(self._dotPath):
             os.mkdir(self._dotPath)
         self._sharePath = os.path.abspath("share")
+        self._programFile = None
+        self._worldFile = None
         self._cpu = cpu.CPU(self)
         sash = wx.SplitterWindow(self)
         self._editor = textctrl.PythonEditor(sash)
@@ -59,8 +61,8 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnOpenSample,
             filemenu.Append(wx.ID_ANY, "Open sa&mple...", 
                 "Open a sample program"))
-        #self.Bind(wx.EVT_MENU, self.OnSave,
-        #    filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
+        self.Bind(wx.EVT_MENU, self.OnSave,
+            filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
         self.Bind(wx.EVT_MENU, self.OnSaveAs,
             filemenu.Append(wx.ID_SAVEAS,"Save &As...", 
                 "Save the current program with a different filename"))
@@ -95,8 +97,8 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnWorldOpenSample,
             self._worldMenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample world"))
-        #self.Bind(wx.EVT_MENU, self.OnWorldSave,
-        #    self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
+        self.Bind(wx.EVT_MENU, self.OnWorldSave,
+            self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
             self._worldMenu.Append(wx.ID_ANY,"Save &As...", 
                 "Save the current world with a different filename"))
@@ -150,6 +152,7 @@ class RurFrame(wx.Frame):
         if os.path.exists(dw):
             self._openWorld(dw)
         else:
+            # FIXME: open a file
             self.world = rurple.worlds.maze.World(self)
 
     def OnNew(self, e):
@@ -184,7 +187,8 @@ class RurFrame(wx.Frame):
             style = wx.OPEN | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        self._openProgram(dlg.GetPath())
+        self._programFile = dlg.GetPath()
+        self._openProgram(self._programFile)
         dlg.Destroy()
         
     def OnOpenSample(self, e):
@@ -195,11 +199,15 @@ class RurFrame(wx.Frame):
             style = wx.OPEN)
         if dlg.ShowModal() != wx.ID_OK:
             return
+        self._programFile = None
         self._openProgram(dlg.GetPath())
         dlg.Destroy()
         
     def OnSave(self, e):
-        pass
+        if self._programFile is None:
+            self.OnSaveAs(e)
+        else:
+            self._saveProgram(self._programFile)
     
     def OnSaveAs(self, e):
         dlg = wx.FileDialog(self,
@@ -208,7 +216,8 @@ class RurFrame(wx.Frame):
             style = wx.SAVE | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        self._saveProgram(dlg.GetPath())
+        self._programFile = dlg.GetPath()
+        self._saveProgram(self._programFile)
         dlg.Destroy()
         
     def OnExit(self, e):
@@ -241,7 +250,8 @@ class RurFrame(wx.Frame):
             style = wx.OPEN | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        self._openWorld(dlg.GetPath())
+        self._worldFile = dlg.GetPath()
+        self._openWorld(self._worldFile)
         self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         dlg.Destroy()
         
@@ -253,12 +263,16 @@ class RurFrame(wx.Frame):
             style = wx.OPEN)
         if dlg.ShowModal() != wx.ID_OK:
             return
+        self._worldFile = None
         self._openWorld(dlg.GetPath())
         self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         dlg.Destroy()
         
     def OnWorldSave(self, e):
-        pass
+        if self._worldFile is None:
+            self.OnWorldSaveAs(e)
+        else:
+            self._saveWorld(self._worldFile)
     
     def OnWorldSaveAs(self, e):
         dlg = wx.FileDialog(self,
@@ -267,7 +281,8 @@ class RurFrame(wx.Frame):
             style = wx.SAVE | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        self._saveWorld(dlg.GetPath())
+        self._worldFile = dlg.GetPath()
+        self._saveWorld(self._worldFile)
         dlg.Destroy()
         
     def OnAbout(self, e):
