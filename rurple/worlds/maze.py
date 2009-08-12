@@ -3,8 +3,6 @@ from __future__ import division, print_function, unicode_literals, with_statemen
 import math
 import random
 import wx
-import wx.lib.wxcairo
-import cairo
 
 import rurple.world
 
@@ -37,20 +35,28 @@ class Robot(object):
         self.runStart()
         self._maze.addRobot(self)
         self._maze.triggerListeners(self._x, self._y, 1, 1)
+        self._brush = wx.Brush('blue')
+        self._pen = wx.Pen('blue')
+        self._pen.SetWidth(4)
+        self._pen.SetCap(wx.CAP_BUTT)
+        self._trailPen = wx.Pen('black')
+        self._trailPen.SetWidth(1)
 
-    def paint(self, ctx):
+    def paint(self, gc):
         x, y = self._maze.coordinates(self._x + .5, self._y + .5)
-        ctx.translate(x, y)
-        ctx.rotate(-math.pi * 0.5 * self._dir)
-        ctx.set_source_rgb(0, 0, 1)
-        ctx.arc(0, 0, 7, 0, 2*math.pi)
-        ctx.fill()
-        ctx.move_to(10, -10)
-        ctx.line_to(0, -10)
-        ctx.line_to(0, 10)
-        ctx.line_to(10, 10)
-        ctx.set_line_width(4)
-        ctx.stroke()
+        gc.Translate(x, y)
+        gc.Rotate(-math.pi * 0.5 * self._dir)
+        gc.SetBrush(self._brush)
+        p = gc.CreatePath()
+        p.AddCircle(0, 0, 7)
+        gc.FillPath(p)
+        gc.SetPen(self._pen)
+        p = gc.CreatePath()
+        p.MoveToPoint(10, -10)
+        p.AddLineToPoint(0, -10)
+        p.AddLineToPoint(0, 10)
+        p.AddLineToPoint(10, 10)
+        gc.StrokePath(p)
 
     def _trailPoint(self, p):
         x, y, d = p
@@ -65,13 +71,13 @@ class Robot(object):
             x -= s; y += s
         return self._maze.coordinates(x + 0.5, y + 0.5)
 
-    def paintTrail(self, ctx):
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(1)
-        ctx.move_to(*self._trailPoint(self._trail[0]))
-        for p in self._trail[1:]:
-            ctx.line_to(*self._trailPoint(p))
-        ctx.stroke()
+    def paintTrail(self, gc):
+        gc.SetPen(self._trailPen)
+        p = gc.CreatePath()
+        p.MoveToPoint(*self._trailPoint(self._trail[0]))
+        for c in self._trail[1:]:
+            p.AddLineToPoint(*self._trailPoint(c))
+        gc.StrokePath(p)
 
     def runStart(self):
         self._trail = [(self._x, self._y, self._dir)]
@@ -174,6 +180,15 @@ class Maze(Observable):
         self._robots = {}
         for r in state['robots']:
             Robot(self, r)
+        self._gridPen = wx.Pen('black')
+        self._gridPen.SetWidth(0.3)
+        self._gridPen.SetCap(wx.CAP_PROJECTING)
+        self._wallPen1 = wx.Pen('black')
+        self._wallPen1.SetWidth(6)
+        self._wallPen1.SetCap(wx.CAP_PROJECTING)
+        self._wallPen2 = wx.Pen('red')
+        self._wallPen2.SetWidth(2)
+        self._wallPen2.SetCap(wx.CAP_PROJECTING)
     
     def isInterior(self, x, y, d):
         if x >= self._width or y >= self._height:
@@ -252,53 +267,48 @@ class Maze(Observable):
         else:
             return (x, y, 'h')
 
-    def paint(self, ctx):
-        ctx.select_font_face("DejaVu Sans",
-            cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(0.3)
+    def paint(self, gc):
+        gc.SetPen(self._gridPen)
+        p = gc.CreatePath()
         for i in range(self._height +1):
-            ctx.move_to(*self.coordinates(0, i))
-            ctx.line_to(*self.coordinates(self._width, i))
+            p.MoveToPoint(*self.coordinates(0, i))
+            p.AddLineToPoint(*self.coordinates(self._width, i))
         for i in range(self._width +1):
-            ctx.move_to(*self.coordinates(i, 0))
-            ctx.line_to(*self.coordinates(i, self._height))
-        ctx.stroke()
-        ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
+            p.MoveToPoint(*self.coordinates(i, 0))
+            p.AddLineToPoint(*self.coordinates(i, self._height))
+        gc.StrokePath(p)
+        p = gc.CreatePath()
         for x, y, d in self._walls:
-            ctx.move_to(*self.coordinates(x, y))
+            p.MoveToPoint(*self.coordinates(x, y))
             if d == 'v':
-               ctx.line_to(*self.coordinates(x, y+1))
+               p.AddLineToPoint(*self.coordinates(x, y+1))
             else:
-               ctx.line_to(*self.coordinates(x+1, y))
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.set_line_width(6)
-        ctx.stroke_preserve()    
-        ctx.set_source_rgb(1, 0, 0)
-        ctx.set_line_width(2)
-        ctx.stroke()
-        ctx.set_font_size(15)
+               p.AddLineToPoint(*self.coordinates(x+1, y))
+        gc.SetPen(self._wallPen1)
+        gc.StrokePath(p)
+        gc.SetPen(self._wallPen2)
+        gc.StrokePath(p)
         for r in self._robots.itervalues():
-            ctx.save()
-            r.paintTrail(ctx)
-            ctx.restore()
-        for k, v in self._beepers.iteritems():
-            x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
-            ctx.set_source_rgb(0.7, 0.7, 1)
-            ctx.arc(x, y, 14, 0, 2*math.pi)
-            ctx.fill()
-            ctx.set_source_rgb(1, 1, 1)
-            ctx.arc(x, y, 11, 0, 2*math.pi)
-            ctx.fill()
-            ctx.set_source_rgb(0, 0, 0)
-            t = str(v)
-            exts = ctx.text_extents(t)
-            ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
-            ctx.show_text(t)
+            gc.PushState()
+            r.paintTrail(gc)
+            gc.PopState()
+        #for k, v in self._beepers.iteritems():
+        #    x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
+        #    ctx.set_source_rgb(0.7, 0.7, 1)
+        #    ctx.arc(x, y, 14, 0, 2*math.pi)
+        #    ctx.fill()
+        #    ctx.set_source_rgb(1, 1, 1)
+        #    ctx.arc(x, y, 11, 0, 2*math.pi)
+        #    ctx.fill()
+        #    ctx.set_source_rgb(0, 0, 0)
+        #    t = str(v)
+        #    exts = ctx.text_extents(t)
+        #    ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
+        #    ctx.show_text(t)
         for r in self._robots.itervalues():
-            ctx.save()
-            r.paint(ctx)
-            ctx.restore()
+            gc.PushState()
+            r.paint(gc)
+            gc.PopState()
 
     def paintBounds(self, x, y, w, h):
         xl, yl = self.coordinates(x, y + h)
@@ -349,13 +359,10 @@ class MazeWindow(wx.PyControl):
         self._world._maze.addListener(self.onMazeChange)
     
     def OnPaint(self, e):
-        self.paint(self.GetUpdateRegion().GetBox())
-        
-    def paint(self, box):
-        ctx = wx.lib.wxcairo.ContextFromDC(wx.PaintDC(self))
-        ctx.rectangle(box.GetX(), box.GetY(), box.GetWidth(), box.GetHeight())
-        ctx.clip()
-        self._world._maze.paint(ctx)
+        dc = wx.PaintDC(self)
+        #self.DoPrepareDC(dc) doesn't seem to work
+        gc = wx.GraphicsContext.Create(dc)
+        self._world._maze.paint(gc)
                 
     def onMazeChange(self, maze, *args, **kw):
         self.RefreshRect(self._world._maze.paintBounds(*args, **kw))
