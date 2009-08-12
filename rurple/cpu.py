@@ -61,13 +61,17 @@ class TraceThread(threading.Thread):
         return self._tracefunc
 
 class CPU(object):
+    _STOP = 1
+    _PAUSE = 2
+    _RUN = 3
+    
     def __init__(self, ui):
         self._ui = ui
         self._lineTime = 1000
         self._clear()
     
     def _clear(self):
-        self._state = "stop"
+        self._state = self._STOP
         self._timer = None
         self._thread = None
         self._rcb = None
@@ -79,11 +83,11 @@ class CPU(object):
             self._timer = wx.CallLater(self._lineTime, self._release)
     
     def trace(self, rcb, lineno):
-        if self._state == "stop":
+        if self._state == self._STOP:
             return # FIXME: assert out
         self._ui.traceLine(lineno)
         self._rcb = rcb
-        if self._state == "run":
+        if self._state == self._RUN:
             self._timer = wx.CallLater(self._lineTime, self._release)
     
     def _stopTimer(self):
@@ -113,27 +117,27 @@ class CPU(object):
         self._thread.start()
     
     def run(self):
-        if self._state == "stop":
-            self._state = "run"
+        if self._state == self._STOP:
+            self._state = self._RUN
             self._ui.running()
             self._start()
-        elif self._state == "pause":
-            self._state = "run"
+        elif self._state == self._PAUSE:
+            self._state = self._RUN
             self._ui.running()
             self._release()
     
     def pause(self):
-        if self._state == "stop":
-            self._state = "pause"
+        if self._state == self._STOP:
+            self._state = self._PAUSE
             self._ui.pausing()
             self._start()
-        elif self._state == "run":
-            self._state = "pause"
+        elif self._state == self._RUN:
+            self._state = self._PAUSE
             self._ui.pausing()
             self._stopTimer()
     
     def stop(self):
-        if self._state == "stop":
+        if self._state == self._STOP:
             return
         self._stopTimer()
         if self._thread:
