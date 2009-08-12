@@ -368,6 +368,10 @@ class MazeWindow(wx.PyControl):
         self.SetBestSize(self._world._maze.size())
         wx.EVT_PAINT(self, self.OnPaint)
         self._world._maze.addListener(self.onMazeChange)
+        self.SetBackgroundColour('white')
+        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
+        self.Bind(wx.EVT_CHAR, self.OnKey, self)
+        self.SetFocus()
     
     def OnPaint(self, e):
         dc = wx.PaintDC(self)
@@ -377,14 +381,6 @@ class MazeWindow(wx.PyControl):
                 
     def onMazeChange(self, maze, *args, **kw):
         self.RefreshRect(self._world._maze.paintBounds(*args, **kw))
-
-class EditableMazeWindow(MazeWindow):
-    def __init__(self, *args, **kw):
-        MazeWindow.__init__(self, *args, **kw)
-        self.SetBackgroundColour('white')
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
-        self.Bind(wx.EVT_CHAR, self.OnKey, self)
-        self.SetFocus()
 
     def _beeperSetter(self, x, y, i):
         def f(e):
@@ -536,7 +532,7 @@ class World(object):
         return self._maze.staterep 
         
     def makeWindow(self, parent):
-        return EditableMazeWindow(parent, world=self)
+        return MazeWindow(parent, world=self)
 
     def menu(self, menu):
         return [
