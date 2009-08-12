@@ -514,9 +514,7 @@ class NewDialog(wx.Dialog):
             e.Skip()
 
 class World(object):
-    def __init__(self, ui, state=None):
-        if state is None:
-            state = self._initstate(10, 10)
+    def __init__(self, ui, state):
         self._ui = ui
         self._maze = Maze(state)
         # cheat - use a var instead of a property
@@ -624,3 +622,4 @@ class World(object):
         d.ShowModal()
 
 __all__ = [World]
+

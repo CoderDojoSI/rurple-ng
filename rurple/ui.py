@@ -62,7 +62,8 @@ class RurFrame(wx.Frame):
             filemenu.Append(wx.ID_ANY, "Open sa&mple...", 
                 "Open a sample program"))
         self.Bind(wx.EVT_MENU, self.OnSave,
-            filemenu.Append(wx.ID_SAVE,"&Save", "Save the current program"))
+            filemenu.Append(wx.ID_SAVE,"&Save", 
+                "Save the current program"))
         self.Bind(wx.EVT_MENU, self.OnSaveAs,
             filemenu.Append(wx.ID_SAVEAS,"Save &As...", 
                 "Save the current program with a different filename"))
@@ -98,7 +99,8 @@ class RurFrame(wx.Frame):
             self._worldMenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSave,
-            self._worldMenu.Append(wx.ID_ANY,"&Save", "Save the current world"))
+            self._worldMenu.Append(wx.ID_ANY,"&Save", 
+                "Save the current world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
             self._worldMenu.Append(wx.ID_ANY,"Save &As...", 
                 "Save the current world with a different filename"))
@@ -152,8 +154,8 @@ class RurFrame(wx.Frame):
         if os.path.exists(dw):
             self._openWorld(dw)
         else:
-            # FIXME: open a file
-            self.world = rurple.worlds.maze.World(self)
+            self._openWorld(os.path.join(self._sharePath, 
+                "worlds", "blank.wld"))
 
     def OnNew(self, e):
         self._cpu.stop()
