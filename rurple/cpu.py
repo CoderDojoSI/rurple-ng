@@ -21,7 +21,7 @@ class TraceThread(threading.Thread):
             try:
                 exec self._program in self._globals
                 wx.CallAfter(self._cpu.done)
-            except Exception, e:
+            except BaseException, e:
                 wx.CallAfter(self._cpu.failed, e)
         finally:
             # not really necessary - thread's done anyway
