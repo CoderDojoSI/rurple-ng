@@ -13,8 +13,6 @@ Still to do:
 
 - support multiple robots better
 
-- use Refresh on windows
-- use wx.GraphicsContext rather than Cairo
 - index robots rather than naming them
 - follow moving robot in scrolled window
 
@@ -85,4 +83,6 @@ Done:
 - write __name__ into world dict
 - tighter redraw of world
 - input_int, input_string
+- use Refresh on windows
+- use wx.GraphicsContext rather than Cairo
 
