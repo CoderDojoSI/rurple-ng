@@ -20,7 +20,7 @@ class Robot(object):
 
         self.runStart()
         self._maze.addRobot(self)
-        self._maze.triggerListeners(self._x, self._y, 1, 1)
+        self._maze.repaintSquares(self._x, self._y, 1, 1)
 
     def runStart(self):
         self._trail = [(self._x, self._y, self._dir)]
@@ -31,25 +31,25 @@ class Robot(object):
         if self._dir == 0:
             self._x += 1
             self._trail.append((self._x, self._y, self._dir))
-            self._maze.triggerListeners(self._x -1, self._y, 2, 1)
+            self._maze.repaintSquares(self._x -1, self._y, 2, 1)
         elif self._dir == 1:
             self._y += 1
             self._trail.append((self._x, self._y, self._dir))
-            self._maze.triggerListeners(self._x, self._y -1, 1, 2)
+            self._maze.repaintSquares(self._x, self._y -1, 1, 2)
         elif self._dir == 2:
             self._x -= 1
             self._trail.append((self._x, self._y, self._dir))
-            self._maze.triggerListeners(self._x, self._y, 2, 1)
+            self._maze.repaintSquares(self._x, self._y, 2, 1)
         else:
             self._y -= 1
             self._trail.append((self._x, self._y, self._dir))
-            self._maze.triggerListeners(self._x, self._y, 1, 2)
+            self._maze.repaintSquares(self._x, self._y, 1, 2)
     
     def turn_left(self):
         self._dir += 1
         self._dir %= 4
         self._trail.append((self._x, self._y, self._dir))
-        self._maze.triggerListeners(self._x, self._y, 1, 1)
+        self._maze.repaintSquares(self._x, self._y, 1, 1)
 
     def pick_beeper(self):
         self._maze.pickBeeper(self._x, self._y)
@@ -155,9 +155,9 @@ class Maze(object):
             return
         self._walls ^= set([(x, y, d)])
         if d == 'h':
-            self.triggerListeners(x-0.5, y-0.5, 2, 1)
+            self.repaintSquares(x-0.5, y-0.5, 2, 1)
         else:
-            self.triggerListeners(x-0.5, y-0.5, 1, 2)
+            self.repaintSquares(x-0.5, y-0.5, 1, 2)
 
     def addRobot(self, r):
         n = r.name
@@ -183,7 +183,7 @@ class Maze(object):
                 del self._beepers[(x, y)]
         else:
             self._beepers[(x, y)] = i
-        self.triggerListeners(x, y, 1, 1)
+        self.repaintSquares(x, y, 1, 1)
 
     def countBeepers(self, x, y):
         return self._beepers.get((x, y), 0)
@@ -230,10 +230,10 @@ class Maze(object):
         for r in self._robots.itervalues():
             r.runStart()
         # after deleting ink trails, redraw all
-        self.triggerListeners(0, 0, self._width, self._height)
+        self.repaintSquares(0, 0, self._width, self._height)
 
-    def triggerListeners(self, x, y, w, h):
-        self._world.triggerListeners(x, y, w, h)
+    def repaintSquares(self, x, y, w, h):
+        self._world.repaintSquares(x, y, w, h)
 
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
@@ -276,7 +276,7 @@ class MazeWindow(wx.PyControl):
         gc = wx.GraphicsContext.Create(dc)
         self.paint(gc, self._world._maze)
                 
-    def onMazeChange(self, *args, **kw):
+    def repaintSquares(self, *args, **kw):
         self.RefreshRect(self.paintBounds(*args, **kw))
 
     def _beeperSetter(self, x, y, i):
@@ -547,9 +547,9 @@ class World(object):
         self._window = MazeWindow(parent, world=self)
         return self._window
 
-    def triggerListeners(self, x, y, w, h):
+    def repaintSquares(self, x, y, w, h):
         if self._window is not None:
-            self._window.onMazeChange(x, y, w, h)
+            self._window.repaintSquares(x, y, w, h)
 
     def menu(self, menu):
         return [
