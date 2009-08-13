@@ -54,6 +54,7 @@ class Robot(object):
     def pick_beeper(self):
         self._maze.pickBeeper(self._x, self._y)
         self._beepers += 1
+        self._maze.statusChanged()
 
     def put_beeper(self):
         if self._beepers == 0:
@@ -165,6 +166,7 @@ class Maze(object):
             raise rurple.world.WorldException("Already got a robot called %s" % n)
         self._robots[n] = r
         self._defaultRobot = r
+        self.statusChanged()
 
     def pickBeeper(self, x, y):
         b = self.countBeepers(x, y)
@@ -234,6 +236,9 @@ class Maze(object):
 
     def repaintSquares(self, x, y, w, h):
         self._world.repaintSquares(x, y, w, h)
+        
+    def statusChanged(self):
+        self._world.statusChanged()
 
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
@@ -535,6 +540,7 @@ class World(object):
     def __init__(self, ui, state):
         self._ui = ui
         self._window = None
+        self._maze = None
         self._maze = Maze(self, state)
         # cheat - use a var instead of a property
         self.editable = True
@@ -545,12 +551,18 @@ class World(object):
         
     def makeWindow(self, parent):
         self._window = MazeWindow(parent, world=self)
+        self.statusChanged()
         return self._window
 
     def repaintSquares(self, x, y, w, h):
         if self._window is not None:
             self._window.repaintSquares(x, y, w, h)
 
+    def statusChanged(self):
+        if self._maze is not None:
+            self._ui.setWorldStatus("Robot \"%s\" has %s beepers"
+                % (self._maze.defaultRobot.name, self._maze.defaultRobot.beepers))
+            
     def menu(self, menu):
         return [
             (self.OnBeeperMenu, menu.Append(wx.ID_ANY, "Set beepers...")),

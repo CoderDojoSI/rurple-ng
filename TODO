@@ -1,7 +1,5 @@
 Still to do:
 
-- useful status bar info
-
 - make Save As warn if a filename exists already
 - style exceptions properly
 - make robot look nicer
@@ -85,4 +83,4 @@ Done:
 - add save (not save as) menu items
 - fix scrolling world window problem
 - fix sash gravity problems
-
+- useful status bar info
