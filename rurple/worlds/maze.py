@@ -82,24 +82,19 @@ class Robot(object):
         return self._dir == 1
 
     @property
-    def name(self):
-        return self._name
+    def name(self): return self._name
     
     @property
-    def x(self):
-        return self._x
+    def x(self): return self._x
         
     @property
-    def y(self):
-        return self._y
+    def y(self): return self._y
         
     @property
-    def dir(self):
-        return self._dir
+    def dir(self): return self._dir
         
     @property
-    def beepers(self):
-        return self._beepers
+    def beepers(self): return self._beepers
     
     @beepers.setter
     def beepers(self, x):
@@ -108,8 +103,7 @@ class Robot(object):
         self._beepers = int(x)
     
     @property
-    def trail(self):
-        return self._trail
+    def trail(self): return self._trail
     
     @property
     def staterep(self):
@@ -195,28 +189,22 @@ class Maze(object):
         return self._beepers.get((x, y), 0)
 
     @property
-    def width(self):
-        return self._width
+    def width(self): return self._width
 
     @property
-    def height(self):
-        return self._height
+    def height(self): return self._height
 
     @property
-    def walls(self):
-        return self._walls
+    def walls(self): return self._walls
 
     @property
-    def robots(self):
-        return self._robots
+    def robots(self): return self._robots
 
     @property
-    def beepers(self):
-        return self._beepers
+    def beepers(self): return self._beepers
 
     @property
-    def defaultRobot(self):
-        return self._defaultRobot
+    def defaultRobot(self): return self._defaultRobot
 
     @property
     def staterep(self):
