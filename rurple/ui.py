@@ -410,7 +410,8 @@ class RurFrame(wx.Frame):
 
 class App(wx.App):
     def OnInit(self):
-        frame = RurFrame(None, title="Rurple", size=(900,1000))
+        w, h = wx.DisplaySize()
+        frame = RurFrame(None, title="Rurple", size=(int(w*0.85), int(h*0.85)))
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
