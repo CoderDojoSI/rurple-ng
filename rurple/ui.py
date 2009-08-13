@@ -59,13 +59,13 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnOpen,
             filemenu.Append(wx.ID_OPEN, "&Open...", "Open a program"))
         self.Bind(wx.EVT_MENU, self.OnOpenSample,
-            filemenu.Append(wx.ID_ANY, "Open sa&mple...", 
+            filemenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample program"))
         self.Bind(wx.EVT_MENU, self.OnSave,
-            filemenu.Append(wx.ID_SAVE,"&Save", 
+            filemenu.Append(wx.ID_SAVE,"&Save",
                 "Save the current program"))
         self.Bind(wx.EVT_MENU, self.OnSaveAs,
-            filemenu.Append(wx.ID_SAVEAS,"Save &As...", 
+            filemenu.Append(wx.ID_SAVEAS,"Save &As...",
                 "Save the current program with a different filename"))
         filemenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnExit,
@@ -73,25 +73,25 @@ class RurFrame(wx.Frame):
         menuBar.Append(filemenu,"&File")
         runmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnRun,
-            runmenu.Append(wx.ID_ANY,"&Run\tF8", 
+            runmenu.Append(wx.ID_ANY,"&Run\tF8",
                 "Start the program running"))
         self.Bind(wx.EVT_MENU, self.OnPause,
             runmenu.Append(wx.ID_ANY,"&Pause", "Pause the program"))
         self.Bind(wx.EVT_MENU, self.OnStop,
-            runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2", 
+            runmenu.Append(wx.ID_ANY,"S&top\tCtrl+F2",
                 "Stop the program"))
         self.Bind(wx.EVT_MENU, self.OnStep,
-            runmenu.Append(wx.ID_ANY,"&Step\tF5", 
+            runmenu.Append(wx.ID_ANY,"&Step\tF5",
                 "Step one line of the program"))
         menuBar.Append(runmenu,"&Run")
         
         self._worldMenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnWorldReset,
-            self._worldMenu.Append(wx.ID_ANY,"&Reset\tCtrl+R", 
+            self._worldMenu.Append(wx.ID_ANY,"&Reset\tCtrl+R",
                 "Reset world to before program was run"))
         self._worldMenu.AppendSeparator()
         self.Bind(wx.EVT_MENU, self.OnWorldNew,
-            self._worldMenu.Append(wx.ID_ANY,"&New...", 
+            self._worldMenu.Append(wx.ID_ANY,"&New...",
                 "Start a new world"))
         self.Bind(wx.EVT_MENU, self.OnWorldOpen,
             self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
@@ -99,17 +99,17 @@ class RurFrame(wx.Frame):
             self._worldMenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSave,
-            self._worldMenu.Append(wx.ID_ANY,"&Save", 
+            self._worldMenu.Append(wx.ID_ANY,"&Save",
                 "Save the current world"))
         self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
-            self._worldMenu.Append(wx.ID_ANY,"Save &As...", 
+            self._worldMenu.Append(wx.ID_ANY,"Save &As...",
                 "Save the current world with a different filename"))
         self._worldMenu.AppendSeparator()
         self._worldMenuItems = self._worldMenu.MenuItemCount
         menuBar.Append(self._worldMenu,"&World")
         helpmenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnAbout,
-            helpmenu.Append(wx.ID_ABOUT, "&About...\tF1", 
+            helpmenu.Append(wx.ID_ABOUT, "&About...\tF1",
                 "Information about Rurple"))
         menuBar.Append(helpmenu,"&Help")
         self.SetMenuBar(menuBar)
@@ -132,13 +132,13 @@ class RurFrame(wx.Frame):
              "Stop", self._toBitmap('stop'),
              shortHelp="Stop program (Ctrl+F2)")
         self.Bind(wx.EVT_TOOL, self.OnStop, self._stopTool)
-        self.Bind(wx.EVT_TOOL, self.OnStep, 
+        self.Bind(wx.EVT_TOOL, self.OnStep,
             self._toolbar.AddLabelTool(wx.ID_ANY, "step",
                 self._toBitmap('step'),
                 shortHelp="Step program (F5)"))
         self._toolbar.ToggleTool(self._stopTool.Id, True)
         self._slideScale = LogScale(20, 3000, 100)
-        self._slider = wx.Slider(self._toolbar, size=(250,-1), 
+        self._slider = wx.Slider(self._toolbar, size=(250,-1),
             value=int(0.5 +  self._slideScale.toTicks(300)))
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
         self.OnSlide(None)
@@ -154,7 +154,7 @@ class RurFrame(wx.Frame):
         if os.path.exists(dw):
             self._openWorld(dw)
         else:
-            self._openWorld(os.path.join(self._sharePath, 
+            self._openWorld(os.path.join(self._sharePath,
                 "worlds", "blank.wld"))
 
     def OnNew(self, e):
@@ -361,7 +361,7 @@ class RurFrame(wx.Frame):
         self._world.runStart()
 
     # called by cpu
-    def running(self):    
+    def running(self):
         self._toolbar.ToggleTool(self._runTool.Id, True)
 
     # called by cpu
@@ -386,16 +386,16 @@ class RurFrame(wx.Frame):
     # called by cpu
     def failed(self, e):
         if isinstance(e, world.WorldException):
-            print("Exception on line %s:" % self._editor.mark, 
+            print("Exception on line %s:" % self._editor.mark,
                 e, file=self._logWindow)
             self._world.handleException(self, e)
         else:
             # exceptions are where isinstance is allowed
-            if (isinstance(e, SyntaxError) 
+            if (isinstance(e, SyntaxError)
                 and self._editor.mark is None
                 and e.filename == "<string>"):
                 self._editor.mark = e.lineno
-            print("Exception on line %s:" % self._editor.mark, 
+            print("Exception on line %s:" % self._editor.mark,
                 e, file=self._logWindow)
             d = wx.MessageDialog(self, message=str(e),
                 caption = "Error running your program",
@@ -404,7 +404,7 @@ class RurFrame(wx.Frame):
         self.stopped()
 
     # called by world
-    def setWorldStatus(self, s):   
+    def setWorldStatus(self, s):
         self._statusBar.SetStatusText(s, 1)
 
 class App(wx.App):

@@ -24,7 +24,7 @@ class PythonEditor(stc.StyledTextCtrl):
     MARK_RUNNING = 7
 
     _styleSpecs = [
-        (stc.STC_P_DEFAULT, 
+        (stc.STC_P_DEFAULT,
             "fore:#000000,face:%(mono)s,size:%(size)d"),
         (stc.STC_P_COMMENTLINE,
             "fore:#009900,face:%(mono)s,size:%(size)d"),
@@ -46,14 +46,14 @@ class PythonEditor(stc.StyledTextCtrl):
             "fore:#3333ff,bold,face:%(mono)s,size:%(size)d"),
         (stc.STC_P_OPERATOR,
             "bold,size:%(size)d"),
-        (stc.STC_P_IDENTIFIER, 
+        (stc.STC_P_IDENTIFIER,
             "fore:#000000,face:%(mono)s,size:%(size)d"),
         (stc.STC_P_COMMENTBLOCK,
             "fore:#7F7F7F,size:%(size)d"),
         (stc.STC_P_STRINGEOL, # End of line where string is not closed
             "fore:#000000,face:%(mono)s,back:#E0C0E0,eol,size:%(size)d"),
         (stc.STC_STYLE_INDENTGUIDE, "fore:#333333"),
-        (stc.STC_STYLE_LINENUMBER, 
+        (stc.STC_STYLE_LINENUMBER,
             "back:#99AACC,face:%(helv)s,size:%(size2)d"),
     ]
 

@@ -60,7 +60,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnExit,
             filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program"))
         menuBar = wx.MenuBar()
-        menuBar.Append(filemenu,"&File") 
+        menuBar.Append(filemenu,"&File")
         self.SetMenuBar(menuBar)
         self._vsash = MagicSash(self)
         vpanel = wx.Panel(self._vsash)

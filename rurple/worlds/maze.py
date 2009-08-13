@@ -116,11 +116,11 @@ class Robot(object):
         return self._maze.isPassable(self._x, self._y, self._dir)
 
     def left_is_clear(self):
-        return self._maze.isPassable(self._x, self._y, 
+        return self._maze.isPassable(self._x, self._y,
             (self._dir +1) % 4)
 
     def right_is_clear(self):
-        return self._maze.isPassable(self._x, self._y, 
+        return self._maze.isPassable(self._x, self._y,
             (self._dir -1) % 4)
 
     def facing_north(self):
@@ -144,7 +144,7 @@ class Robot(object):
     def staterep(self):
         return {
             "name": self._name,
-            "x": self._x, "y": self._y, "dir": self._dir, 
+            "x": self._x, "y": self._y, "dir": self._dir,
             "beepers": self._beepers,
         }
 
@@ -385,11 +385,11 @@ class MazeWindow(wx.PyControl):
             self._world._maze.toggleWall(*near)
         else:
             x, y = near
-            if (x >= 0 and x < self._world._maze._width 
+            if (x >= 0 and x < self._world._maze._width
                 and y >= 0 and y < self._world._maze._height):
                 menu = wx.Menu()
                 for i in range(10):
-                    self.Bind(wx.EVT_MENU, 
+                    self.Bind(wx.EVT_MENU,
                         self._beeperSetter(x, y, i),
                         menu.Append(wx.ID_ANY, str(i)))
                 self.PopupMenu(menu, e.GetPosition())
@@ -428,7 +428,7 @@ class BeeperDialog(wx.Dialog):
         # This line doesn't grow horizontally.  Who knows why?
         line = wx.StaticLine(self, wx.ID_ANY,
             size=(1,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0, 
+        sizer.Add(line, 0,
             wx.GROW|wx.ALIGN_CENTER_VERTICAL, 5)
         
         btnsizer = wx.StdDialogButtonSizer()
@@ -473,7 +473,7 @@ class NewDialog(wx.Dialog):
 
         line = wx.StaticLine(self, wx.ID_ANY,
             size=(1,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0, 
+        sizer.Add(line, 0,
             wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
         
         btnsizer = wx.StdDialogButtonSizer()
@@ -497,9 +497,9 @@ class NewDialog(wx.Dialog):
 
     def _initstate(self, w, h):
         return {
-            "width": w, 
-            "walls": [], 
-            "beepers": [], 
+            "width": w,
+            "walls": [],
+            "beepers": [],
             "robots": [
                 {"name": "robot", "y": 0, "x": 0, "dir": 0, "beepers": 0}
             ],
@@ -516,7 +516,7 @@ class World(object):
 
     @property
     def staterep(self):
-        return self._maze.staterep 
+        return self._maze.staterep
         
     def makeWindow(self, parent):
         self._window = MazeWindow(parent, world=self)
@@ -576,7 +576,7 @@ class World(object):
         res.update(dict([
             (name, t.proxyFunction(self._maze.proxyRobot(name)))
             for name in [
-                "move", "turn_left", 
+                "move", "turn_left",
                 "pick_beeper", "put_beeper",
                 "on_beeper", "got_beeper",
                 "front_is_clear", "left_is_clear", "right_is_clear",
