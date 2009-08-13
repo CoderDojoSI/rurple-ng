@@ -6,9 +6,8 @@ import wx
 
 import rurple.world
 
-# FIXME: the Observer pattern is overkill here, and
-# the separation between Maze and World probably not
-# useful or well thought out.
+# FIXME: the separation between Maze and World is not
+# well thought out.
 
 class Robot(object):
     def __init__(self, maze, state):
@@ -19,10 +18,10 @@ class Robot(object):
         self._dir = state['dir']
         self._beepers = state['beepers']
 
-        self._brush = wx.Brush('blue')
-        self._pen = wx.Pen('blue')
-        self._pen.SetWidth(4)
-        self._pen.SetCap(wx.CAP_BUTT)
+        self._robotBrush = wx.Brush('blue')
+        self._robotPen = wx.Pen('blue')
+        self._robotPen.SetWidth(4)
+        self._robotPen.SetCap(wx.CAP_BUTT)
         self._trailPen = wx.Pen('black')
         self._trailPen.SetWidth(1)
 
@@ -34,11 +33,11 @@ class Robot(object):
         x, y = self._maze.coordinates(self._x + .5, self._y + .5)
         gc.Translate(x, y)
         gc.Rotate(-math.pi * 0.5 * self._dir)
-        gc.SetBrush(self._brush)
+        gc.SetBrush(self._robotBrush)
         p = gc.CreatePath()
         p.AddCircle(0, 0, 7)
         gc.FillPath(p)
-        gc.SetPen(self._pen)
+        gc.SetPen(self._robotPen)
         p = gc.CreatePath()
         p.MoveToPoint(10, -10)
         p.AddLineToPoint(0, -10)
