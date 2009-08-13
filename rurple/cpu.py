@@ -15,14 +15,22 @@ class TraceThread(threading.Thread):
         self._stopped = False
         self._traceProxy = self.threadAwareProxyFunction(self._cpu.trace)
     
+    def _done(self):
+        if not self._stopped:
+            self._cpu.done()
+    
+    def _failed(self, e):
+        if not self._stopped:
+            self._cpu.failed(e)
+    
     def run(self):
         try:
             sys.settrace(self._tracefunc)
             try:
                 exec self._program in self._globals
-                wx.CallAfter(self._cpu.done)
+                wx.CallAfter(self._done)
             except BaseException, e:
-                wx.CallAfter(self._cpu.failed, e)
+                wx.CallAfter(self._failed, e)
         finally:
             # not really necessary - thread's done anyway
             sys.settrace(None)
