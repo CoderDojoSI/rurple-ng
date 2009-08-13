@@ -122,8 +122,6 @@ class Robot(object):
 class Maze(object):
     def __init__(self, world, state):
         self._world = world
-        self._spacing = 20
-        self._offset = 20
         self._width = state['width']
         self._height = state['height']
         self._walls = (
@@ -139,29 +137,6 @@ class Maze(object):
         self._robots = {}
         for r in state['robots']:
             Robot(self, r)
-
-        self._gridPen = wx.Pen('black')
-        self._gridPen.SetWidth(0.3)
-        self._gridPen.SetCap(wx.CAP_PROJECTING)
-        self._wallPen1 = wx.Pen('black')
-        self._wallPen1.SetWidth(6)
-        self._wallPen1.SetCap(wx.CAP_PROJECTING)
-        self._wallPen2 = wx.Pen('red')
-        self._wallPen2.SetWidth(2)
-        self._wallPen2.SetCap(wx.CAP_PROJECTING)
-        self._beeperBrush1 = wx.Brush('cyan')
-        self._beeperBrush2 = wx.Brush('white')
-        self._textBrush = wx.Brush('black')
-        self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-        self._font.SetWeight(wx.BOLD)
-        self._font.SetPointSize(18)
-        self._robotBrush = wx.Brush('blue')
-        self._robotPen = wx.Pen('blue')
-        self._robotPen.SetWidth(4)
-        self._robotPen.SetCap(wx.CAP_BUTT)
-        self._trailPen = wx.Pen('black')
-        self._trailPen.SetWidth(1)
-
     
     def isInterior(self, x, y, d):
         if x >= self._width or y >= self._height:
@@ -219,16 +194,153 @@ class Maze(object):
     def countBeepers(self, x, y):
         return self._beepers.get((x, y), 0)
 
+    @property
+    def width(self):
+        return self._width
+
+    @property
+    def height(self):
+        return self._height
+
+    @property
+    def walls(self):
+        return self._walls
+
+    @property
+    def robots(self):
+        return self._robots
+
+    @property
+    def beepers(self):
+        return self._beepers
+
+    @property
+    def defaultRobot(self):
+        return self._defaultRobot
+
+    @property
+    def staterep(self):
+        p = "rurple.worlds."
+        n =  __name__
+        if not n.startswith(p):
+            raise Exception("Module in wrong namespace, can't save")
+        return {
+            "world": n[len(p):],
+            "width": self._width,
+            "height": self._height,
+            "walls": list(w for w in self._walls if self.isInterior(*w)),
+            "beepers": [(k, v) for k, v in self._beepers.iteritems()],
+            "robots": [v.staterep for v in self._robots.itervalues()],
+        }
+    
+    def proxyRobot(self, name):
+        return eval(
+            "lambda *a, **kw: self.defaultRobot.%s(*a, **kw)" % name,
+            {"self": self})
+
+    def runStart(self):
+        for r in self._robots.itervalues():
+            r.runStart()
+        # after deleting ink trails, redraw all
+        self.triggerListeners(0, 0, self._width, self._height)
+
+    def triggerListeners(self, x, y, w, h):
+        self._world.triggerListeners(x, y, w, h)
+
+class MazeWindow(wx.PyControl):
+    def __init__(self, *args, **kw):
+        self._world = kw['world']
+        del kw['world']
+        wx.Window.__init__(self, *args, **kw)
+        self._spacing = 20
+        self._offset = 20
+        self.SetBestSize(self.size())
+        wx.EVT_PAINT(self, self.OnPaint)
+        self.SetBackgroundColour('white')
+        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
+        self.Bind(wx.EVT_CHAR, self.OnKey, self)
+        self.SetFocus()
+
+        self._gridPen = wx.Pen('black')
+        self._gridPen.SetWidth(0.3)
+        self._gridPen.SetCap(wx.CAP_PROJECTING)
+        self._wallPen1 = wx.Pen('black')
+        self._wallPen1.SetWidth(6)
+        self._wallPen1.SetCap(wx.CAP_PROJECTING)
+        self._wallPen2 = wx.Pen('red')
+        self._wallPen2.SetWidth(2)
+        self._wallPen2.SetCap(wx.CAP_PROJECTING)
+        self._beeperBrush1 = wx.Brush('cyan')
+        self._beeperBrush2 = wx.Brush('white')
+        self._textBrush = wx.Brush('black')
+        self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self._font.SetWeight(wx.BOLD)
+        self._font.SetPointSize(18)
+        self._robotBrush = wx.Brush('blue')
+        self._robotPen = wx.Pen('blue')
+        self._robotPen.SetWidth(4)
+        self._robotPen.SetCap(wx.CAP_BUTT)
+        self._trailPen = wx.Pen('black')
+        self._trailPen.SetWidth(1)
+    
+    def OnPaint(self, e):
+        dc = wx.PaintDC(self)
+        gc = wx.GraphicsContext.Create(dc)
+        self.paint(gc, self._world._maze)
+                
+    def onMazeChange(self, *args, **kw):
+        self.RefreshRect(self.paintBounds(*args, **kw))
+
+    def _beeperSetter(self, x, y, i):
+        def f(e):
+            self._world._maze.setBeepers(x, y, i)
+        return f
+
+    def OnClick(self, e):
+        if not self._world.editable:
+            return
+        near = self.nearest(e.GetX(), e.GetY())
+        if len(near) == 3:
+            self._world._maze.toggleWall(*near)
+        else:
+            x, y = near
+            if (x >= 0 and x < self._world._maze.width
+                and y >= 0 and y < self._world._maze.height):
+                menu = wx.Menu()
+                for i in range(10):
+                    self.Bind(wx.EVT_MENU,
+                        self._beeperSetter(x, y, i),
+                        menu.Append(wx.ID_ANY, str(i)))
+                self.PopupMenu(menu, e.GetPosition())
+
+    def OnKey(self, e):
+        if not self._world.editable:
+            e.Skip()
+            return
+        code = e.GetKeyCode()
+        if code == wx.WXK_UP:
+            try:
+                self._world._maze.defaultRobot.move()
+            except rurple.world.WorldException, e:
+                self._world.handleException(self, e)
+        elif code == wx.WXK_LEFT:
+            try:
+                self._world._maze.defaultRobot.turn_left()
+            except rurple.world.WorldException, e:
+                self._world.handleException(self, e)
+
     def coordinates(self, x, y):
-        return self._offset + self._spacing*2*x, self._offset + self._spacing*2*(self._height - y)
+        m = self._world._maze
+        return self._offset + self._spacing*2*x, self._offset + self._spacing*2*(m.height - y)
         
     def nearest(self, x, y):
+        m = self._world._maze
         x -= self._offset
         y -= self._offset
         xx = (x % (self._spacing*2)) - self._spacing
         yy = -((y % (self._spacing*2)) - self._spacing)
         x = x // (self._spacing*2)
-        y = self._height - (y // (self._spacing*2)) -1
+        y = m.height - (y // (self._spacing*2)) -1
         if max(abs(xx), abs(yy)) < self._spacing * 0.58:
             return (x, y)
         elif xx >= yy and xx >= -yy:
@@ -278,18 +390,18 @@ class Maze(object):
             p.AddLineToPoint(*self._trailPoint(c))
         gc.StrokePath(p)
 
-    def paint(self, gc):
+    def paint(self, gc, maze):
         gc.SetPen(self._gridPen)
         p = gc.CreatePath()
-        for i in range(self._height +1):
+        for i in range(maze.height +1):
             p.MoveToPoint(*self.coordinates(0, i))
-            p.AddLineToPoint(*self.coordinates(self._width, i))
-        for i in range(self._width +1):
+            p.AddLineToPoint(*self.coordinates(maze.width, i))
+        for i in range(maze.width +1):
             p.MoveToPoint(*self.coordinates(i, 0))
-            p.AddLineToPoint(*self.coordinates(i, self._height))
+            p.AddLineToPoint(*self.coordinates(i, maze.height))
         gc.StrokePath(p)
         p = gc.CreatePath()
-        for x, y, d in self._walls:
+        for x, y, d in maze.walls:
             p.MoveToPoint(*self.coordinates(x, y))
             if d == 'v':
                p.AddLineToPoint(*self.coordinates(x, y+1))
@@ -299,13 +411,13 @@ class Maze(object):
         gc.StrokePath(p)
         gc.SetPen(self._wallPen2)
         gc.StrokePath(p)
-        for r in self._robots.itervalues():
+        for r in maze.robots.itervalues():
             gc.PushState()
             self.paintTrail(gc, r)
             gc.PopState()
         gc.SetFont(self._font)
 
-        for k, v in self._beepers.iteritems():
+        for k, v in maze.beepers.iteritems():
             x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
             gc.SetBrush(self._beeperBrush1)
             p = gc.CreatePath()
@@ -319,7 +431,7 @@ class Maze(object):
             t = str(v)
             exts = gc.GetFullTextExtent(t)
             gc.DrawText(t, x - 0.5*exts[0], y - 0.5*exts[1])
-        for r in self._robots.itervalues():
+        for r in maze.robots.itervalues():
             gc.PushState()
             self.paintRobot(gc, r)
             gc.PopState()
@@ -330,100 +442,10 @@ class Maze(object):
         return xl, yl, xh - xl, yh - yl
 
     def size(self):
-        return (2*self._offset + 2*self._width*self._spacing,
-            2*self._offset + 2*self._height*self._spacing)
+        m = self._world._maze
+        return (2*self._offset + 2*m.width*self._spacing,
+            2*self._offset + 2*m.height*self._spacing)
 
-    @property
-    def defaultRobot(self):
-        return self._defaultRobot
-
-    @property
-    def staterep(self):
-        p = "rurple.worlds."
-        n =  __name__
-        if not n.startswith(p):
-            raise Exception("Module in wrong namespace, can't save")
-        return {
-            "world": n[len(p):],
-            "width": self._width,
-            "height": self._height,
-            "walls": list(w for w in self._walls if self.isInterior(*w)),
-            "beepers": [(k, v) for k, v in self._beepers.iteritems()],
-            "robots": [v.staterep for v in self._robots.itervalues()],
-        }
-    
-    def proxyRobot(self, name):
-        return eval(
-            "lambda *a, **kw: self.defaultRobot.%s(*a, **kw)" % name,
-            {"self": self})
-
-    def runStart(self):
-        for r in self._robots.itervalues():
-            r.runStart()
-        # after deleting ink trails, redraw all
-        self.triggerListeners(0, 0, self._width, self._height)
-
-    def triggerListeners(self, x, y, w, h):
-        self._world.triggerListeners(x, y, w, h)
-
-class MazeWindow(wx.PyControl):
-    def __init__(self, *args, **kw):
-        self._world = kw['world']
-        del kw['world']
-        wx.Window.__init__(self, *args, **kw)
-        self.SetBestSize(self._world._maze.size())
-        wx.EVT_PAINT(self, self.OnPaint)
-        self.SetBackgroundColour('white')
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
-        self.Bind(wx.EVT_CHAR, self.OnKey, self)
-        self.SetFocus()
-    
-    def OnPaint(self, e):
-        dc = wx.PaintDC(self)
-        #self.DoPrepareDC(dc) doesn't seem to work
-        gc = wx.GraphicsContext.Create(dc)
-        self._world._maze.paint(gc)
-                
-    def onMazeChange(self, *args, **kw):
-        self.RefreshRect(self._world._maze.paintBounds(*args, **kw))
-
-    def _beeperSetter(self, x, y, i):
-        def f(e):
-            self._world._maze.setBeepers(x, y, i)
-        return f
-
-    def OnClick(self, e):
-        if not self._world.editable:
-            return
-        near = self._world._maze.nearest(e.GetX(), e.GetY())
-        if len(near) == 3:
-            self._world._maze.toggleWall(*near)
-        else:
-            x, y = near
-            if (x >= 0 and x < self._world._maze._width
-                and y >= 0 and y < self._world._maze._height):
-                menu = wx.Menu()
-                for i in range(10):
-                    self.Bind(wx.EVT_MENU,
-                        self._beeperSetter(x, y, i),
-                        menu.Append(wx.ID_ANY, str(i)))
-                self.PopupMenu(menu, e.GetPosition())
-
-    def OnKey(self, e):
-        if not self._world.editable:
-            e.Skip()
-            return
-        code = e.GetKeyCode()
-        if code == wx.WXK_UP:
-            try:
-                self._world._maze.defaultRobot.move()
-            except rurple.world.WorldException, e:
-                self._world.handleException(self, e)
-        elif code == wx.WXK_LEFT:
-            try:
-                self._world._maze.defaultRobot.turn_left()
-            except rurple.world.WorldException, e:
-                self._world.handleException(self, e)
 
 class BeeperDialog(wx.Dialog):
     def __init__(self, *a, **kw):
