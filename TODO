@@ -2,9 +2,6 @@ Still to do:
 
 - useful status bar info
 
-- fix scrolling world window problem
-- fix sash gravity problems
-
 - make Save As warn if a filename exists already
 - style exceptions properly
 - make robot look nicer
@@ -86,4 +83,6 @@ Done:
 - use Refresh on windows
 - use wx.GraphicsContext rather than Cairo
 - add save (not save as) menu items
+- fix scrolling world window problem
+- fix sash gravity problems
 

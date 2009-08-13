@@ -36,17 +36,17 @@ class RurFrame(wx.Frame):
         self._programFile = None
         self._worldFile = None
         self._cpu = cpu.CPU(self)
-        sash = wx.SplitterWindow(self)
-        self._editor = textctrl.PythonEditor(sash)
+        self._vsash = wx.SplitterWindow(self)
+        self._editor = textctrl.PythonEditor(self._vsash)
         dp = os.path.join(self._dotPath, "program.rur")
         if os.path.exists(dp):
             self._openProgram(dp)
-        hsash = wx.SplitterWindow(sash)
-        self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(hsash)
+        self._hsash = wx.SplitterWindow(self._vsash)
+        self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(self._hsash)
         self._worldWindow = None
-        sash.SplitVertically(self._editor, hsash)
-        self._logWindow = textctrl.LogWindow(hsash)
-        hsash.SplitHorizontally(self._worldParent, self._logWindow)
+        self._vsash.SplitVertically(self._editor, self._hsash)
+        self._logWindow = textctrl.LogWindow(self._hsash)
+        self._hsash.SplitHorizontally(self._worldParent, self._logWindow)
         self._worldParent.SetupScrolling()
         
         self._statusBar = self.CreateStatusBar()
@@ -145,6 +145,11 @@ class RurFrame(wx.Frame):
         self._toolbar.AddControl(self._slider)
         self._toolbar.Realize()
         self._reset()
+        w, h = self.Size
+        dw, dh = self._worldWindow.size()
+        self._vsash.SashGravity = 1
+        self._hsash.SashPosition = min(h, dh + 20)
+        self._vsash.SashPosition = max(0, w - (dw + 30))
 
     def _toBitmap(self, name):
         f = os.path.join(self._sharePath, 'images', '%s.png' % name)
