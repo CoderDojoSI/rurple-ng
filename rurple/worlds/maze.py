@@ -18,53 +18,9 @@ class Robot(object):
         self._dir = state['dir']
         self._beepers = state['beepers']
 
-        self._robotBrush = wx.Brush('blue')
-        self._robotPen = wx.Pen('blue')
-        self._robotPen.SetWidth(4)
-        self._robotPen.SetCap(wx.CAP_BUTT)
-        self._trailPen = wx.Pen('black')
-        self._trailPen.SetWidth(1)
-
         self.runStart()
         self._maze.addRobot(self)
         self._maze.triggerListeners(self._x, self._y, 1, 1)
-
-    def paint(self, gc):
-        x, y = self._maze.coordinates(self._x + .5, self._y + .5)
-        gc.Translate(x, y)
-        gc.Rotate(-math.pi * 0.5 * self._dir)
-        gc.SetBrush(self._robotBrush)
-        p = gc.CreatePath()
-        p.AddCircle(0, 0, 7)
-        gc.FillPath(p)
-        gc.SetPen(self._robotPen)
-        p = gc.CreatePath()
-        p.MoveToPoint(10, -10)
-        p.AddLineToPoint(0, -10)
-        p.AddLineToPoint(0, 10)
-        p.AddLineToPoint(10, 10)
-        gc.StrokePath(p)
-
-    def _trailPoint(self, p):
-        x, y, d = p
-        s = 0.1
-        if d == 0:
-            x -= s; y -= s
-        elif d == 1:
-            x += s; y -= s
-        elif d == 2:
-            x += s; y += s
-        else:
-            x -= s; y += s
-        return self._maze.coordinates(x + 0.5, y + 0.5)
-
-    def paintTrail(self, gc):
-        gc.SetPen(self._trailPen)
-        p = gc.CreatePath()
-        p.MoveToPoint(*self._trailPoint(self._trail[0]))
-        for c in self._trail[1:]:
-            p.AddLineToPoint(*self._trailPoint(c))
-        gc.StrokePath(p)
 
     def runStart(self):
         self._trail = [(self._x, self._y, self._dir)]
@@ -130,6 +86,18 @@ class Robot(object):
         return self._name
     
     @property
+    def x(self):
+        return self._x
+        
+    @property
+    def y(self):
+        return self._y
+        
+    @property
+    def dir(self):
+        return self._dir
+        
+    @property
     def beepers(self):
         return self._beepers
     
@@ -138,6 +106,10 @@ class Robot(object):
         assert x >= 0
         assert x == int(x)
         self._beepers = int(x)
+    
+    @property
+    def trail(self):
+        return self._trail
     
     @property
     def staterep(self):
@@ -165,6 +137,9 @@ class Maze(object):
         self._beepers = dict(
             (tuple(k), v) for k, v in state['beepers'])
         self._robots = {}
+        for r in state['robots']:
+            Robot(self, r)
+
         self._gridPen = wx.Pen('black')
         self._gridPen.SetWidth(0.3)
         self._gridPen.SetCap(wx.CAP_PROJECTING)
@@ -180,8 +155,13 @@ class Maze(object):
         self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self._font.SetWeight(wx.BOLD)
         self._font.SetPointSize(18)
-        for r in state['robots']:
-            Robot(self, r)
+        self._robotBrush = wx.Brush('blue')
+        self._robotPen = wx.Pen('blue')
+        self._robotPen.SetWidth(4)
+        self._robotPen.SetCap(wx.CAP_BUTT)
+        self._trailPen = wx.Pen('black')
+        self._trailPen.SetWidth(1)
+
     
     def isInterior(self, x, y, d):
         if x >= self._width or y >= self._height:
@@ -260,6 +240,44 @@ class Maze(object):
         else:
             return (x, y, 'h')
 
+    def paintRobot(self, gc, r):
+        x, y = self.coordinates(r.x + .5, r.y + .5)
+        gc.Translate(x, y)
+        gc.Rotate(-math.pi * 0.5 * r.dir)
+        gc.SetBrush(self._robotBrush)
+        p = gc.CreatePath()
+        p.AddCircle(0, 0, 7)
+        gc.FillPath(p)
+        gc.SetPen(self._robotPen)
+        p = gc.CreatePath()
+        p.MoveToPoint(10, -10)
+        p.AddLineToPoint(0, -10)
+        p.AddLineToPoint(0, 10)
+        p.AddLineToPoint(10, 10)
+        gc.StrokePath(p)
+
+    def _trailPoint(self, p):
+        x, y, d = p
+        s = 0.1
+        if d == 0:
+            x -= s; y -= s
+        elif d == 1:
+            x += s; y -= s
+        elif d == 2:
+            x += s; y += s
+        else:
+            x -= s; y += s
+        return self.coordinates(x + 0.5, y + 0.5)
+
+    def paintTrail(self, gc, r):
+        gc.SetPen(self._trailPen)
+        p = gc.CreatePath()
+        t = r.trail
+        p.MoveToPoint(*self._trailPoint(t[0]))
+        for c in t[1:]:
+            p.AddLineToPoint(*self._trailPoint(c))
+        gc.StrokePath(p)
+
     def paint(self, gc):
         gc.SetPen(self._gridPen)
         p = gc.CreatePath()
@@ -283,7 +301,7 @@ class Maze(object):
         gc.StrokePath(p)
         for r in self._robots.itervalues():
             gc.PushState()
-            r.paintTrail(gc)
+            self.paintTrail(gc, r)
             gc.PopState()
         gc.SetFont(self._font)
 
@@ -301,11 +319,9 @@ class Maze(object):
             t = str(v)
             exts = gc.GetFullTextExtent(t)
             gc.DrawText(t, x - 0.5*exts[0], y - 0.5*exts[1])
-            #ctx.move_to(x - exts[0] - 0.5*exts[2], y - exts[1] - 0.5*exts[3])
-            #ctx.show_text(t)
         for r in self._robots.itervalues():
             gc.PushState()
-            r.paint(gc)
+            self.paintRobot(gc, r)
             gc.PopState()
 
     def paintBounds(self, x, y, w, h):
