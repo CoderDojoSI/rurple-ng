@@ -463,8 +463,6 @@ class BeeperDialog(wx.Dialog):
 
 class NewDialog(wx.Dialog):
     def __init__(self, *a, **kw):
-        self._world = kw['world']
-        del kw['world']
         wx.Dialog.__init__(self, *a, **kw)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -475,10 +473,10 @@ class NewDialog(wx.Dialog):
         # Cheat - look into private members
         spinsizer = wx.BoxSizer(wx.HORIZONTAL)
         self._w = wx.SpinCtrl(self, min=1,
-            initial=self._world._maze._width)
+            initial=10)
         spinsizer.Add(self._w, 0, wx.ALL, 5)
         self._h = wx.SpinCtrl(self, min=1,
-            initial=self._world._maze._height)
+            initial=10)
         spinsizer.Add(self._h, 0, wx.ALL, 5)
         
         sizer.Add(spinsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
@@ -492,7 +490,7 @@ class NewDialog(wx.Dialog):
                 
         btn = wx.Button(self, wx.ID_OK)
         btn.SetDefault()
-        self.Bind(wx.EVT_BUTTON, self.OnOK, btn)
+        #self.Bind(wx.EVT_BUTTON, self.OnOK, btn)
         btnsizer.AddButton(btn)
 
         btn = wx.Button(self, wx.ID_CANCEL)
@@ -503,18 +501,9 @@ class NewDialog(wx.Dialog):
         
         sizer.Layout()
         sizer.Fit(self)
-    
-    def OnOK(self, e):
-        if self._world.editable:
-            self._world.replace(self._w.Value, self._h.Value)
-            e.Skip()
 
-class World(object):
-    def __init__(self, ui, state):
-        self._ui = ui
-        self._maze = Maze(state)
-        # cheat - use a var instead of a property
-        self.editable = True
+    def makeWorld(self, ui):
+        return World(ui, self._initstate(self._w.Value, self._h.Value))
 
     def _initstate(self, w, h):
         return {
@@ -527,6 +516,13 @@ class World(object):
             "height": h
         }
     
+class World(object):
+    def __init__(self, ui, state):
+        self._ui = ui
+        self._maze = Maze(state)
+        # cheat - use a var instead of a property
+        self.editable = True
+
     @property
     def staterep(self):
         return self._maze.staterep 
@@ -550,19 +546,6 @@ class World(object):
             return
         d = BeeperDialog(self._ui, maze=self._maze)
         d.ShowModal()
-
-    # FIXME: not properly a part of this class
-    def newDialog(self):
-        if not self.editable:
-            wx.MessageDialog(self._ui, caption="Program running",
-                message = "Cannot edit world while program is running",
-                style=wx.ICON_ERROR | wx.OK).ShowModal()
-            return
-        d = NewDialog(self._ui, world=self)
-        d.ShowModal()
-
-    def replace(self, w, h):
-        self._ui.world = World(self._ui, self._initstate(w, h))
 
     def _print(self, *a, **kw):
         print(*a, file=self._ui.log, **kw)
@@ -617,5 +600,5 @@ class World(object):
             style=wx.ICON_EXCLAMATION | wx.OK)
         d.ShowModal()
 
-__all__ = [World]
+__all__ = [World, NewDialog]
 

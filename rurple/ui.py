@@ -243,8 +243,15 @@ class RurFrame(wx.Frame):
         self._reset()
 
     def OnWorldNew(self, e):
-        self._world.newDialog()
-        
+        if not self._cpu.state == cpu.STOP:
+            wx.MessageDialog(self._ui, caption="Program running",
+                message = "Cannot edit world while program is running",
+                style=wx.ICON_ERROR | wx.OK).ShowModal()
+            return
+        d = rurple.worlds.maze.NewDialog(self)
+        if d.ShowModal() == wx.ID_OK:
+            self.world = d.makeWorld(self)
+                
     def OnWorldOpen(self, e):
         dlg = wx.FileDialog(self,
             message="Open world...",
