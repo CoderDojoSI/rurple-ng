@@ -175,7 +175,7 @@ class RurFrame(wx.Frame):
 
     def _saveProgram(self, fn):
         with codecs.open(fn, "w", encoding="utf-8") as f:
-            f.write(self._editor.Text)
+            f.write(self.program)
 
     def _openWorld(self, fn):
         with open(fn) as f:
@@ -329,7 +329,7 @@ class RurFrame(wx.Frame):
     # read by cpu
     @property
     def program(self):
-        return self._editor.Text
+        return self._editor.Text.replace("\r\n", "\n")
 
     # read by cpu
     @property
