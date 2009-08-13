@@ -1,0 +1,16 @@
+{
+    "beepers": [], 
+    "height": 10, 
+    "robots": [
+        {
+            "beepers": 0, 
+            "dir": 0, 
+            "name": "robot", 
+            "x": 0, 
+            "y": 0
+        }
+    ], 
+    "walls": [], 
+    "width": 10, 
+    "world": "maze"
+}
