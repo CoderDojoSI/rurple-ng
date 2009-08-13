@@ -81,6 +81,7 @@ class MyFrame(wx.Frame):
 
 class MyApp(wx.App):
     def OnInit(self):
+        print wx.DisplaySize()
         frame = MyFrame(None, title="This is a test",
             size=(500, 400))
         frame.Show(True)
