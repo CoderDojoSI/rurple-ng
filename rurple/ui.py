@@ -143,6 +143,7 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
+        self._toolbar.Realize()
         self._reset()
 
     def _toBitmap(self, name):
