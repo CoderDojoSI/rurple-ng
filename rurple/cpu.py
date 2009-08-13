@@ -60,18 +60,18 @@ class TraceThread(threading.Thread):
                 self._traceProxy(frame.f_lineno)
         return self._tracefunc
 
+STOP = 1
+PAUSE = 2
+RUN = 3
+
 class CPU(object):
-    _STOP = 1
-    _PAUSE = 2
-    _RUN = 3
-    
     def __init__(self, ui):
         self._ui = ui
         self._lineTime = 1000
         self._clear()
     
     def _clear(self):
-        self._state = self._STOP
+        self._state = STOP
         self._timer = None
         self._thread = None
         self._rcb = None
@@ -97,11 +97,11 @@ class CPU(object):
     # ----- Thread methods ------
 
     def trace(self, rcb, lineno):
-        if self._state == self._STOP:
+        if self._state == STOP:
             return # FIXME: assert out
         self._ui.traceLine(lineno)
         self._rcb = rcb
-        if self._state == self._RUN:
+        if self._state == RUN:
             self._timer = wx.CallLater(self._lineTime, self._release)
     
     def done(self):
@@ -113,29 +113,33 @@ class CPU(object):
         self._ui.failed(e)
 
     # ----- UI methods -----
+
+    @property
+    def state(self):
+        return self._state
     
     def run(self):
-        if self._state == self._STOP:
-            self._state = self._RUN
+        if self._state == STOP:
+            self._state = RUN
             self._ui.running()
             self._start()
-        elif self._state == self._PAUSE:
-            self._state = self._RUN
+        elif self._state == PAUSE:
+            self._state = RUN
             self._ui.running()
             self._release()
     
     def pause(self):
-        if self._state == self._STOP:
-            self._state = self._PAUSE
+        if self._state == STOP:
+            self._state = PAUSE
             self._ui.pausing()
             self._start()
-        elif self._state == self._RUN:
-            self._state = self._PAUSE
+        elif self._state == RUN:
+            self._state = PAUSE
             self._ui.pausing()
             self._stopTimer()
     
     def stop(self):
-        if self._state == self._STOP:
+        if self._state == STOP:
             return
         self._stopTimer()
         if self._thread:
@@ -153,4 +157,5 @@ class CPU(object):
             self._timer.Stop()
             self._timer = wx.CallLater(self._lineTime, self._release)
     
+__all__ = [STOP, PAUSE, RUN, CPU]
 
