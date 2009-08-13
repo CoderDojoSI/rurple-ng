@@ -10,20 +10,6 @@ import rurple.world
 # the separation between Maze and World probably not
 # useful or well thought out.
 
-class Observable(object):
-    def __init__(self):
-        self._listeners = set()
-    
-    def addListener(self, l):
-        self._listeners.add(l)
-        
-    def removeListener(self, l):
-        self._listeners.remove(l)
-
-    def triggerListeners(self, *args, **kw):
-        for l in self._listeners:
-            l(self, *args, **kw)
-
 class Robot(object):
     def __init__(self, maze, state):
         self._maze = maze
@@ -32,15 +18,17 @@ class Robot(object):
         self._y = state['y']
         self._dir = state['dir']
         self._beepers = state['beepers']
-        self.runStart()
-        self._maze.addRobot(self)
-        self._maze.triggerListeners(self._x, self._y, 1, 1)
+
         self._brush = wx.Brush('blue')
         self._pen = wx.Pen('blue')
         self._pen.SetWidth(4)
         self._pen.SetCap(wx.CAP_BUTT)
         self._trailPen = wx.Pen('black')
         self._trailPen.SetWidth(1)
+
+        self.runStart()
+        self._maze.addRobot(self)
+        self._maze.triggerListeners(self._x, self._y, 1, 1)
 
     def paint(self, gc):
         x, y = self._maze.coordinates(self._x + .5, self._y + .5)
@@ -160,9 +148,9 @@ class Robot(object):
             "beepers": self._beepers,
         }
 
-class Maze(Observable):
-    def __init__(self, state):
-        Observable.__init__(self)
+class Maze(object):
+    def __init__(self, world, state):
+        self._world = world
         self._spacing = 20
         self._offset = 20
         self._width = state['width']
@@ -178,8 +166,6 @@ class Maze(Observable):
         self._beepers = dict(
             (tuple(k), v) for k, v in state['beepers'])
         self._robots = {}
-        for r in state['robots']:
-            Robot(self, r)
         self._gridPen = wx.Pen('black')
         self._gridPen.SetWidth(0.3)
         self._gridPen.SetCap(wx.CAP_PROJECTING)
@@ -195,6 +181,8 @@ class Maze(Observable):
         self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self._font.SetWeight(wx.BOLD)
         self._font.SetPointSize(18)
+        for r in state['robots']:
+            Robot(self, r)
     
     def isInterior(self, x, y, d):
         if x >= self._width or y >= self._height:
@@ -360,6 +348,9 @@ class Maze(Observable):
         # after deleting ink trails, redraw all
         self.triggerListeners(0, 0, self._width, self._height)
 
+    def triggerListeners(self, x, y, w, h):
+        self._world.triggerListeners(x, y, w, h)
+
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
         self._world = kw['world']
@@ -367,7 +358,6 @@ class MazeWindow(wx.PyControl):
         wx.Window.__init__(self, *args, **kw)
         self.SetBestSize(self._world._maze.size())
         wx.EVT_PAINT(self, self.OnPaint)
-        self._world._maze.addListener(self.onMazeChange)
         self.SetBackgroundColour('white')
         self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
         self.Bind(wx.EVT_CHAR, self.OnKey, self)
@@ -379,7 +369,7 @@ class MazeWindow(wx.PyControl):
         gc = wx.GraphicsContext.Create(dc)
         self._world._maze.paint(gc)
                 
-    def onMazeChange(self, maze, *args, **kw):
+    def onMazeChange(self, *args, **kw):
         self.RefreshRect(self._world._maze.paintBounds(*args, **kw))
 
     def _beeperSetter(self, x, y, i):
@@ -519,7 +509,8 @@ class NewDialog(wx.Dialog):
 class World(object):
     def __init__(self, ui, state):
         self._ui = ui
-        self._maze = Maze(state)
+        self._window = None
+        self._maze = Maze(self, state)
         # cheat - use a var instead of a property
         self.editable = True
 
@@ -528,7 +519,12 @@ class World(object):
         return self._maze.staterep 
         
     def makeWindow(self, parent):
-        return MazeWindow(parent, world=self)
+        self._window = MazeWindow(parent, world=self)
+        return self._window
+
+    def triggerListeners(self, x, y, w, h):
+        if self._window is not None:
+            self._window.onMazeChange(x, y, w, h)
 
     def menu(self, menu):
         return [
