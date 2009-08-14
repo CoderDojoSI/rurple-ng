@@ -61,6 +61,7 @@ class Robot(object):
             raise rurple.world.WorldException("I don't have any beepers")
         self._beepers -= 1
         self._maze.putBeeper(self._x, self._y)
+        self._maze.statusChanged()
 
     def on_beeper(self):
         return self._maze.countBeepers(self._x, self._y) != 0
