@@ -5,7 +5,6 @@ Still to do:
 - style exceptions properly
 - make robot look nicer
 - Windows installer
-- make installer find share directory properly
 
 - support multiple robots better
 
@@ -86,3 +85,4 @@ Done:
 - fix scrolling world window problem
 - fix sash gravity problems
 - useful status bar info
+- make installer find share directory properly
