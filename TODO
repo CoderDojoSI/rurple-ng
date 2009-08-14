@@ -1,5 +1,6 @@
 Still to do:
 
+- filename, modified indicator
 - make Save As warn if a filename exists already
 - style exceptions properly
 - make robot look nicer
@@ -11,7 +12,8 @@ Still to do:
 - index robots rather than naming them
 - follow moving robot in scrolled window
 
-- rename beepers to coins
+- rename beepers to stones
+- dots for stones
 
 - adapt old manual!
 
