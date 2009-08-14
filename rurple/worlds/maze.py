@@ -250,11 +250,11 @@ class MazeWindow(wx.PyControl):
         self._offset = 20
         self.SetBestSize(self.size())
         wx.EVT_PAINT(self, self.OnPaint)
-        self.SetBackgroundColour('white')
         self.Bind(wx.EVT_LEFT_DOWN, self.OnClick, self)
         self.Bind(wx.EVT_CHAR, self.OnKey, self)
         self.SetFocus()
 
+        self._bgBrush = wx.Brush('white')
         self._gridPen = wx.Pen('black')
         self._gridPen.SetWidth(0.3)
         self._gridPen.SetCap(wx.CAP_PROJECTING)
@@ -385,6 +385,10 @@ class MazeWindow(wx.PyControl):
         gc.StrokePath(p)
 
     def paint(self, gc, maze):
+        gc.SetBrush(self._bgBrush)
+        x1, y1 = self.coordinates(0, 0)
+        x2, y2 =  self.coordinates(maze.width, maze.height)
+        gc.DrawRectangle(x1, y2, x2 - x1, y1 - y2)
         gc.SetPen(self._gridPen)
         p = gc.CreatePath()
         for i in range(maze.height +1):
