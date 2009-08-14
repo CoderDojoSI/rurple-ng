@@ -11,7 +11,7 @@ import wx
 import wx.lib.scrolledpanel
 import wx.lib.wordwrap
 
-from rurple import cpu, world, textctrl
+from rurple import share, cpu, world, textctrl
 import rurple.worlds.maze
 
 class LogScale(object):
@@ -32,7 +32,6 @@ class RurFrame(wx.Frame):
         self._dotPath = os.path.expanduser("~/.rurple")
         if not os.path.isdir(self._dotPath):
             os.mkdir(self._dotPath)
-        self._sharePath = os.path.abspath("share")
         self._programFile = None
         self._worldFile = None
         self._cpu = cpu.CPU(self)
@@ -118,23 +117,23 @@ class RurFrame(wx.Frame):
         self._toolbar.SetToolBitmapSize(tsize)
         self.Bind(wx.EVT_TOOL, self.OnWorldReset,
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
-                self._toBitmap('reset_world'),
+                share.toBitmap('reset_world'),
                 shortHelp = "Reset world (Ctrl+R)"))
         self._runTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
-            "Run", self._toBitmap('run'),
+            "Run", share.toBitmap('run'),
             shortHelp="Run program (F8)")
         self.Bind(wx.EVT_TOOL, self.OnRun, self._runTool)
         self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
-             "Pause", self._toBitmap('pause'),
+             "Pause", share.toBitmap('pause'),
              shortHelp="Pause program")
         self.Bind(wx.EVT_TOOL, self.OnPause, self._pauseTool)
         self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
-             "Stop", self._toBitmap('stop'),
+             "Stop", share.toBitmap('stop'),
              shortHelp="Stop program (Ctrl+F2)")
         self.Bind(wx.EVT_TOOL, self.OnStop, self._stopTool)
         self.Bind(wx.EVT_TOOL, self.OnStep,
             self._toolbar.AddLabelTool(wx.ID_ANY, "step",
-                self._toBitmap('step'),
+                share.toBitmap('step'),
                 shortHelp="Step program (F5)"))
         self._toolbar.ToggleTool(self._stopTool.Id, True)
         self._slideScale = LogScale(100, 3000, 2)
@@ -151,17 +150,12 @@ class RurFrame(wx.Frame):
         self._hsash.SashPosition = min(h, dh + 20)
         self._vsash.SashPosition = max(0, w - (dw + 30))
 
-    def _toBitmap(self, name):
-        f = os.path.join(self._sharePath, 'images', '%s.png' % name)
-        return wx.Image(f, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-
     def _reset(self):
         dw = os.path.join(self._dotPath, "world.wld")
         if os.path.exists(dw):
             self._openWorld(dw)
         else:
-            self._openWorld(os.path.join(self._sharePath,
-                "worlds", "blank.wld"))
+            self._openWorld(share.path("worlds", "blank.wld"))
 
     def OnNew(self, e):
         self._cpu.stop()
@@ -203,8 +197,7 @@ class RurFrame(wx.Frame):
         dlg = wx.FileDialog(self,
             message="Open sample program...",
             wildcard="RUR programs (*.rur)|*.rur",
-            defaultDir = os.path.join(self._sharePath, "programs"),
-            style = wx.OPEN)
+            defaultDir = share.path("programs"), style = wx.OPEN)
         if dlg.ShowModal() != wx.ID_OK:
             return
         self._programFile = None
@@ -274,7 +267,7 @@ class RurFrame(wx.Frame):
         dlg = wx.FileDialog(self,
             message="Open sample world...",
             wildcard="Worlds (*.wld)|*.wld",
-            defaultDir = os.path.join(self._sharePath, "worlds"),
+            defaultDir = share.path("worlds"),
             style = wx.OPEN)
         if dlg.ShowModal() != wx.ID_OK:
             return
@@ -309,10 +302,9 @@ class RurFrame(wx.Frame):
             "A friendly learning environment for beginners to programming."
             "To get started, have a look at the manual",
             350, wx.ClientDC(self))
-        manual = os.path.join(self._sharePath, "html", "index.html")
-        info.WebSite = (manual, "Rurple NG manual")
+        info.WebSite = (share.path("html", "index.html"), "Rurple NG manual")
         info.Developers = ["André Roberge", "Paul Crowley"]
-        with open(os.path.join(self._sharePath, "COPYING.txt")) as f:
+        with open(share.path("COPYING.txt")) as f:
             #info.License = wx.lib.wordwrap.wordwrap(
             #    f.read(), 500, wx.ClientDC(self))
             info.License = f.read().replace("\f", "")
