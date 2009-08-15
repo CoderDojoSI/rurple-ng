@@ -3,23 +3,20 @@ Still to do:
 - filename, modified indicator
 - make Save As warn if a filename exists already
 - twiddle files
-- make robot look nicer
-- Windows installer
 
 - support multiple robots better
-
 - index robots rather than naming them
-- follow moving robot in scrolled window
 
 - rename beepers to stones
-- dots for stones
-
+- Windows installer
+- make robot look nicer
 - adapt old manual!
 
 Enhancements:
 
 - look into using process instead of thread
 - gradual movement
+- follow moving robot in scrolled window
 
 Done:
 
