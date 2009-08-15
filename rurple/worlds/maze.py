@@ -4,10 +4,20 @@ import math
 import random
 import wx
 
-import rurple.world
+import rurple.world, rurple.share
 
-# FIXME: the separation between Maze and World is not
-# well thought out.
+class MazeException(rurple.world.WorldException):
+    def __init__(self, message):
+        rurple.world.WorldException.__init__(self, message)
+        self._text = message
+    
+    @property
+    def title(self):
+        return "Something didn't work"
+
+    @property    
+    def text(self):
+        return self._text
 
 class Robot(object):
     def __init__(self, maze, state):
@@ -27,7 +37,7 @@ class Robot(object):
     
     def move(self):
         if not self.front_is_clear():
-            raise rurple.world.WorldException("Hit a wall")
+            raise MazeException("Hit a wall")
         if self._dir == 0:
             self._x += 1
             self._trail.append((self._x, self._y, self._dir))
@@ -58,7 +68,7 @@ class Robot(object):
 
     def put_beeper(self):
         if self._beepers == 0:
-            raise rurple.world.WorldException("I don't have any beepers")
+            raise MazeException("I don't have any beepers")
         self._beepers -= 1
         self._maze.putBeeper(self._x, self._y)
         self._maze.statusChanged()
@@ -164,7 +174,7 @@ class Maze(object):
     def addRobot(self, r):
         n = r.name
         if n in self._robots:
-            raise rurple.world.WorldException("Already got a robot called %s" % n)
+            raise MazeException("Already got a robot called %s" % n)
         self._robots[n] = r
         self._defaultRobot = r
         self.statusChanged()
@@ -172,7 +182,7 @@ class Maze(object):
     def pickBeeper(self, x, y):
         b = self.countBeepers(x, y)
         if b == 0:
-            raise rurple.world.WorldException("I'm not next to a beeper")
+            raise MazeException("I'm not next to a beeper")
         b -= 1
         self.setBeepers(x, y, b)
 
@@ -444,11 +454,42 @@ class MazeWindow(wx.PyControl):
         return (2*self._offset + 2*m.width*self._spacing,
             2*self._offset + 2*m.height*self._spacing)
 
+def extractKey(d, k):
+    res = d[k]
+    del d[k]
+    return res
 
+class ExceptionDialog(wx.Dialog):
+    def __init__(self, *a, **kw):
+        self._exception = extractKey(kw, 'exception')
+        kw[str("title")] = self._exception.title
+        wx.Dialog.__init__(self, *a, **kw)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        bitmap = wx.StaticBitmap(self,
+            bitmap=rurple.share.toBitmap('ouch'))
+        sizer.Add(bitmap)
+        label = wx.StaticText(self, label=self._exception.text)
+        sizer.Add(label, 1, wx.ALL|wx.ALIGN_CENTER, 5)
+
+        sizer.Add(wx.StaticLine(self), 0, 
+            wx.EXPAND|wx.TOP|wx.BOTTOM, 5)
+
+        btnsizer = wx.StdDialogButtonSizer()
+                
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        btnsizer.SetAffirmativeButton(btn)
+        btnsizer.Realize()
+
+        sizer.Add(btnsizer, 0, wx.EXPAND|wx.ALL, 5)
+        
+        self.SetSizer(sizer)
+        sizer.Fit(self)
+        
 class BeeperDialog(wx.Dialog):
     def __init__(self, *a, **kw):
-        self._maze = kw['maze']
-        del kw['maze']
+        self._maze = extractKey(kw, 'maze')
         wx.Dialog.__init__(self, *a, **kw)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -629,9 +670,7 @@ class World(object):
         return res
 
     def handleException(self, frame, e):
-        d = wx.MessageDialog(frame, message=str(e),
-            caption = "Not right with the world",
-            style=wx.ICON_EXCLAMATION | wx.OK)
+        d = ExceptionDialog(frame, exception=e)
         d.ShowModal()
 
 __all__ = [World, NewDialog]

@@ -3,7 +3,6 @@ Still to do:
 - filename, modified indicator
 - make Save As warn if a filename exists already
 - twiddle files
-- style exceptions properly
 - make robot look nicer
 - Windows installer
 
@@ -87,3 +86,5 @@ Done:
 - fix sash gravity problems
 - useful status bar info
 - make installer find share directory properly
+- style exceptions properly
+
