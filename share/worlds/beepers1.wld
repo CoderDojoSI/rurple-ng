@@ -1,0 +1,1 @@
+{"width": 10, "walls": [], "beepers": [[[2, 0], 1]], "robots": [{"y": 0, "x": 0, "name": "robot", "dir": 0, "beepers": 0}], "height": 10}
