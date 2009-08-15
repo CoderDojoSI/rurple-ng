@@ -2,6 +2,7 @@ Still to do:
 
 - filename, modified indicator
 - make Save As warn if a filename exists already
+- twiddle files
 - style exceptions properly
 - make robot look nicer
 - Windows installer
