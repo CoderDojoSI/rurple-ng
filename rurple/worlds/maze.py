@@ -460,11 +460,7 @@ class BeeperDialog(wx.Dialog):
             initial=self._maze.defaultRobot.beepers)
         sizer.Add(self._spin, 0, wx.ALL, 5)
 
-        # This line doesn't grow horizontally.  Who knows why?
-        line = wx.StaticLine(self, wx.ID_ANY,
-            size=(1,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0,
-            wx.GROW|wx.ALIGN_CENTER_VERTICAL, 5)
+        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND, 5)
         
         btnsizer = wx.StdDialogButtonSizer()
                 
@@ -479,7 +475,7 @@ class BeeperDialog(wx.Dialog):
 
         sizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
         
-        sizer.Layout()
+        self.SetSizer(sizer)
         sizer.Fit(self)
     
     def OnOK(self, e):
