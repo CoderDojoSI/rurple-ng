@@ -301,6 +301,7 @@ class MazeWindow(wx.PyControl):
         return f
 
     def OnClick(self, e):
+        self.SetFocus()        
         if not self._world.editable:
             return
         near = self.nearest(e.GetX(), e.GetY())
