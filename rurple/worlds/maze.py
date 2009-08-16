@@ -54,12 +54,14 @@ class Robot(object):
             self._y -= 1
             self._trail.append((self._x, self._y, self._dir))
             self._maze.repaintSquares(self._x, self._y, 1, 2)
+        self._maze.setModified()
     
     def turn_left(self):
         self._dir += 1
         self._dir %= 4
         self._trail.append((self._x, self._y, self._dir))
         self._maze.repaintSquares(self._x, self._y, 1, 1)
+        self._maze.setModified()
 
     def pick_beeper(self):
         self._maze.pickBeeper(self._x, self._y)
@@ -170,6 +172,7 @@ class Maze(object):
             self.repaintSquares(x-0.5, y-0.5, 2, 1)
         else:
             self.repaintSquares(x-0.5, y-0.5, 1, 2)
+        self.setModified()
 
     def addRobot(self, r):
         n = r.name
@@ -247,9 +250,13 @@ class Maze(object):
 
     def repaintSquares(self, x, y, w, h):
         self._world.repaintSquares(x, y, w, h)
+
+    def setModified(self):
+        self._world.setModified(True)
         
     def statusChanged(self):
         self._world.statusChanged()
+        self.setModified()
 
 class MazeWindow(wx.PyControl):
     def __init__(self, *args, **kw):
@@ -583,10 +590,27 @@ class World(object):
     def __init__(self, ui, state):
         self._ui = ui
         self._window = None
+        self._modified = False
+        self._modifyHook = None
         self._maze = None
         self._maze = Maze(self, state)
+        self._modified = False
         # cheat - use a var instead of a property
         self.editable = True
+
+    # property would be better, but trying function first
+    # after trouble yesterday
+    def setModified(self, v):
+        if self._modified != v:
+            self._modified = v
+            if self._modifyHook is not None:
+                self._modifyHook.update()
+
+    def modified(self):
+        return self._modified
+
+    def modifyHook(self, m):
+        self._modifyHook = m
 
     @property
     def staterep(self):

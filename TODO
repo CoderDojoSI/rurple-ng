@@ -1,6 +1,6 @@
 Still to do:
 
-- filename, modified indicator
+- make modified indicator work for world
 - make Save As warn if a filename exists already
 - twiddle files
 
@@ -84,4 +84,5 @@ Done:
 - useful status bar info
 - make installer find share directory properly
 - style exceptions properly
+- filename, modified indicator
 

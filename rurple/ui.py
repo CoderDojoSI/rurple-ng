@@ -44,9 +44,6 @@ class Openable(object):
         return os.path.join(self._ui._dotPath,
             "%s.%s"% (self._type, self._suffix))
 
-    def _modified(self):
-        return True
-
     def opendot(self):
         if not self._openGuard():
             return
@@ -183,15 +180,21 @@ class WorldOpen(Openable):
         self._ui.world = d.makeWorld(self._ui)
         return True
 
+    def _modified(self):
+        return self._ui.world.modified()
+
     def _open(self, fn):
         with open(fn) as f:
             w = json.load(f)
-        self._ui.world = rurple.worlds.maze.World(self._ui, w)
+        w = rurple.worlds.maze.World(self._ui, w)
+        w.modifyHook(self)
+        self._ui.world = w
 
     def _save(self, fn):
         with open(fn, "w") as f:
             json.dump(self._ui.world.staterep, f,
-                indent=4, sort_keys = True)    
+                indent=4, sort_keys = True)
+        self._ui.world.setModified(False)
 
     def _blankStart(self):
         self._openSample("blank")        

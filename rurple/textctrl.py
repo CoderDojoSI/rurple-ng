@@ -106,7 +106,6 @@ class PythonEditor(stc.StyledTextCtrl):
             event.Skip(True)
 
     def modifyHook(self,opener):
-        print("here")
         self.Bind(wx.stc.EVT_STC_MODIFIED, lambda e: opener.update(), self)
 
     @property
