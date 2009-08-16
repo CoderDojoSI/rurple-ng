@@ -44,6 +44,9 @@ class Openable(object):
         return os.path.join(self._ui._dotPath,
             "%s.%s"% (self._type, self._suffix))
 
+    def _modified(self):
+        return True
+
     def opendot(self):
         if not self._openGuard():
             return
@@ -71,21 +74,25 @@ class Openable(object):
             return False
         return True
         
-    def _update(self):
+    def update(self):
         if self._path is not None:
             text = os.path.basename(self._path)
         else:
             text = "None"
+        if self._modified():
+            prefix = "*"
+        else:
+            prefix = ""
         #ugly!
-        self._ui._statusBar.SetStatusText("%s: %s" %
-            (self._type.capitalize(), text), self._statusPos)
+        self._ui._statusBar.SetStatusText("%s%s: %s" %
+            (prefix, self._type.capitalize(), text), self._statusPos)
     
     def OnNew(self, e):
         if not self._openGuard():
             return
         if self._new():
             self._path = None
-            self._update()
+            self.update()
 
     def OnOpen(self, e):
         if not self._openGuard():
@@ -101,7 +108,7 @@ class Openable(object):
         self._open(path)
         self._path = path
         self._canSave = True
-        self._update()
+        self.update()
 
     def OnOpenSample(self, e):
         if not self._openGuard():
@@ -117,11 +124,12 @@ class Openable(object):
         self._open(path)
         self._path = path
         self._canSave = False
-        self._update()
+        self.update()
         
     def OnSave(self, e):
         if self._canSave:
-            self._save()
+            self._save(self._path)
+            self.update()
         else:
             self.OnSaveAs(e)
     
@@ -137,7 +145,7 @@ class Openable(object):
         self._save(path)
         self._path = path
         self._canSave = True
-        self._update()
+        self.update()
 
 class ProgramOpen(Openable):
     _type = "program"
@@ -149,14 +157,14 @@ class ProgramOpen(Openable):
         self._ui._editor.Text = ""
         return True
 
+    def _modified(self):
+        return self._ui._editor.Modify
+        
     def _open(self, fn):
-        with codecs.open(fn, encoding="utf-8") as f:
-            p = f.read()
-        self._ui._editor.Text = p
+        self._ui._editor.LoadFile(fn)
 
     def _save(self, fn):
-        with codecs.open(fn, "w", encoding="utf-8") as f:
-            f.write(self._ui.program)
+        self._ui._editor.SaveFile(fn)
 
     def _blankStart(self):
         self._ui._editor.Text = ""
@@ -200,6 +208,7 @@ class RurFrame(wx.Frame):
         self._cpu = cpu.CPU(self)
         self._vsash = wx.SplitterWindow(self)
         self._editor = textctrl.PythonEditor(self._vsash)
+        self._editor.CodePage = 65001
         self._hsash = wx.SplitterWindow(self._vsash)
         self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(self._hsash)
         self._worldWindow = None
@@ -213,6 +222,7 @@ class RurFrame(wx.Frame):
         self._programO = ProgramOpen(self)
         self._worldO = WorldOpen(self)
         self._programO.opendot()
+        self._editor.modifyHook(self._programO)
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self._programO.OnNew,
