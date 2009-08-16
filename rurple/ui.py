@@ -44,6 +44,15 @@ class Openable(object):
         return os.path.join(self._ui._dotPath,
             "%s.%s"% (self._type, self._suffix))
 
+    def _tildeSave(self, path):
+        if os.path.exists(path):
+            t = path + "~"
+            if os.path.exists(t):
+                os.remove(t)
+            os.rename(path, t)
+            self._tildeSave(path)
+        self._save(path)
+    
     def opendot(self):
         if not self._openGuard():
             return
@@ -53,14 +62,14 @@ class Openable(object):
             self._blankStart()
     
     def savedot(self):
-        self._save(self._dotfile)
+        self._tildeSave(self._dotfile)
     
     def _openSample(self, name):
         self._open(share.path("%ss" % self._type, 
             "%s.%s" % (name, self._suffix)))
 
     # This is annoying - it should just STOP.
-    # But only on success.
+    # But only on success...
     def _openGuard(self):
         if self._ui._cpu.state != cpu.STOP:
             self._ui._cpu.pause()
@@ -125,7 +134,7 @@ class Openable(object):
         
     def OnSave(self, e):
         if self._canSave:
-            self._save(self._path)
+            self._tildeSave(self._path)
             self._clearModified()
         else:
             self.OnSaveAs(e)
@@ -139,7 +148,7 @@ class Openable(object):
             return
         path = dlg.GetPath()
         dlg.Destroy()
-        self._save(path)
+        self._tildeSave(path)
         self._path = path
         self._canSave = True
         self._clearModified()

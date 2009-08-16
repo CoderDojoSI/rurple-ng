@@ -1,8 +1,7 @@
 Still to do:
 
-- make modified indicator work for world
+- Report errors on save
 - make Save As warn if a filename exists already
-- twiddle files
 
 - support multiple robots better
 - index robots rather than naming them
@@ -85,4 +84,6 @@ Done:
 - make installer find share directory properly
 - style exceptions properly
 - filename, modified indicator
+- make modified indicator work for world
+- twiddle files
 
