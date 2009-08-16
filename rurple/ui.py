@@ -72,9 +72,14 @@ class Openable(object):
         return True
         
     def _update(self):
-        #print(self._type, self._path)
-        pass
-
+        if self._path is not None:
+            text = os.path.basename(self._path)
+        else:
+            text = "None"
+        #ugly!
+        self._ui._statusBar.SetStatusText("%s: %s" %
+            (self._type.capitalize(), text), self._statusPos)
+    
     def OnNew(self, e):
         if not self._openGuard():
             return
@@ -138,6 +143,7 @@ class ProgramOpen(Openable):
     _type = "program"
     _typetext = "RUR programs"
     _suffix = "rur"
+    _statusPos = 0
     
     def _new(self):
         self._ui._editor.Text = ""
@@ -160,6 +166,7 @@ class WorldOpen(Openable):
     _type = "world"
     _typetext = "Worlds"
     _suffix = "wld"
+    _statusPos = 1
 
     def _new(self):
         d = rurple.worlds.maze.NewDialog(self._ui)
@@ -202,8 +209,7 @@ class RurFrame(wx.Frame):
         self._worldParent.SetupScrolling()
         
         self._statusBar = self.CreateStatusBar()
-        self._statusBar.SetFieldsCount(2)
-        self._statusBar.SetStatusWidths([-1,-1])
+        self._statusBar.SetFieldsCount(3)
         self._programO = ProgramOpen(self)
         self._worldO = WorldOpen(self)
         self._programO.opendot()
@@ -441,7 +447,7 @@ class RurFrame(wx.Frame):
 
     # called by world
     def setWorldStatus(self, s):
-        self._statusBar.SetStatusText(s, 1)
+        self._statusBar.SetStatusText(s, 2)
 
 class App(wx.App):
     def OnInit(self):
