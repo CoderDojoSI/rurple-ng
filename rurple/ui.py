@@ -79,6 +79,12 @@ class Openable(object):
                 style=wx.ICON_ERROR | wx.OK).ShowModal()
             return False
         return True
+
+    def _exception(self, t, e):
+        wx.MessageDialog(self._ui, 
+            caption="%s failed" % t.capitalize(),
+            message = str(e),
+            style=wx.ICON_ERROR | wx.OK).ShowModal()
         
     def update(self):
         if self._path is not None:
@@ -111,10 +117,14 @@ class Openable(object):
             return
         path = dlg.GetPath()
         dlg.Destroy()
-        self._open(path)
-        self._path = path
-        self._canSave = True
-        self._clearModified()
+        try:
+            self._open(path)
+        except Exception, e:
+            self._exception("open", e)
+        else:
+            self._path = path
+            self._canSave = True
+            self._clearModified()
 
     def OnOpenSample(self, e):
         if not self._openGuard():
@@ -127,11 +137,15 @@ class Openable(object):
             return
         path = dlg.GetPath()
         dlg.Destroy()
-        self._open(path)
-        self._path = path
-        self._canSave = False
-        self._clearModified()
-        
+        try:
+           self._open(path)
+        except Exception, e:
+            self._exception("open", e)
+        else:
+            self._path = path
+            self._canSave = False
+            self._clearModified()
+            
     def OnSave(self, e):
         if self._canSave:
             self._tildeSave(self._path)
@@ -148,10 +162,21 @@ class Openable(object):
             return
         path = dlg.GetPath()
         dlg.Destroy()
-        self._tildeSave(path)
-        self._path = path
-        self._canSave = True
-        self._clearModified()
+        if os.path.exists(path):
+            d = wx.MessageDialog(self._ui, 
+                caption="Overwrite file?",
+                message = "There already is a program of that name. Replace it with your program?",
+                style=wx.ICON_QUESTION | wx.OK | wx.CANCEL)
+            if d.ShowModal() != wx.ID_OK:
+                return
+        try:
+            self._tildeSave(path)
+        except Exception, e:
+            self._exception("save", e)
+        else:
+            self._path = path
+            self._canSave = True
+            self._clearModified()
 
 class ProgramOpen(Openable):
     _type = "program"

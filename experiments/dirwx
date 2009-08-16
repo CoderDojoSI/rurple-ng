@@ -1,5 +1,5 @@
 #!/usr/bin/python
 
 import wx as dirme
-print [x for x in dir(dirme) if x.startswith("EVT_S")]
+print [x for x in dir(dirme) if x.startswith("ICON_")]
 

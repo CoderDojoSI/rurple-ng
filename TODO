@@ -1,7 +1,6 @@
 Still to do:
 
-- Report errors on save
-- make Save As warn if a filename exists already
+- Fix error reporting from bloody editor
 
 - support multiple robots better
 - index robots rather than naming them
@@ -86,4 +85,6 @@ Done:
 - filename, modified indicator
 - make modified indicator work for world
 - twiddle files
+- make Save As warn if a filename exists already
+- Report errors on save
 
