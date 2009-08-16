@@ -65,7 +65,7 @@ class Openable(object):
         if self._ui._cpu.state != cpu.STOP:
             self._ui._cpu.pause()
             wx.MessageDialog(self._ui, caption="Program running",
-                message = "Cannot modify %s while program is running" 
+                message = "Please press STOP before doing that\nCannot modify %s while program is running" 
                     % self._type,
                 style=wx.ICON_ERROR | wx.OK).ShowModal()
             return False
