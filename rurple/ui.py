@@ -25,6 +25,162 @@ class LogScale(object):
     def fromTicks(self, x):
         return math.exp(x * self._r + self._lo)
 
+# This class is currently a very close friend of ui,
+# might be desirable to change that
+
+class Openable(object):
+    def __init__(self, ui):
+        self._ui = ui
+        self._path = None
+        self._canSave = False
+
+    @property
+    def _wildcard(self):
+        return "%s (*.%s)|*.%s" % (
+            self._typetext, self._suffix, self._suffix)
+
+    @property
+    def _dotfile(self):
+        return os.path.join(self._ui._dotPath,
+            "%s.%s"% (self._type, self._suffix))
+
+    def opendot(self):
+        if not self._openGuard():
+            return
+        if os.path.isfile(self._dotfile):
+            self._open(self._dotfile)
+        else:
+            self._blankStart()
+    
+    def savedot(self):
+        self._save(self._dotfile)
+    
+    def _openSample(self, name):
+        self._open(share.path("%ss" % self._type, 
+            "%s.%s" % (name, self._suffix)))
+
+    # This is annoying - it should just STOP.
+    # But only on success.
+    def _openGuard(self):
+        if self._ui._cpu.state != cpu.STOP:
+            self._ui._cpu.pause()
+            wx.MessageDialog(self._ui, caption="Program running",
+                message = "Cannot modify %s while program is running" 
+                    % self._type,
+                style=wx.ICON_ERROR | wx.OK).ShowModal()
+            return False
+        return True
+        
+    def _update(self):
+        #print(self._type, self._path)
+        pass
+
+    def OnNew(self, e):
+        if not self._openGuard():
+            return
+        if self._new():
+            self._path = None
+            self._update()
+
+    def OnOpen(self, e):
+        if not self._openGuard():
+            return
+        dlg = wx.FileDialog(self._ui,
+            message="Open %s..." % self._type,
+            wildcard=self._wildcard,
+            style = wx.OPEN | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        path = dlg.GetPath()
+        dlg.Destroy()
+        self._open(path)
+        self._path = path
+        self._canSave = True
+        self._update()
+
+    def OnOpenSample(self, e):
+        if not self._openGuard():
+            return
+        dlg = wx.FileDialog(self._ui,
+            message="Open sample %s..." % self._type,
+            wildcard=self._wildcard,
+            defaultDir = share.path(self._type + "s"), style = wx.OPEN)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        path = dlg.GetPath()
+        dlg.Destroy()
+        self._open(path)
+        self._path = path
+        self._canSave = False
+        self._update()
+        
+    def OnSave(self, e):
+        if self._canSave:
+            self._save()
+        else:
+            self.OnSaveAs(e)
+    
+    def OnSaveAs(self, e):
+        dlg = wx.FileDialog(self._ui,
+            message="Save %s as..." % self._type,
+            wildcard=self._wildcard,
+            style = wx.SAVE | wx.CHANGE_DIR)
+        if dlg.ShowModal() != wx.ID_OK:
+            return
+        path = dlg.GetPath()
+        dlg.Destroy()
+        self._save(path)
+        self._path = path
+        self._canSave = True
+        self._update()
+
+class ProgramOpen(Openable):
+    _type = "program"
+    _typetext = "RUR programs"
+    _suffix = "rur"
+    
+    def _new(self):
+        self._ui._editor.Text = ""
+        return True
+
+    def _open(self, fn):
+        with codecs.open(fn, encoding="utf-8") as f:
+            p = f.read()
+        self._ui._editor.Text = p
+
+    def _save(self, fn):
+        with codecs.open(fn, "w", encoding="utf-8") as f:
+            f.write(self._ui.program)
+
+    def _blankStart(self):
+        self._ui._editor.Text = ""
+            
+    
+class WorldOpen(Openable):
+    _type = "world"
+    _typetext = "Worlds"
+    _suffix = "wld"
+
+    def _new(self):
+        d = rurple.worlds.maze.NewDialog(self._ui)
+        if d.ShowModal() != wx.ID_OK:
+            return False
+        self._ui.world = d.makeWorld(self._ui)
+        return True
+
+    def _open(self, fn):
+        with open(fn) as f:
+            w = json.load(f)
+        self._ui.world = rurple.worlds.maze.World(self._ui, w)
+
+    def _save(self, fn):
+        with open(fn, "w") as f:
+            json.dump(self._ui.world.staterep, f,
+                indent=4, sort_keys = True)    
+
+    def _blankStart(self):
+        self._openSample("blank")        
+
 class RurFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
@@ -37,9 +193,6 @@ class RurFrame(wx.Frame):
         self._cpu = cpu.CPU(self)
         self._vsash = wx.SplitterWindow(self)
         self._editor = textctrl.PythonEditor(self._vsash)
-        dp = os.path.join(self._dotPath, "program.rur")
-        if os.path.exists(dp):
-            self._openProgram(dp)
         self._hsash = wx.SplitterWindow(self._vsash)
         self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(self._hsash)
         self._worldWindow = None
@@ -51,19 +204,22 @@ class RurFrame(wx.Frame):
         self._statusBar = self.CreateStatusBar()
         self._statusBar.SetFieldsCount(2)
         self._statusBar.SetStatusWidths([-1,-1])
+        self._programO = ProgramOpen(self)
+        self._worldO = WorldOpen(self)
+        self._programO.opendot()
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()
-        self.Bind(wx.EVT_MENU, self.OnNew,
+        self.Bind(wx.EVT_MENU, self._programO.OnNew,
             filemenu.Append(wx.ID_NEW, "&New", "Start a new program"))
-        self.Bind(wx.EVT_MENU, self.OnOpen,
+        self.Bind(wx.EVT_MENU, self._programO.OnOpen,
             filemenu.Append(wx.ID_OPEN, "&Open...", "Open a program"))
-        self.Bind(wx.EVT_MENU, self.OnOpenSample,
+        self.Bind(wx.EVT_MENU, self._programO.OnOpenSample,
             filemenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample program"))
-        self.Bind(wx.EVT_MENU, self.OnSave,
+        self.Bind(wx.EVT_MENU, self._programO.OnSave,
             filemenu.Append(wx.ID_SAVE,"&Save",
                 "Save the current program"))
-        self.Bind(wx.EVT_MENU, self.OnSaveAs,
+        self.Bind(wx.EVT_MENU, self._programO.OnSaveAs,
             filemenu.Append(wx.ID_SAVEAS,"Save &As...",
                 "Save the current program with a different filename"))
         filemenu.AppendSeparator()
@@ -89,18 +245,18 @@ class RurFrame(wx.Frame):
             self._worldMenu.Append(wx.ID_ANY,"&Reset\tCtrl+R",
                 "Reset world to before program was run"))
         self._worldMenu.AppendSeparator()
-        self.Bind(wx.EVT_MENU, self.OnWorldNew,
+        self.Bind(wx.EVT_MENU, self._worldO.OnNew,
             self._worldMenu.Append(wx.ID_ANY,"&New...",
                 "Start a new world"))
-        self.Bind(wx.EVT_MENU, self.OnWorldOpen,
+        self.Bind(wx.EVT_MENU, self._worldO.OnOpen,
             self._worldMenu.Append(wx.ID_ANY,"&Open...", "Open a world"))
-        self.Bind(wx.EVT_MENU, self.OnWorldOpenSample,
+        self.Bind(wx.EVT_MENU, self._worldO.OnOpenSample,
             self._worldMenu.Append(wx.ID_ANY, "Open sa&mple...",
                 "Open a sample world"))
-        self.Bind(wx.EVT_MENU, self.OnWorldSave,
+        self.Bind(wx.EVT_MENU, self._worldO.OnSave,
             self._worldMenu.Append(wx.ID_ANY,"&Save",
                 "Save the current world"))
-        self.Bind(wx.EVT_MENU, self.OnWorldSaveAs,
+        self.Bind(wx.EVT_MENU, self._worldO.OnSaveAs,
             self._worldMenu.Append(wx.ID_ANY,"Save &As...",
                 "Save the current world with a different filename"))
         self._worldMenu.AppendSeparator()
@@ -151,79 +307,12 @@ class RurFrame(wx.Frame):
         self._vsash.SashPosition = max(0, w - (dw + 30))
 
     def _reset(self):
-        dw = os.path.join(self._dotPath, "world.wld")
-        if os.path.exists(dw):
-            self._openWorld(dw)
-        else:
-            self._openWorld(share.path("worlds", "blank.wld"))
+        self._worldO.opendot()
 
-    def OnNew(self, e):
-        self._cpu.stop()
-        self._editor.Text = ""
-
-    def _openProgram(self, fn):
-        with codecs.open(fn, encoding="utf-8") as f:
-            p = f.read()
-        self._cpu.stop()
-        self._editor.Text = p
-
-    def _saveProgram(self, fn):
-        with codecs.open(fn, "w", encoding="utf-8") as f:
-            f.write(self.program)
-
-    def _openWorld(self, fn):
-        with open(fn) as f:
-            w = json.load(f)
-        self._cpu.stop()
-        self.world = rurple.worlds.maze.World(self, w)
-
-    def _saveWorld(self, fn):
-        with open(fn, "w") as f:
-            json.dump(self.world.staterep, f,
-                indent=4, sort_keys = True)
-
-    def OnOpen(self, e):
-        dlg = wx.FileDialog(self,
-            message="Open program...",
-            wildcard="RUR programs (*.rur)|*.rur",
-            style = wx.OPEN | wx.CHANGE_DIR)
-        if dlg.ShowModal() != wx.ID_OK:
-            return
-        self._programFile = dlg.GetPath()
-        self._openProgram(self._programFile)
-        dlg.Destroy()
-        
-    def OnOpenSample(self, e):
-        dlg = wx.FileDialog(self,
-            message="Open sample program...",
-            wildcard="RUR programs (*.rur)|*.rur",
-            defaultDir = share.path("programs"), style = wx.OPEN)
-        if dlg.ShowModal() != wx.ID_OK:
-            return
-        self._programFile = None
-        self._openProgram(dlg.GetPath())
-        dlg.Destroy()
-        
-    def OnSave(self, e):
-        if self._programFile is None:
-            self.OnSaveAs(e)
-        else:
-            self._saveProgram(self._programFile)
-    
-    def OnSaveAs(self, e):
-        dlg = wx.FileDialog(self,
-            message="Save program as...",
-            wildcard="RUR programs (*.rur)|*.rur",
-            style = wx.SAVE | wx.CHANGE_DIR)
-        if dlg.ShowModal() != wx.ID_OK:
-            return
-        self._programFile = dlg.GetPath()
-        self._saveProgram(self._programFile)
-        dlg.Destroy()
-        
+    # Should be some sort of onClose
     def OnExit(self, e):
-        self._saveProgram(os.path.join(self._dotPath, "program.rur"))
-        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
+        #self._saveProgram(os.path.join(self._dotPath, "program.rur"))
+        #self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         self.Close(True)
 
     def OnRun(self, e):
@@ -239,60 +328,9 @@ class RurFrame(wx.Frame):
         self._cpu.step()
 
     def OnWorldReset(self, e):
+        
         self._reset()
 
-    def OnWorldNew(self, e):
-        if not self._cpu.state == cpu.STOP:
-            wx.MessageDialog(self._ui, caption="Program running",
-                message = "Cannot edit world while program is running",
-                style=wx.ICON_ERROR | wx.OK).ShowModal()
-            return
-        d = rurple.worlds.maze.NewDialog(self)
-        if d.ShowModal() == wx.ID_OK:
-            self.world = d.makeWorld(self)
-                
-    def OnWorldOpen(self, e):
-        dlg = wx.FileDialog(self,
-            message="Open world...",
-            wildcard="Worlds (*.wld)|*.wld",
-            style = wx.OPEN | wx.CHANGE_DIR)
-        if dlg.ShowModal() != wx.ID_OK:
-            return
-        self._worldFile = dlg.GetPath()
-        self._openWorld(self._worldFile)
-        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
-        dlg.Destroy()
-        
-    def OnWorldOpenSample(self, e):
-        dlg = wx.FileDialog(self,
-            message="Open sample world...",
-            wildcard="Worlds (*.wld)|*.wld",
-            defaultDir = share.path("worlds"),
-            style = wx.OPEN)
-        if dlg.ShowModal() != wx.ID_OK:
-            return
-        self._worldFile = None
-        self._openWorld(dlg.GetPath())
-        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
-        dlg.Destroy()
-        
-    def OnWorldSave(self, e):
-        if self._worldFile is None:
-            self.OnWorldSaveAs(e)
-        else:
-            self._saveWorld(self._worldFile)
-    
-    def OnWorldSaveAs(self, e):
-        dlg = wx.FileDialog(self,
-            message="Save world as...",
-            wildcard="Worlds (*.wld)|*.wld",
-            style = wx.SAVE | wx.CHANGE_DIR)
-        if dlg.ShowModal() != wx.ID_OK:
-            return
-        self._worldFile = dlg.GetPath()
-        self._saveWorld(self._worldFile)
-        dlg.Destroy()
-        
     def OnAbout(self, e):
         info = wx.AboutDialogInfo()
         info.Name = "Rurple NG"
@@ -353,8 +391,8 @@ class RurFrame(wx.Frame):
     def starting(self):
         self._world.editable = False
         self._editor.ReadOnly = True
-        self._saveProgram(os.path.join(self._dotPath, "program.rur"))
-        self._saveWorld(os.path.join(self._dotPath, "world.wld"))
+        self._programO.savedot()
+        self._worldO.savedot()
         self._logWindow.clear()
         self._world.runStart()
 
