@@ -252,7 +252,7 @@ class Maze(object):
         self._world.repaintSquares(x, y, w, h)
 
     def setModified(self):
-        self._world.setModified(True)
+        self._world.modified = True
         
     def statusChanged(self):
         self._world.statusChanged()
@@ -598,16 +598,17 @@ class World(object):
         # cheat - use a var instead of a property
         self.editable = True
 
-    # property would be better, but trying function first
-    # after trouble yesterday
-    def setModified(self, v):
+
+    @property
+    def modified(self):
+        return self._modified
+
+    @modified.setter
+    def modified(self, v):
         if self._modified != v:
             self._modified = v
             if self._modifyHook is not None:
                 self._modifyHook.update()
-
-    def modified(self):
-        return self._modified
 
     def modifyHook(self, m):
         self._modifyHook = m

@@ -185,8 +185,12 @@ class WorldOpen(Openable):
         return True
 
     def _modified(self):
-        return self._ui.world.modified()
-
+        return self._ui.world.modified
+    
+    def _clearModified(self):
+        self._ui._world.modified = False
+        self.update()
+    
     def _open(self, fn):
         with open(fn) as f:
             w = json.load(f)
