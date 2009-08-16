@@ -89,7 +89,7 @@ class Openable(object):
             return
         if self._new():
             self._path = None
-            self.update()
+            self._clearModified()
 
     def OnOpen(self, e):
         if not self._openGuard():
@@ -105,7 +105,7 @@ class Openable(object):
         self._open(path)
         self._path = path
         self._canSave = True
-        self.update()
+        self._clearModified()
 
     def OnOpenSample(self, e):
         if not self._openGuard():
@@ -121,12 +121,12 @@ class Openable(object):
         self._open(path)
         self._path = path
         self._canSave = False
-        self.update()
+        self._clearModified()
         
     def OnSave(self, e):
         if self._canSave:
             self._save(self._path)
-            self.update()
+            self._clearModified()
         else:
             self.OnSaveAs(e)
     
@@ -142,7 +142,7 @@ class Openable(object):
         self._save(path)
         self._path = path
         self._canSave = True
-        self.update()
+        self._clearModified()
 
 class ProgramOpen(Openable):
     _type = "program"
@@ -155,8 +155,12 @@ class ProgramOpen(Openable):
         return True
 
     def _modified(self):
-        return self._ui._editor.Modify
-        
+        return self._ui._editor.modified
+    
+    def _clearModified(self):
+        self._ui._editor.modified = False
+        self.update()
+    
     def _open(self, fn):
         self._ui._editor.LoadFile(fn)
 
@@ -194,7 +198,6 @@ class WorldOpen(Openable):
         with open(fn, "w") as f:
             json.dump(self._ui.world.staterep, f,
                 indent=4, sort_keys = True)
-        self._ui.world.setModified(False)
 
     def _blankStart(self):
         self._openSample("blank")        

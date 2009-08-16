@@ -88,8 +88,11 @@ class PythonEditor(stc.StyledTextCtrl):
         self.TabWidth = 4
         self.UseTabs = False
 
+        self._modifyHook = None
+        self._modified = False
         self._mark = None
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPressed)
+        self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnModified)
 
     def OnKeyPressed(self, event):
         key = event.GetKeyCode()
@@ -105,8 +108,25 @@ class PythonEditor(stc.StyledTextCtrl):
         else:
             event.Skip(True)
 
+    def OnModified(self, event):
+        if self.Modify:
+            self.modified = True
+
+    @property
+    def modified(self):
+        return self._modified
+    
+    @modified.setter
+    def modified(self, v):
+        if self._modified != v:
+            self._modified = v
+            if self._modifyHook is not None:
+                self._modifyHook.update()
+            
+
+    # any reason this isn't a property?
     def modifyHook(self,opener):
-        self.Bind(wx.stc.EVT_STC_MODIFIED, lambda e: opener.update(), self)
+        self._modifyHook = opener
 
     @property
     def mark(self):
