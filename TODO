@@ -1,7 +1,5 @@
 Still to do:
 
-- save on close
-- save state on close eg speed
 - support multiple robots better
 
 - rename beepers to stones
@@ -11,6 +9,7 @@ Still to do:
 
 Enhancements:
 
+- save state on close eg speed
 - look into using process instead of thread
 - gradual movement
 - follow moving robot in scrolled window
@@ -87,4 +86,5 @@ Done:
 - make Save As warn if a filename exists already
 - Report errors on save
 - Fix error reporting from lovely editor
+- save on close
 

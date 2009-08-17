@@ -379,14 +379,17 @@ class RurFrame(wx.Frame):
         self._vsash.SashGravity = 1
         self._hsash.SashPosition = min(h, dh + 20)
         self._vsash.SashPosition = max(0, w - (dw + 30))
+        self.Bind(wx.EVT_CLOSE, self.OnClose, self)
 
     def _reset(self):
         self._worldO.opendot()
 
-    # Should be some sort of onClose
+    def OnClose(self, e):
+        self._programO.savedot()
+        self._worldO.savedot()
+        self.Destroy()
+
     def OnExit(self, e):
-        #self._saveProgram(os.path.join(self._dotPath, "program.rur"))
-        #self._saveWorld(os.path.join(self._dotPath, "world.wld"))
         self.Close(True)
 
     def OnRun(self, e):
