@@ -387,7 +387,8 @@ class RurFrame(wx.Frame):
 
     def OnClose(self, e):
         self._programO.savedot()
-        self._worldO.savedot()
+        if self._cpu.state == cpu.STOP:
+            self._worldO.savedot()
         self.Destroy()
 
     def OnExit(self, e):
