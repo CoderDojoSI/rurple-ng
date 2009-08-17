@@ -480,8 +480,7 @@ class ExceptionDialog(wx.Dialog):
         label = wx.StaticText(self, label=self._exception.text)
         sizer.Add(label, 1, wx.ALL|wx.ALIGN_CENTER, 5)
 
-        sizer.Add(wx.StaticLine(self), 0, 
-            wx.EXPAND|wx.TOP|wx.BOTTOM, 5)
+        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 5)
 
         btnsizer = wx.StdDialogButtonSizer()
                 
@@ -502,14 +501,14 @@ class BeeperDialog(wx.Dialog):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        label = wx.StaticText(self, wx.ID_ANY, "Beepers for robot to start with")
+        label = wx.StaticText(self, label="Beepers for robot to start with")
         sizer.Add(label, 0, wx.ALL, 5)
 
         self._spin = wx.SpinCtrl(self,
             initial=self._maze.defaultRobot.beepers)
         sizer.Add(self._spin, 0, wx.ALL, 5)
 
-        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND, 5)
+        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 5)
         
         btnsizer = wx.StdDialogButtonSizer()
                 
@@ -537,7 +536,7 @@ class NewDialog(wx.Dialog):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        label = wx.StaticText(self, wx.ID_ANY, "Width and height of new maze")
+        label = wx.StaticText(self, label="Width and height of new maze")
         sizer.Add(label, 0, wx.ALL, 5)
 
         # Cheat - look into private members
@@ -551,10 +550,7 @@ class NewDialog(wx.Dialog):
         
         sizer.Add(spinsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
 
-        line = wx.StaticLine(self, wx.ID_ANY,
-            size=(1,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0,
-            wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
+        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 5)
         
         btnsizer = wx.StdDialogButtonSizer()
                 
@@ -569,7 +565,7 @@ class NewDialog(wx.Dialog):
 
         sizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
         
-        sizer.Layout()
+        self.SetSizer(sizer)
         sizer.Fit(self)
 
     def makeWorld(self, ui):
