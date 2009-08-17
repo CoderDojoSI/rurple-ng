@@ -338,6 +338,7 @@ class RurFrame(wx.Frame):
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
                 share.toBitmap('reset_world'),
                 shortHelp = "Reset world (Ctrl+R)"))
+        self._toolbar.AddSeparator()
         self._runTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
             "Run", share.toBitmap('run'),
             shortHelp="Run program (F8)",
@@ -359,6 +360,9 @@ class RurFrame(wx.Frame):
                 shortHelp="Step program (F5)",
                 longHelp="Execute only the current line of your program"))
         self._toolbar.ToggleTool(self._stopTool.Id, True)
+        self._toolbar.AddSeparator()
+        self._toolbar.AddControl(
+            wx.StaticText(self._toolbar, label="Speed:"))
         self._slideScale = LogScale(100, 3000, 2)
         self._slider = wx.Slider(self._toolbar, size=(250,-1),
             value=int(0.5 +  self._slideScale.toTicks(300)))
