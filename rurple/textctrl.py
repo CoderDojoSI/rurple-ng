@@ -92,7 +92,8 @@ class PythonEditor(stc.StyledTextCtrl):
         self._modified = False
         self._mark = None
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPressed)
-        self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnModified)
+        self.Bind(wx.stc.EVT_STC_SAVEPOINTLEFT, self.OnSavePointLeft)
+        self.Bind(wx.stc.EVT_STC_SAVEPOINTREACHED, self.OnSavePointReached)
 
     def OnKeyPressed(self, event):
         key = event.GetKeyCode()
@@ -108,9 +109,15 @@ class PythonEditor(stc.StyledTextCtrl):
         else:
             event.Skip(True)
 
-    def OnModified(self, event):
-        if self.Modify:
-            self.modified = True
+    def OnSavePointLeft(self, e):
+        self.modified = True
+   
+    def OnSavePointReached(self, e):
+        self.modified = False
+        
+    def clearModified(self):
+        self.SetSavePoint()
+        self.modified = False
 
     @property
     def modified(self):

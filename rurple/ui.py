@@ -192,14 +192,19 @@ class ProgramOpen(Openable):
         return self._ui._editor.modified
     
     def _clearModified(self):
-        self._ui._editor.modified = False
+        self._ui._editor.clearModified()
         self.update()
     
     def _open(self, fn):
-        self._ui._editor.LoadFile(fn)
+        with codecs.open(fn, encoding="utf-8") as f:
+            p = f.read()
+        self._ui._editor.Text = p
+        
+        print([x for x in dir(self._ui._editor) if "save" in x.lower()])
 
     def _save(self, fn):
-        self._ui._editor.SaveFile(fn)
+        with codecs.open(fn, "w", encoding="utf-8") as f:
+            f.write(self._ui.program)
 
     def _blankStart(self):
         self._ui._editor.Text = ""
