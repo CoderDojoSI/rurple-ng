@@ -60,6 +60,7 @@ class Openable(object):
             self._open(self._dotfile)
         else:
             self._blankStart()
+        self.update()
     
     def savedot(self):
         self._tildeSave(self._dotfile)
@@ -269,6 +270,8 @@ class RurFrame(wx.Frame):
         self._programO = ProgramOpen(self)
         self._worldO = WorldOpen(self)
         self._programO.opendot()
+        # ugly!
+        self._programO._clearModified()
         self._editor.modifyHook(self._programO)
         menuBar = wx.MenuBar()
         filemenu = wx.Menu()

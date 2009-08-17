@@ -1,5 +1,7 @@
 Still to do:
 
+- save on close
+- save state on close eg speed
 - support multiple robots better
 
 - rename beepers to stones
