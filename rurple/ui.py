@@ -44,6 +44,12 @@ class Openable(object):
         return os.path.join(self._ui._dotPath,
             "%s.%s"% (self._type, self._suffix))
 
+    def _suffixPath(self, path):
+        s = "." + self._suffix
+        if path.endswith(s):
+            return path
+        return path + s
+
     def _tildeSave(self, path):
         if os.path.exists(path):
             t = path + "~"
@@ -116,7 +122,7 @@ class Openable(object):
             style = wx.OPEN | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        path = dlg.GetPath()
+        path = self._suffixPath(dlg.GetPath())
         dlg.Destroy()
         try:
             self._open(path)
@@ -136,7 +142,7 @@ class Openable(object):
             defaultDir = share.path(self._type + "s"), style = wx.OPEN)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        path = dlg.GetPath()
+        path = self._suffixPath(dlg.GetPath())
         dlg.Destroy()
         try:
            self._open(path)
@@ -161,7 +167,7 @@ class Openable(object):
             style = wx.SAVE | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
             return
-        path = dlg.GetPath()
+        path = self._suffixPath(dlg.GetPath())
         dlg.Destroy()
         if os.path.exists(path):
             d = wx.MessageDialog(self._ui, 
