@@ -59,9 +59,12 @@ class Openable(object):
             self._tildeSave(path)
         self._save(path)
     
-    def opendot(self):
+    def opendot_again(self):
         if not self._openGuard():
             return
+        self.opendot_init()
+
+    def opendot_init(self):
         if os.path.isfile(self._dotfile):
             self._open(self._dotfile)
         else:
@@ -78,14 +81,29 @@ class Openable(object):
     # This is annoying - it should just STOP.
     # But only on success...
     def _openGuard(self):
-        if self._ui._cpu.state != cpu.STOP:
-            self._ui._cpu.pause()
-            wx.MessageDialog(self._ui, caption="Program running",
-                message = "Please press STOP before doing that\nCannot modify %s while program is running" 
-                    % self._type,
-                style=wx.ICON_ERROR | wx.OK).ShowModal()
+        if self._ui._cpu.state == cpu.STOP:
+            return True
+        self._ui._cpu.pause()
+        wx.MessageDialog(self._ui, caption="Program running",
+            message = "Please press STOP before doing that\nCannot modify %s while program is running" 
+                % self._type,
+            style=wx.ICON_ERROR | wx.OK).ShowModal()
+        return False
+       
+    def _modGuard(self):
+        if not self._modified():
+            return True
+        code = wx.MessageDialog(self._ui, caption="Save %s first?" % self._type,
+            message = "Save your changes to the %s before replacing it?" 
+                % self._type,
+            style=wx.ICON_EXCLAMATION | wx.YES_NO | wx.CANCEL).ShowModal()
+        if code == wx.ID_CANCEL:
             return False
-        return True
+        elif code == wx.ID_NO:
+            return True
+        else:
+            return self.OnSave(None)
+            
 
     def _exception(self, t, e):
         wx.MessageDialog(self._ui, 
@@ -107,14 +125,14 @@ class Openable(object):
         self._ui._statusBar.SetStatusText(text, self._statusPos)
     
     def OnNew(self, e):
-        if not self._openGuard():
+        if not self._openGuard() or not self._modGuard():
             return
         if self._new():
             self._path = None
             self._clearModified()
 
     def OnOpen(self, e):
-        if not self._openGuard():
+        if not self._openGuard() or not self._modGuard():
             return
         dlg = wx.FileDialog(self._ui,
             message="Open %s..." % self._type,
@@ -134,7 +152,7 @@ class Openable(object):
             self._clearModified()
 
     def OnOpenSample(self, e):
-        if not self._openGuard():
+        if not self._openGuard() or not self._modGuard():
             return
         dlg = wx.FileDialog(self._ui,
             message="Open sample %s..." % self._type,
@@ -157,8 +175,9 @@ class Openable(object):
         if self._canSave:
             self._tildeSave(self._path)
             self._clearModified()
+            return True
         else:
-            self.OnSaveAs(e)
+            return self.OnSaveAs(e)
     
     def OnSaveAs(self, e):
         dlg = wx.FileDialog(self._ui,
@@ -166,7 +185,7 @@ class Openable(object):
             wildcard=self._wildcard,
             style = wx.SAVE | wx.CHANGE_DIR)
         if dlg.ShowModal() != wx.ID_OK:
-            return
+            return False
         path = self._suffixPath(dlg.GetPath())
         dlg.Destroy()
         if os.path.exists(path):
@@ -175,7 +194,7 @@ class Openable(object):
                 message = "There already is a program of that name. Replace it with your program?",
                 style=wx.ICON_QUESTION | wx.OK | wx.CANCEL)
             if d.ShowModal() != wx.ID_OK:
-                return
+                return False
         try:
             self._tildeSave(path)
         except Exception, e:
@@ -184,6 +203,7 @@ class Openable(object):
             self._path = path
             self._canSave = True
             self._clearModified()
+            return True
 
 class ProgramOpen(Openable):
     _type = "program"
@@ -275,7 +295,7 @@ class RurFrame(wx.Frame):
         self._statusBar.SetFieldsCount(3)
         self._programO = ProgramOpen(self)
         self._worldO = WorldOpen(self)
-        self._programO.opendot()
+        self._programO.opendot_init()
         # ugly!
         self._programO._clearModified()
         self._editor.modifyHook(self._programO)
@@ -380,7 +400,7 @@ class RurFrame(wx.Frame):
         self.OnSlide(None)
         self._toolbar.AddControl(self._slider)
         self._toolbar.Realize()
-        self._reset()
+        self._worldO.opendot_init()
         w, h = self.Size
         dw, dh = self._worldWindow.size()
         self._vsash.SashGravity = 1
@@ -389,7 +409,7 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.OnClose, self)
 
     def _reset(self):
-        self._worldO.opendot()
+        self._worldO.opendot_again()
 
     def OnClose(self, e):
         self._programO.savedot()
