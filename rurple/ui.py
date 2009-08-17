@@ -88,17 +88,17 @@ class Openable(object):
             style=wx.ICON_ERROR | wx.OK).ShowModal()
         
     def update(self):
-        if self._path is not None:
-            text = os.path.basename(self._path)
-        else:
-            text = "None"
         if self._modified():
             prefix = "*"
         else:
             prefix = ""
+        if self._path is not None:
+            text = "%s%s: %s" % (prefix, self._type.capitalize(),
+                os.path.basename(self._path))
+        else:
+            text = "%sNo %s open" % (prefix, self._type)
         #ugly!
-        self._ui._statusBar.SetStatusText("%s%s: %s" %
-            (prefix, self._type.capitalize(), text), self._statusPos)
+        self._ui._statusBar.SetStatusText(text, self._statusPos)
     
     def OnNew(self, e):
         if not self._openGuard():
