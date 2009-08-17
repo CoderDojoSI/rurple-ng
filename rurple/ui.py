@@ -340,7 +340,8 @@ class RurFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnWorldReset,
             self._toolbar.AddLabelTool(wx.ID_ANY, "Reset",
                 share.toBitmap('reset_world'),
-                shortHelp = "Reset world (Ctrl+R)"))
+                shortHelp = "Reset world (Ctrl+R)",
+                longHelp = "Put world back the way it was when your program started"))
         self._toolbar.AddSeparator()
         self._runTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
             "Run", share.toBitmap('run'),
