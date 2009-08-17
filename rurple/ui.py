@@ -199,8 +199,6 @@ class ProgramOpen(Openable):
         with codecs.open(fn, encoding="utf-8") as f:
             p = f.read()
         self._ui._editor.Text = p
-        
-        print([x for x in dir(self._ui._editor) if "save" in x.lower()])
 
     def _save(self, fn):
         with codecs.open(fn, "w", encoding="utf-8") as f:
@@ -342,20 +340,24 @@ class RurFrame(wx.Frame):
                 shortHelp = "Reset world (Ctrl+R)"))
         self._runTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
             "Run", share.toBitmap('run'),
-            shortHelp="Run program (F8)")
+            shortHelp="Run program (F8)",
+            longHelp="Start your program running")
         self.Bind(wx.EVT_TOOL, self.OnRun, self._runTool)
         self._pauseTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
              "Pause", share.toBitmap('pause'),
-             shortHelp="Pause program")
+             shortHelp="Pause program",
+             longHelp="Pause your program")
         self.Bind(wx.EVT_TOOL, self.OnPause, self._pauseTool)
         self._stopTool = self._toolbar.AddRadioLabelTool(wx.ID_ANY,
              "Stop", share.toBitmap('stop'),
-             shortHelp="Stop program (Ctrl+F2)")
+             shortHelp="Stop program (Ctrl+F2)",
+             longHelp="Finish your program early")
         self.Bind(wx.EVT_TOOL, self.OnStop, self._stopTool)
         self.Bind(wx.EVT_TOOL, self.OnStep,
             self._toolbar.AddLabelTool(wx.ID_ANY, "step",
                 share.toBitmap('step'),
-                shortHelp="Step program (F5)"))
+                shortHelp="Step program (F5)",
+                longHelp="Execute only the current line of your program"))
         self._toolbar.ToggleTool(self._stopTool.Id, True)
         self._slideScale = LogScale(100, 3000, 2)
         self._slider = wx.Slider(self._toolbar, size=(250,-1),
