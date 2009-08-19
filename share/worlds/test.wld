@@ -1,5 +1,5 @@
 {
-    "beepers": [
+    "stones": [
         [
             [
                 4, 
@@ -11,7 +11,7 @@
     "height": 10, 
     "robots": [
         {
-            "beepers": 2, 
+            "stones": 2, 
             "dir": 0, 
             "name": "robot", 
             "x": 2, 
