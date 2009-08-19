@@ -6,6 +6,9 @@ import threading
 import Queue
 import wx
 
+class ThreadStopException(BaseException):
+    pass
+
 class TraceThread(threading.Thread):
     def __init__(self, cpu, world, program):
         threading.Thread.__init__(self)
@@ -36,14 +39,15 @@ class TraceThread(threading.Thread):
             # not really necessary - thread's done anyway
             sys.settrace(None)
 
-    # FIXME: leak threads on stop()
     def stop(self):
         self._stopped = True
         
     def threadAwareProxyFunction(self, f):
-        def guardF(*a, **kw):
-            if not self._stopped:
-                return f(*a, **kw)
+        def guardF(rcb, *a, **kw):
+            if self._stopped:
+                rcb((None, ThreadStopException()))
+            else:
+                f(rcb, *a, **kw)
         def callF(*a, **kw):
             q = Queue.Queue()
             wx.CallAfter(guardF, q.put, *a, **kw)
