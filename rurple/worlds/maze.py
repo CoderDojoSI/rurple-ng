@@ -115,6 +115,7 @@ class Robot(object):
         assert x >= 0
         assert x == int(x)
         self._beepers = int(x)
+        self._maze.statusChanged()
     
     @property
     def trail(self): return self._trail
