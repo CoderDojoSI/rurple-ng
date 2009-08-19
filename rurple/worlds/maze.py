@@ -320,7 +320,10 @@ class MazeWindow(wx.PyControl):
             if (x >= 0 and x < self._world._maze.width
                 and y >= 0 and y < self._world._maze.height):
                 menu = wx.Menu()
-                for i in range(10):
+                self.Bind(wx.EVT_MENU,
+                    self._beeperSetter(x, y, 0),
+                    menu.Append(wx.ID_ANY, "Empty"))
+                for i in range(1, 10):
                     self.Bind(wx.EVT_MENU,
                         self._beeperSetter(x, y, i),
                         menu.Append(wx.ID_ANY, str(i)))
