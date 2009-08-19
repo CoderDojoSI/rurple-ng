@@ -393,7 +393,7 @@ class RurFrame(wx.Frame):
         self._toolbar.AddSeparator()
         self._toolbar.AddControl(
             wx.StaticText(self._toolbar, label="Speed:"))
-        self._slideScale = LogScale(100, 3000, 2)
+        self._slideScale = LogScale(100, 2000, 5)
         self._slider = wx.Slider(self._toolbar, size=(250,-1),
             value=int(0.5 +  self._slideScale.toTicks(300)))
         self.Bind(wx.EVT_SLIDER, self.OnSlide, self._slider)
@@ -454,7 +454,7 @@ class RurFrame(wx.Frame):
         wx.AboutBox(info)
         
     def OnSlide(self, e):
-        self._cpu.setLineTime(int(0.5 + self._slideScale.fromTicks(self._slider.Value)))
+        self._cpu.setLineTime(self._slideScale.fromTicks(self._slider.Value))
 
     # read by world
     @property

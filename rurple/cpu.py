@@ -1,6 +1,7 @@
 from __future__ import division, print_function, unicode_literals, with_statement
 
 import sys
+import time
 import threading
 import Queue
 import wx
@@ -88,6 +89,7 @@ class CPU(object):
         world = self._ui.world
         self._ui.starting()
         self._thread = TraceThread(self, world, self._ui.program)
+        self._lastTime = time.time()
         self._thread.start()
 
     def _release(self):
@@ -95,7 +97,12 @@ class CPU(object):
         if r is not None:
             self._rcb = None
             self._timer = None
+            self._lastTime = time.time()
             r((None, None))
+    
+    def _waitTime(self):
+        return max(0, int(
+            self._lineTime - 1000*(time.time() - self._lastTime)))
     
     def _stopTimer(self):
         if self._timer is not None:
@@ -110,7 +117,7 @@ class CPU(object):
         self._ui.traceLine(lineno)
         self._rcb = rcb
         if self._state == RUN:
-            self._timer = wx.CallLater(self._lineTime, self._release)
+            self._timer = wx.CallLater(self._waitTime(), self._release)
     
     def done(self):
         self._clear()
@@ -160,10 +167,10 @@ class CPU(object):
         self._release()
 
     def setLineTime(self, t):
+        print("lineTime:", t)
         self._lineTime = t
         if self._timer is not None:
-            self._timer.Stop()
-            self._timer = wx.CallLater(self._lineTime, self._release)
+            self._timer.Restart(self._waitTime())
     
 __all__ = [STOP, PAUSE, RUN, CPU]
 
