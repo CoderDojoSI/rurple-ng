@@ -446,7 +446,8 @@ class MazeWindow(wx.PyControl):
             gc.SetBrush(self._textBrush)
             t = str(v)
             exts = gc.GetFullTextExtent(t)
-            gc.DrawText(t, x - 0.5*exts[0], y - 0.5*exts[1])
+            # Correct for mis-centering by hand - bah!
+            gc.DrawText(t, x - 0.5*exts[0] -1, y - 0.5*exts[1])
         for r in maze.robots.itervalues():
             gc.PushState()
             self.paintRobot(gc, r)
