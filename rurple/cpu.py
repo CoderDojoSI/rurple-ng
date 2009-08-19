@@ -63,7 +63,6 @@ class TraceThread(threading.Thread):
 
     def _tracefunc(self, frame, event, arg):
         # FIXME: shame to stop only on the lines in string if stopped
-        #print frame, event, arg, frame.f_code.co_filename, frame.f_lineno
         if "<string>" in frame.f_code.co_filename:
             if event == "line":
                 self._traceProxy(frame.f_lineno)
@@ -167,7 +166,6 @@ class CPU(object):
         self._release()
 
     def setLineTime(self, t):
-        print("lineTime:", t)
         self._lineTime = t
         if self._timer is not None:
             self._timer.Restart(self._waitTime())
