@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book>
+<info>
+  <title>Learn to program with Rurple</title>
+  <author><firstname>Paul</firstname><surname>Crowley</surname></author>
+  <copyright><year>2009</year><holder>Paul Crowley</holder></copyright>
+</info>
+<chapter id="introduction">
+<title>Introduction</title>
+<para>Programming is easier than you think.</para>
+</chapter>
+</book>
+

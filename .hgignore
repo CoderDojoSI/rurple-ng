@@ -2,4 +2,5 @@
 \.pyc$
 \.orig$
 ^build/
+.sconsign.dblite
 
