@@ -42,9 +42,12 @@
         </Feature>
         <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
         <Property Id="WIXUI_INSTALLDIR" Value="TARGETDIR" />
-        <UIRef Id="WixUI_InstallDir" />
-        <UIRef Id="WixUI_ErrorProgressText" />
-
+        <UI Id="InstallDir_NoLicense">
+            <UIRef Id="WixUI_InstallDir" />
+            <UIRef Id="WixUI_ErrorProgressText" />
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+        </UI>
     </Product>
     <Fragment>
         <ComponentGroup Id="Rurple">
