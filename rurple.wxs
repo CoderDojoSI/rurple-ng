@@ -22,11 +22,29 @@
                     <Directory Id='INSTALLDIR' Name='Rurple NG 0.5'/>
                 </Directory>
             </Directory>
+            <Directory Id="ProgramMenuFolder" Name="Programs">
+                <Directory Id="ProgramMenuDir" Name="Rurple NG 0.5">
+                    <Component Id="ProgramMenuDir" Guid="0beaf915-5e82-48e5-9c8e-89fb56c8785c">
+                        <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+                        <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+                    </Component>
+                </Directory>
+          </Directory>
         </Directory>
-        <Feature Id="ProductFeature" Level="1" Title="Rurple NG">
+        <Feature Id="ProductFeature" Level="1" 
+            Title="Rurple NG 0.5"
+            Description="The complete package"
+            Display='expand'
+            ConfigurableDirectory='INSTALLDIR'
+        >
             <ComponentGroupRef Id="Rurple" />
+            <ComponentRef Id='ProgramMenuDir' />
         </Feature>
         <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+        <Property Id="WIXUI_INSTALLDIR" Value="TARGETDIR" />
+        <UIRef Id="WixUI_InstallDir" />
+        <UIRef Id="WixUI_ErrorProgressText" />
+
     </Product>
     <Fragment>
         <ComponentGroup Id="Rurple">
@@ -40,7 +58,9 @@
                 <File Id="fil8682900094CF9370DFD3E1A7FEA6FAA4" KeyPath="yes" Source="build\py2exe\python26.dll" />
             </Component>
             <Component Id="cmp9B47B639BC62F14248B3F0F5E8419331" Directory="INSTALLDIR" Guid="{B155DE3B-44E8-4DF8-AD31-1F5E1E3B887C}">
-                <File Id="filA94253DDB5E81F9D0F0FDAD6F583AB2D" KeyPath="yes" Source="build\py2exe\rurple.exe" />
+                <File Id="filA94253DDB5E81F9D0F0FDAD6F583AB2D" KeyPath="yes" Source="build\py2exe\rurple.exe">
+                    <Shortcut Id="startmenuRurpleNg0.5" Directory="ProgramMenuDir" Name="Rurple NG 0.5" WorkingDirectory='INSTALLDIR' Advertise="yes" />
+                </File>
             </Component>
             <Component Id="cmp6140A6D328061E31C7D0764687486D9B" Directory="INSTALLDIR" Guid="{85FEB53F-DD3E-4C24-9DB0-4F495A4EECD4}">
                 <File Id="filD7E133BA658C90B4B6AFB29A0CD41DF8" KeyPath="yes" Source="build\py2exe\select.pyd" />
