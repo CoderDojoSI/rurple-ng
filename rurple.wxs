@@ -96,7 +96,7 @@
             </Component>
             <Component Id="cmp9B47B639BC62F14248B3F0F5E8419331" Directory="INSTALLDIR" Guid="{B155DE3B-44E8-4DF8-AD31-1F5E1E3B887C}">
                 <File Id="filA94253DDB5E81F9D0F0FDAD6F583AB2D" KeyPath="yes" Source="build\py2exe\rurple.exe">
-                    <Shortcut Id="startmenuRurpleNg0.5" Directory="ProgramMenuDir" Name="Rurple NG 0.5" WorkingDirectory='INSTALLDIR' Advertise="yes" />
+                    <Shortcut Id="startmenuRurpleNg0.5" Directory="ProgramMenuDir" Name="Rurple NG" WorkingDirectory='INSTALLDIR' Advertise="yes" />
                 </File>
             </Component>
             <Component Id="cmp6140A6D328061E31C7D0764687486D9B" Directory="INSTALLDIR" Guid="{85FEB53F-DD3E-4C24-9DB0-4F495A4EECD4}">
@@ -148,7 +148,9 @@
                 <File Id="fil6D5B63B3DFC6EE9BC958D8623FF0094D" KeyPath="yes" Source="share\COPYING.txt" />
             </Component>
             <Component Id="cmpF2A91E73A582A171EA8027DE6E48A1BA" Directory="dirBEA81CADE30CF2373ACDD7A20CA10B71" Guid="{90C1D820-1D31-4B3F-BD8A-7583AC2E724B}">
-                <File Id="filEEDCA828DCC2EDD8CFDBB0883E74F849" KeyPath="yes" Source="share\html\index.html" />
+                <File Id="filEEDCA828DCC2EDD8CFDBB0883E74F849" KeyPath="yes" Source="share\html\index.html">
+                    <Shortcut Id="startmenuManual" Directory="ProgramMenuDir" Name="Manual" WorkingDirectory='INSTALLDIR' Advertise="yes" />
+                </File>
             </Component>
             <Component Id="cmp674E629F6C5BD396E145A2D4DE553533" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{DB595E96-684E-483A-A33E-C56089CD2D87}">
                 <File Id="filF2331EA3D5005C3DD1435413436FBFEB" KeyPath="yes" Source="share\images\ouch.png" />
