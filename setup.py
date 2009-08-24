@@ -5,7 +5,7 @@ distutils.core.setup(
     options = {
         "py2exe": {
             "dll_excludes": ["MSVCP90.dll"],
-            "dist_dir": "build/Rurple",
+            "dist_dir": "build/py2exe",
         }
     },
     windows = [{

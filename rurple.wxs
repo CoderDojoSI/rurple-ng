@@ -31,196 +31,196 @@
     <Fragment>
         <ComponentGroup Id="Rurple">
             <Component Id="cmpD26E9DF2B464891FB9D066E2D6A5C67B" Directory="INSTALLDIR" Guid="{FF603B9A-E772-4BAB-84D9-70C5564AB48F}">
-                <File Id="fil487DF192CEBE3CCB462B4304A05EC907" KeyPath="yes" Source="SourceDir\bz2.pyd" />
+                <File Id="fil487DF192CEBE3CCB462B4304A05EC907" KeyPath="yes" Source="build\py2exe\bz2.pyd" />
             </Component>
             <Component Id="cmp31B7D10A81263AD27BE667408FE26CB5" Directory="INSTALLDIR" Guid="{79921128-7704-422C-8292-639B65AEBFBD}">
-                <File Id="filBCDE4432F8EEBF2D8C4BAC466B113A6C" KeyPath="yes" Source="SourceDir\library.zip" />
+                <File Id="filBCDE4432F8EEBF2D8C4BAC466B113A6C" KeyPath="yes" Source="build\py2exe\library.zip" />
             </Component>
             <Component Id="cmpD82A29F81F4AD34DF6C5C8B8FCB2366E" Directory="INSTALLDIR" Guid="{D7FA34B4-9FE3-47CE-8DCF-78CE2E7AB4DB}">
-                <File Id="fil8682900094CF9370DFD3E1A7FEA6FAA4" KeyPath="yes" Source="SourceDir\python26.dll" />
+                <File Id="fil8682900094CF9370DFD3E1A7FEA6FAA4" KeyPath="yes" Source="build\py2exe\python26.dll" />
             </Component>
             <Component Id="cmp9B47B639BC62F14248B3F0F5E8419331" Directory="INSTALLDIR" Guid="{B155DE3B-44E8-4DF8-AD31-1F5E1E3B887C}">
-                <File Id="filA94253DDB5E81F9D0F0FDAD6F583AB2D" KeyPath="yes" Source="SourceDir\rurple.exe" />
+                <File Id="filA94253DDB5E81F9D0F0FDAD6F583AB2D" KeyPath="yes" Source="build\py2exe\rurple.exe" />
             </Component>
             <Component Id="cmp6140A6D328061E31C7D0764687486D9B" Directory="INSTALLDIR" Guid="{85FEB53F-DD3E-4C24-9DB0-4F495A4EECD4}">
-                <File Id="filD7E133BA658C90B4B6AFB29A0CD41DF8" KeyPath="yes" Source="SourceDir\select.pyd" />
+                <File Id="filD7E133BA658C90B4B6AFB29A0CD41DF8" KeyPath="yes" Source="build\py2exe\select.pyd" />
             </Component>
             <Component Id="cmp25A795128D445F5A212151BC0AFB235E" Directory="INSTALLDIR" Guid="{6BE55C88-4F0E-4B37-8225-9C4B23812397}">
-                <File Id="fil357A92C64BF1D342143EB8F70FC06C48" KeyPath="yes" Source="SourceDir\unicodedata.pyd" />
+                <File Id="fil357A92C64BF1D342143EB8F70FC06C48" KeyPath="yes" Source="build\py2exe\unicodedata.pyd" />
             </Component>
             <Component Id="cmp9949AE5A017FF5770A528DAE3E8B61FB" Directory="INSTALLDIR" Guid="{CB771CFE-2DBA-4942-96C3-D5B7990E287C}">
-                <File Id="fil31C63959DC309134B22A4837DA649EAB" KeyPath="yes" Source="SourceDir\w9xpopen.exe" />
+                <File Id="fil31C63959DC309134B22A4837DA649EAB" KeyPath="yes" Source="build\py2exe\w9xpopen.exe" />
             </Component>
             <Component Id="cmpE9343EEE62302D51D955B5DDF5A6C6CB" Directory="INSTALLDIR" Guid="{684B1D86-B165-41FA-9872-CF2ABDA5C2F1}">
-                <File Id="fil301484E2CAA4DB4557E51F7D88C3BBFF" KeyPath="yes" Source="SourceDir\wx._controls_.pyd" />
+                <File Id="fil301484E2CAA4DB4557E51F7D88C3BBFF" KeyPath="yes" Source="build\py2exe\wx._controls_.pyd" />
             </Component>
             <Component Id="cmp2807F23F51AEA25F34550DE20119604B" Directory="INSTALLDIR" Guid="{2371A981-6928-422C-864A-0C62184E16F4}">
-                <File Id="fil650B96C3602AB54D6EF7610FA2EEF27E" KeyPath="yes" Source="SourceDir\wx._core_.pyd" />
+                <File Id="fil650B96C3602AB54D6EF7610FA2EEF27E" KeyPath="yes" Source="build\py2exe\wx._core_.pyd" />
             </Component>
             <Component Id="cmp85CC595E22C7FCDA66145C98D652EE13" Directory="INSTALLDIR" Guid="{D3D53FA1-A367-4CE4-B47F-E5DC9897496A}">
-                <File Id="fil15610B9250F6781D844143EFD7264B6F" KeyPath="yes" Source="SourceDir\wx._gdi_.pyd" />
+                <File Id="fil15610B9250F6781D844143EFD7264B6F" KeyPath="yes" Source="build\py2exe\wx._gdi_.pyd" />
             </Component>
             <Component Id="cmpFA50FE34407992158825DAC2D2835DE6" Directory="INSTALLDIR" Guid="{66D0CA46-53D3-4806-8305-6D9717ED32F3}">
-                <File Id="fil94D7010679B31C962D38F79CF10D8B7B" KeyPath="yes" Source="SourceDir\wx._misc_.pyd" />
+                <File Id="fil94D7010679B31C962D38F79CF10D8B7B" KeyPath="yes" Source="build\py2exe\wx._misc_.pyd" />
             </Component>
             <Component Id="cmpB1EED2BAC22DE06E096916F592890327" Directory="INSTALLDIR" Guid="{3F2091DD-DC0F-40CC-A403-F54066B7E306}">
-                <File Id="filB001B4EF1FCEDF50A205F5DB76B8B8E3" KeyPath="yes" Source="SourceDir\wx._stc.pyd" />
+                <File Id="filB001B4EF1FCEDF50A205F5DB76B8B8E3" KeyPath="yes" Source="build\py2exe\wx._stc.pyd" />
             </Component>
             <Component Id="cmp41B0390A954C9658211CE81D53354D74" Directory="INSTALLDIR" Guid="{CF918C3F-23D6-479F-ACDE-977CEAA9124F}">
-                <File Id="filE507CD27DC1967F6C60FCF00E334E900" KeyPath="yes" Source="SourceDir\wx._windows_.pyd" />
+                <File Id="filE507CD27DC1967F6C60FCF00E334E900" KeyPath="yes" Source="build\py2exe\wx._windows_.pyd" />
             </Component>
             <Component Id="cmp7BDD3C2B09D1F7B1C25A847EDC0379FF" Directory="INSTALLDIR" Guid="{10C8C2BE-FCCC-4CAF-B59E-926A1441303C}">
-                <File Id="fil8914CDC0E0709005CB8551F39FBE5F33" KeyPath="yes" Source="SourceDir\wxbase28uh_net_vc.dll" />
+                <File Id="fil8914CDC0E0709005CB8551F39FBE5F33" KeyPath="yes" Source="build\py2exe\wxbase28uh_net_vc.dll" />
             </Component>
             <Component Id="cmp25FB24A02F59921C63E000D4DB979561" Directory="INSTALLDIR" Guid="{4CFBE195-0FC2-4261-B887-3486237B7490}">
-                <File Id="filC17D428386CDEFECCFCF69C935E8794C" KeyPath="yes" Source="SourceDir\wxbase28uh_vc.dll" />
+                <File Id="filC17D428386CDEFECCFCF69C935E8794C" KeyPath="yes" Source="build\py2exe\wxbase28uh_vc.dll" />
             </Component>
             <Component Id="cmp12FD1B4AF5D391F7B22B7F6F2B465EF6" Directory="INSTALLDIR" Guid="{70EB24AA-C590-4937-875F-DBD6793980E2}">
-                <File Id="filD62F75EAC817CDC3C61DBA130BF718BB" KeyPath="yes" Source="SourceDir\wxmsw28uh_adv_vc.dll" />
+                <File Id="filD62F75EAC817CDC3C61DBA130BF718BB" KeyPath="yes" Source="build\py2exe\wxmsw28uh_adv_vc.dll" />
             </Component>
             <Component Id="cmp0EE2C34162EFCDD1313FDB9E1F726F48" Directory="INSTALLDIR" Guid="{ABDACF49-3FAD-4607-AC39-C855312772B5}">
-                <File Id="fil54B195B8A2F1BF299736A0178EEF1C4B" KeyPath="yes" Source="SourceDir\wxmsw28uh_core_vc.dll" />
+                <File Id="fil54B195B8A2F1BF299736A0178EEF1C4B" KeyPath="yes" Source="build\py2exe\wxmsw28uh_core_vc.dll" />
             </Component>
             <Component Id="cmp134C285D81C2A057D615E29B2F958E42" Directory="INSTALLDIR" Guid="{142813AD-8A63-45A9-856F-BE2E0AE4F396}">
-                <File Id="filD3986F0971E8D8B0F473C2AAE06CEAE1" KeyPath="yes" Source="SourceDir\wxmsw28uh_html_vc.dll" />
+                <File Id="filD3986F0971E8D8B0F473C2AAE06CEAE1" KeyPath="yes" Source="build\py2exe\wxmsw28uh_html_vc.dll" />
             </Component>
             <Component Id="cmp234A290D09EC6D078C6E7053FD86A0BE" Directory="INSTALLDIR" Guid="{7B673C9B-0AC8-46F8-B87A-38FF8381A301}">
-                <File Id="filF57C05F2B384FEE51C1EE3F9B89D7290" KeyPath="yes" Source="SourceDir\wxmsw28uh_stc_vc.dll" />
+                <File Id="filF57C05F2B384FEE51C1EE3F9B89D7290" KeyPath="yes" Source="build\py2exe\wxmsw28uh_stc_vc.dll" />
             </Component>
             <Component Id="cmpF184F2AE60C52F78C0B63514235D07AA" Directory="dirE9EAE012FB0B89B532AE435D123309BA" Guid="{903B3DEB-9601-41B5-9E44-0613F59156CE}">
-                <File Id="fil6D5B63B3DFC6EE9BC958D8623FF0094D" KeyPath="yes" Source="SourceDir\share\COPYING.txt" />
+                <File Id="fil6D5B63B3DFC6EE9BC958D8623FF0094D" KeyPath="yes" Source="share\COPYING.txt" />
             </Component>
             <Component Id="cmpF2A91E73A582A171EA8027DE6E48A1BA" Directory="dirBEA81CADE30CF2373ACDD7A20CA10B71" Guid="{90C1D820-1D31-4B3F-BD8A-7583AC2E724B}">
-                <File Id="filEEDCA828DCC2EDD8CFDBB0883E74F849" KeyPath="yes" Source="SourceDir\share\html\index.html" />
+                <File Id="filEEDCA828DCC2EDD8CFDBB0883E74F849" KeyPath="yes" Source="share\html\index.html" />
             </Component>
             <Component Id="cmp674E629F6C5BD396E145A2D4DE553533" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{DB595E96-684E-483A-A33E-C56089CD2D87}">
-                <File Id="filF2331EA3D5005C3DD1435413436FBFEB" KeyPath="yes" Source="SourceDir\share\images\ouch.png" />
+                <File Id="filF2331EA3D5005C3DD1435413436FBFEB" KeyPath="yes" Source="share\images\ouch.png" />
             </Component>
             <Component Id="cmpB7FE4AD1F18A83DBC8F104AEE893FBDF" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{4EF9E4AD-5BF2-4325-81CC-536070B8C499}">
-                <File Id="filA4A0DEB822A4EAEB17B1C35A8633A890" KeyPath="yes" Source="SourceDir\share\images\pause.png" />
+                <File Id="filA4A0DEB822A4EAEB17B1C35A8633A890" KeyPath="yes" Source="share\images\pause.png" />
             </Component>
             <Component Id="cmpF74A578F50EE61B540662EF97EC639E3" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{6B9AEE8C-8B62-4D50-AA71-2F46FB134524}">
-                <File Id="fil21D729DAC28E1D7370BE60311AE4A477" KeyPath="yes" Source="SourceDir\share\images\reset_world.png" />
+                <File Id="fil21D729DAC28E1D7370BE60311AE4A477" KeyPath="yes" Source="share\images\reset_world.png" />
             </Component>
             <Component Id="cmp6B76322888A52AE8AC2F520A0AAC4B60" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{485A18CF-15DD-4189-A42D-93A8F5CB68B4}">
-                <File Id="fil672F7A7DD461A38D7F3C2EB8E697342F" KeyPath="yes" Source="SourceDir\share\images\run.png" />
+                <File Id="fil672F7A7DD461A38D7F3C2EB8E697342F" KeyPath="yes" Source="share\images\run.png" />
             </Component>
             <Component Id="cmp31E716AC20F246A8B93224536DF227F9" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{4FF828E1-0357-408D-8412-A21617A55A6B}">
-                <File Id="fil4F69650BACE4E8FAA354A6C7E88DB535" KeyPath="yes" Source="SourceDir\share\images\step.png" />
+                <File Id="fil4F69650BACE4E8FAA354A6C7E88DB535" KeyPath="yes" Source="share\images\step.png" />
             </Component>
             <Component Id="cmpB033F3806DD7BE71EF0519FCC9D945AA" Directory="dirDAD1C722C7EC5723FA505FE52369610C" Guid="{F5934E2D-3D3F-45D1-A53B-665C0E083C2B}">
-                <File Id="fil892626E5B1D1A51FBC7B130139212383" KeyPath="yes" Source="SourceDir\share\images\stop.png" />
+                <File Id="fil892626E5B1D1A51FBC7B130139212383" KeyPath="yes" Source="share\images\stop.png" />
             </Component>
             <Component Id="cmp48E5737108A7D445B581119070F98BB2" Directory="dir0296313B7AEF677BFE1CFE71C9FB9D9A" Guid="{F30E6942-D33E-4B2D-8595-14B1C33D4336}">
-                <File Id="fil8E9E0E23102C11B33D9C5D2C9AD179E1" KeyPath="yes" Source="SourceDir\share\programs\follow_wall.rur" />
+                <File Id="fil8E9E0E23102C11B33D9C5D2C9AD179E1" KeyPath="yes" Source="share\programs\follow_wall.rur" />
             </Component>
             <Component Id="cmp33D92F9F30FA26A6E8B1B00C4B9FAC33" Directory="dir0296313B7AEF677BFE1CFE71C9FB9D9A" Guid="{7BDBD6CC-A97E-4AD6-81F0-053155EF6C53}">
-                <File Id="filD1A6E835B5027341FA6A4F3F7BE02317" KeyPath="yes" Source="SourceDir\share\programs\test.rur" />
+                <File Id="filD1A6E835B5027341FA6A4F3F7BE02317" KeyPath="yes" Source="share\programs\test.rur" />
             </Component>
             <Component Id="cmp686AB5C7E98494E718D824082E8B0BA6" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{B6DE48CD-26B8-4657-84A9-5A98078D4729}">
-                <File Id="filA6B904A3993898FAD2109A478A6FC9BF" KeyPath="yes" Source="SourceDir\share\worlds\8queens.wld" />
+                <File Id="filA6B904A3993898FAD2109A478A6FC9BF" KeyPath="yes" Source="share\worlds\8queens.wld" />
             </Component>
             <Component Id="cmp417B0A2C9666E6EA6903EB942D76CDBA" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{BA50230C-B6D0-4E97-9A26-498D6371E9D3}">
-                <File Id="fil522405500D628D83A9733E9C8D71CF69" KeyPath="yes" Source="SourceDir\share\worlds\add1.wld" />
+                <File Id="fil522405500D628D83A9733E9C8D71CF69" KeyPath="yes" Source="share\worlds\add1.wld" />
             </Component>
             <Component Id="cmpA4E1CDB4F7F68BB9A70845A1ABA0AE58" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{D1D54756-CBAA-4657-803A-44F9B4F844AD}">
-                <File Id="filC5ACA520D184C2F2CAAD42D5A4B6EC26" KeyPath="yes" Source="SourceDir\share\worlds\add2.wld" />
+                <File Id="filC5ACA520D184C2F2CAAD42D5A4B6EC26" KeyPath="yes" Source="share\worlds\add2.wld" />
             </Component>
             <Component Id="cmp0EB7171AD8B506DC1299C39049AABDC2" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{8B5193BF-8A28-442D-BA2B-02F25BA2DA41}">
-                <File Id="filCFBCDCE7E18830302E967551C62080A6" KeyPath="yes" Source="SourceDir\share\worlds\add34.wld" />
+                <File Id="filCFBCDCE7E18830302E967551C62080A6" KeyPath="yes" Source="share\worlds\add34.wld" />
             </Component>
             <Component Id="cmp574119CF3FF9DB249D2CA6EC3E435A52" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{B84F65A8-F08A-4A73-A194-3475FF505923}">
-                <File Id="filF107E921E845906DA8204D90D3743B65" KeyPath="yes" Source="SourceDir\share\worlds\adding_world.wld" />
+                <File Id="filF107E921E845906DA8204D90D3743B65" KeyPath="yes" Source="share\worlds\adding_world.wld" />
             </Component>
             <Component Id="cmp40B0BD71ED48912CBFCBE1D4F5681422" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{3E73DFF5-DF2B-47E5-87B9-8DCE257814F3}">
-                <File Id="filA2770B1CD50BBE061409C6FBC87A4FFE" KeyPath="yes" Source="SourceDir\share\worlds\amazing1.wld" />
+                <File Id="filA2770B1CD50BBE061409C6FBC87A4FFE" KeyPath="yes" Source="share\worlds\amazing1.wld" />
             </Component>
             <Component Id="cmp3E9B03E61D9245E6D7AB47CD81E040CF" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{1B3F959D-F9AC-4423-8045-C5B1C7D4D1CA}">
-                <File Id="fil4B5B4CB7D4709E8125CEA8D44C3E7B3F" KeyPath="yes" Source="SourceDir\share\worlds\amazing2.wld" />
+                <File Id="fil4B5B4CB7D4709E8125CEA8D44C3E7B3F" KeyPath="yes" Source="share\worlds\amazing2.wld" />
             </Component>
             <Component Id="cmp7938DA1352F5C4C47E3099EFA0148FC3" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{504DAB09-2D92-45E8-BE43-C52E8A93BE2A}">
-                <File Id="fil3AD67049B2310797E9156D381DA986B7" KeyPath="yes" Source="SourceDir\share\worlds\amazing3.wld" />
+                <File Id="fil3AD67049B2310797E9156D381DA986B7" KeyPath="yes" Source="share\worlds\amazing3.wld" />
             </Component>
             <Component Id="cmpB4F0D2743C56FEF9296A267BB4793FA7" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{726FDC06-8DFE-4EDC-9932-BA4AC9BD8642}">
-                <File Id="filD88AE0FFD29663321E1CD18DB61AA6AC" KeyPath="yes" Source="SourceDir\share\worlds\amazing3a.wld" />
+                <File Id="filD88AE0FFD29663321E1CD18DB61AA6AC" KeyPath="yes" Source="share\worlds\amazing3a.wld" />
             </Component>
             <Component Id="cmpDB18C2DFF2CC588A5BB2606883F2FD5E" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{D8B62A12-3FC5-4711-AAD2-7E6A228A5E6F}">
-                <File Id="fil0EDEECB103DBF43A8B72F681457E3CB1" KeyPath="yes" Source="SourceDir\share\worlds\amazing5.wld" />
+                <File Id="fil0EDEECB103DBF43A8B72F681457E3CB1" KeyPath="yes" Source="share\worlds\amazing5.wld" />
             </Component>
             <Component Id="cmpE4D36F8B657EC470C814863326DBBBE4" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{F8BDE792-AA5B-49AE-B848-4435D6CA4927}">
-                <File Id="filA69E2BE33EF8C52D2901D87429215220" KeyPath="yes" Source="SourceDir\share\worlds\beepers1.wld" />
+                <File Id="filA69E2BE33EF8C52D2901D87429215220" KeyPath="yes" Source="share\worlds\beepers1.wld" />
             </Component>
             <Component Id="cmp32F50011E427AB1A544883EF5959704D" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{EF4B75D6-6235-4ADC-B262-A80F167DD011}">
-                <File Id="fil2E858788EB3D86A5D21FB62E1526CDB9" KeyPath="yes" Source="SourceDir\share\worlds\blank.wld" />
+                <File Id="fil2E858788EB3D86A5D21FB62E1526CDB9" KeyPath="yes" Source="share\worlds\blank.wld" />
             </Component>
             <Component Id="cmpA8B44604C517C0EB946964D255241DCA" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{9CC3E11A-F0EF-49BE-BA74-4E24380C4456}">
-                <File Id="fil087489945363A491C138ACD3A671FA04" KeyPath="yes" Source="SourceDir\share\worlds\corner3_4.wld" />
+                <File Id="fil087489945363A491C138ACD3A671FA04" KeyPath="yes" Source="share\worlds\corner3_4.wld" />
             </Component>
             <Component Id="cmp4E954C9DED2BF347FD2508BB967B9B19" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{0A2C9E5E-271B-446D-8E8D-BB6B9F1CC3C1}">
-                <File Id="fil60E52470774E155AC318E0A35619F294" KeyPath="yes" Source="SourceDir\share\worlds\empty.wld" />
+                <File Id="fil60E52470774E155AC318E0A35619F294" KeyPath="yes" Source="share\worlds\empty.wld" />
             </Component>
             <Component Id="cmp7737566A302B1209E7260EFAA13313F4" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{AF4224D3-4BD1-4F3C-A8C8-A0AB19FAC640}">
-                <File Id="fil3E2C03A09B30E2F591FC291F80120AEB" KeyPath="yes" Source="SourceDir\share\worlds\fairy_tale.wld" />
+                <File Id="fil3E2C03A09B30E2F591FC291F80120AEB" KeyPath="yes" Source="share\worlds\fairy_tale.wld" />
             </Component>
             <Component Id="cmp0D0283268A00E256466EA0ECA9FB71E1" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{498332E0-410E-4A23-BDFD-0781548ABB98}">
-                <File Id="filBB554F33DE52FB60CD0F59F783455E36" KeyPath="yes" Source="SourceDir\share\worlds\frank18.wld" />
+                <File Id="filBB554F33DE52FB60CD0F59F783455E36" KeyPath="yes" Source="share\worlds\frank18.wld" />
             </Component>
             <Component Id="cmp77A31DA771D63E9BF74FDBD90FF08384" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{EE76FFB0-58E4-47AE-9259-74EF1A3D315F}">
-                <File Id="fil2343B1285959CA60BB2AAA99A4288818" KeyPath="yes" Source="SourceDir\share\worlds\hanoi3.wld" />
+                <File Id="fil2343B1285959CA60BB2AAA99A4288818" KeyPath="yes" Source="share\worlds\hanoi3.wld" />
             </Component>
             <Component Id="cmp2867717AC436798D0CD1FAEFF58182BC" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{62A9492B-F06A-44DC-A33C-970B18764C87}">
-                <File Id="fil428C1AA06E7221B26DD820FEB80497E5" KeyPath="yes" Source="SourceDir\share\worlds\hanoi4.wld" />
+                <File Id="fil428C1AA06E7221B26DD820FEB80497E5" KeyPath="yes" Source="share\worlds\hanoi4.wld" />
             </Component>
             <Component Id="cmp67334077646352EA6DA66981D56A50E1" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{272207D8-52C1-49F5-95C7-8CD1A126D1A3}">
-                <File Id="filB733146341EE239265866AAA84248708" KeyPath="yes" Source="SourceDir\share\worlds\harvest1.wld" />
+                <File Id="filB733146341EE239265866AAA84248708" KeyPath="yes" Source="share\worlds\harvest1.wld" />
             </Component>
             <Component Id="cmp82755D080866ABA2A792B9AA4E7AF0E7" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{E7E404D3-6175-444E-B4B3-40D07B7684CF}">
-                <File Id="fil18CCFC268B5B5EB9D3823F95EA6006C5" KeyPath="yes" Source="SourceDir\share\worlds\harvest2.wld" />
+                <File Id="fil18CCFC268B5B5EB9D3823F95EA6006C5" KeyPath="yes" Source="share\worlds\harvest2.wld" />
             </Component>
             <Component Id="cmpB8303CA280264FFB8C51EA2DC193BF50" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{8604C113-7DBE-4D0F-B3F9-4FA3BEB722D4}">
-                <File Id="filF2A05886A816BA50AA237A3DA55CED35" KeyPath="yes" Source="SourceDir\share\worlds\harvest3.wld" />
+                <File Id="filF2A05886A816BA50AA237A3DA55CED35" KeyPath="yes" Source="share\worlds\harvest3.wld" />
             </Component>
             <Component Id="cmp73119F5836750D2E915AC30F4098CA41" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{E415CA03-A79B-4B0A-B402-64BCADC1D3EE}">
-                <File Id="filC835C2B9749F0423367798EBC9B506C4" KeyPath="yes" Source="SourceDir\share\worlds\harvest4.wld" />
+                <File Id="filC835C2B9749F0423367798EBC9B506C4" KeyPath="yes" Source="share\worlds\harvest4.wld" />
             </Component>
             <Component Id="cmpD267C4BA5A391F49BBCCB25299B62EAA" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{78509461-5B04-46DE-9356-CFE6A8DA0CE1}">
-                <File Id="fil8303AEB08F0A5B1D12C25AE898543E92" KeyPath="yes" Source="SourceDir\share\worlds\hurdles1.wld" />
+                <File Id="fil8303AEB08F0A5B1D12C25AE898543E92" KeyPath="yes" Source="share\worlds\hurdles1.wld" />
             </Component>
             <Component Id="cmp179C98A7F0BB57670ACB69DB066EE634" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{6AF05B4F-405D-4E24-BDEB-567FB9692862}">
-                <File Id="filF89FCC78A554FE7B72D9B7913D22AC58" KeyPath="yes" Source="SourceDir\share\worlds\hurdles2.wld" />
+                <File Id="filF89FCC78A554FE7B72D9B7913D22AC58" KeyPath="yes" Source="share\worlds\hurdles2.wld" />
             </Component>
             <Component Id="cmp6898CD39DBE3A82B8CB89CFEDB2B6D53" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{21CB64EA-031A-4B9F-94CD-895256789B4C}">
-                <File Id="fil34541E2FD30CD85FDA37B79C4C01125D" KeyPath="yes" Source="SourceDir\share\worlds\hurdles3.wld" />
+                <File Id="fil34541E2FD30CD85FDA37B79C4C01125D" KeyPath="yes" Source="share\worlds\hurdles3.wld" />
             </Component>
             <Component Id="cmpEDCFA208C45D7D70836D5364B42FBDDD" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{B36D329D-3942-49E6-A707-B2FA79DF63D7}">
-                <File Id="fil18DE5D7F7D760FE2F626FFF0FDFD1102" KeyPath="yes" Source="SourceDir\share\worlds\hurdles4.wld" />
+                <File Id="fil18DE5D7F7D760FE2F626FFF0FDFD1102" KeyPath="yes" Source="share\worlds\hurdles4.wld" />
             </Component>
             <Component Id="cmp9C70CEF0EEAB4589EF6FFF1368A4636D" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{EA60BABA-0170-4179-A70A-966A232D6AD8}">
-                <File Id="fil0CEAC1D03FD55B00F798917EE7B061F2" KeyPath="yes" Source="SourceDir\share\worlds\maze1.wld" />
+                <File Id="fil0CEAC1D03FD55B00F798917EE7B061F2" KeyPath="yes" Source="share\worlds\maze1.wld" />
             </Component>
             <Component Id="cmpA6130EC76C3D9DA3241180A0629BC87C" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{2622908E-68FD-48AB-96A1-76E66BAAC1CE}">
-                <File Id="filD38C01D081E4F1A3FA73D307FB1B93EF" KeyPath="yes" Source="SourceDir\share\worlds\newspaper.wld" />
+                <File Id="filD38C01D081E4F1A3FA73D307FB1B93EF" KeyPath="yes" Source="share\worlds\newspaper.wld" />
             </Component>
             <Component Id="cmp698FE64FE67526E1BB9BF309E7B65E94" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{BF8690AA-B290-42B2-B30C-5DE5261745A6}">
-                <File Id="fil5FA09E76016F1FA0DF6A05AF65AFC0A3" KeyPath="yes" Source="SourceDir\share\worlds\rain1.wld" />
+                <File Id="fil5FA09E76016F1FA0DF6A05AF65AFC0A3" KeyPath="yes" Source="share\worlds\rain1.wld" />
             </Component>
             <Component Id="cmp5890A387601EE330DF0CD0C527941A35" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{C3D6305B-2713-4310-9F0E-25E25C3C4CAD}">
-                <File Id="fil08ECA43F452CAB0E0452CF4F616FD8DA" KeyPath="yes" Source="SourceDir\share\worlds\rain2.wld" />
+                <File Id="fil08ECA43F452CAB0E0452CF4F616FD8DA" KeyPath="yes" Source="share\worlds\rain2.wld" />
             </Component>
             <Component Id="cmp1CED5D8975466484992BD629D7C6F5DA" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{5941A3BD-BDDB-4AD8-820D-73AEC35DDFF7}">
-                <File Id="fil006F4C17B063DFCBDE02402C83D05287" KeyPath="yes" Source="SourceDir\share\worlds\sort1.wld" />
+                <File Id="fil006F4C17B063DFCBDE02402C83D05287" KeyPath="yes" Source="share\worlds\sort1.wld" />
             </Component>
             <Component Id="cmpB430A121F1D25774EF8EB8B2F90D706E" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{22AC5406-5115-41E2-B88E-464341D6B347}">
-                <File Id="filA6795391534ECA68160EE01A14B3F7FF" KeyPath="yes" Source="SourceDir\share\worlds\test.wld" />
+                <File Id="filA6795391534ECA68160EE01A14B3F7FF" KeyPath="yes" Source="share\worlds\test.wld" />
             </Component>
             <Component Id="cmp5C9AE9C12CA93F500B1B94C93D4F8728" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{CBE63E78-31E2-42D7-BF06-9DDD9092580E}">
-                <File Id="filB5C432863EA9BCCD6C6FC8B3F51ECC2D" KeyPath="yes" Source="SourceDir\share\worlds\trash1.wld" />
+                <File Id="filB5C432863EA9BCCD6C6FC8B3F51ECC2D" KeyPath="yes" Source="share\worlds\trash1.wld" />
             </Component>
             <Component Id="cmpB8A38B741BB42CC3311644E53147A7E2" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{0168E9D6-3C06-42D0-B5F9-70EEED575FD4}">
-                <File Id="filB3AFB9C03984BE2EC19F623EC61F45AC" KeyPath="yes" Source="SourceDir\share\worlds\trash2.wld" />
+                <File Id="filB3AFB9C03984BE2EC19F623EC61F45AC" KeyPath="yes" Source="share\worlds\trash2.wld" />
             </Component>
             <Component Id="cmp0F4138CDB66D5AAF2915DB1081E078D1" Directory="dirEC77429C8ACDBDDA91423734C15D3A0E" Guid="{2C1B7903-69E3-4942-9AFD-7EA71543BB89}">
-                <File Id="filABE0C2A76E97C2517177565183D00796" KeyPath="yes" Source="SourceDir\share\worlds\yardwork.wld" />
+                <File Id="filABE0C2A76E97C2517177565183D00796" KeyPath="yes" Source="share\worlds\yardwork.wld" />
             </Component>
         </ComponentGroup>
     </Fragment>
