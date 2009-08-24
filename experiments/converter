@@ -14,7 +14,6 @@ with open(sys.argv[1]) as f:
     p = f.read()
 d = {'robot': (1, 1, 'E', 0)}
 exec p in d
-#print d["beepers"]
 result = {
     "width": d['avenues'],
     "height": d['streets'],
@@ -24,9 +23,9 @@ result = {
         "x": d['robot'][0]-1,
         "y": d['robot'][1]-1,
         "dir": "ENWS".index(d['robot'][2]),
-        "beepers": d['robot'][3]
+        "stones": d['robot'][3]
     }],
-    "beepers": [((k[0]-1, k[1]-1), v) for k, v in d['beepers'].iteritems()],
+    "stones": [((k[0]-1, k[1]-1), v) for k, v in d['beepers'].iteritems()],
 }
 
 target = os.path.join(sys.argv[2], os.path.basename(sys.argv[1]))

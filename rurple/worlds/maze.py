@@ -26,7 +26,7 @@ class Robot(object):
         self._x = state['x']
         self._y = state['y']
         self._dir = state['dir']
-        self._beepers = state['beepers']
+        self._stones = state['stones']
 
         self.runStart()
         self._maze.addRobot(self)
@@ -63,23 +63,23 @@ class Robot(object):
         self._maze.repaintSquares(self._x, self._y, 1, 1)
         self._maze.setModified()
 
-    def pick_beeper(self):
-        self._maze.pickBeeper(self._x, self._y)
-        self._beepers += 1
+    def pick_stone(self):
+        self._maze.pickStone(self._x, self._y)
+        self._stones += 1
         self._maze.statusChanged()
 
-    def put_beeper(self):
-        if self._beepers == 0:
-            raise MazeException("I don't have any beepers")
-        self._beepers -= 1
-        self._maze.putBeeper(self._x, self._y)
+    def put_stone(self):
+        if self._stones == 0:
+            raise MazeException("I don't have any stones")
+        self._stones -= 1
+        self._maze.putStone(self._x, self._y)
         self._maze.statusChanged()
 
-    def on_beeper(self):
-        return self._maze.countBeepers(self._x, self._y) != 0
+    def on_stone(self):
+        return self._maze.countStones(self._x, self._y) != 0
 
-    def got_beeper(self):
-        return self._beepers != 0
+    def got_stone(self):
+        return self._stones != 0
     
     def front_is_clear(self):
         return self._maze.isPassable(self._x, self._y, self._dir)
@@ -108,13 +108,14 @@ class Robot(object):
     def dir(self): return self._dir
         
     @property
-    def beepers(self): return self._beepers
+    def stones(self): return self._stones
     
-    @beepers.setter
-    def beepers(self, x):
+    @stones.setter
+    def stones(self, x):
         assert x >= 0
         assert x == int(x)
-        self._beepers = int(x)
+        self._stones = int(x)
+        self._maze.statusChanged()
     
     @property
     def trail(self): return self._trail
@@ -124,7 +125,7 @@ class Robot(object):
         return {
             "name": self._name,
             "x": self._x, "y": self._y, "dir": self._dir,
-            "beepers": self._beepers,
+            "stones": self._stones,
         }
 
 class Maze(object):
@@ -140,8 +141,8 @@ class Maze(object):
             | set(
                 tuple(w) for w in state['walls']
                 if self.isInterior(*w)))
-        self._beepers = dict(
-            (tuple(k), v) for k, v in state['beepers'])
+        self._stones = dict(
+            (tuple(k), v) for k, v in state['stones'])
         self._robots = {}
         for r in state['robots']:
             Robot(self, r)
@@ -182,27 +183,27 @@ class Maze(object):
         self._defaultRobot = r
         self.statusChanged()
 
-    def pickBeeper(self, x, y):
-        b = self.countBeepers(x, y)
+    def pickStone(self, x, y):
+        b = self.countStones(x, y)
         if b == 0:
-            raise MazeException("I'm not next to a beeper")
+            raise MazeException("I'm not next to a stone")
         b -= 1
-        self.setBeepers(x, y, b)
+        self.setStones(x, y, b)
 
-    def putBeeper(self, x, y):
-        self.setBeepers(x, y, 1 + self.countBeepers(x, y))
+    def putStone(self, x, y):
+        self.setStones(x, y, 1 + self.countStones(x, y))
 
-    def setBeepers(self, x, y, i):
+    def setStones(self, x, y, i):
         assert i >= 0
         if i == 0:
-            if (x, y) in self._beepers:
-                del self._beepers[(x, y)]
+            if (x, y) in self._stones:
+                del self._stones[(x, y)]
         else:
-            self._beepers[(x, y)] = i
+            self._stones[(x, y)] = i
         self.repaintSquares(x, y, 1, 1)
 
-    def countBeepers(self, x, y):
-        return self._beepers.get((x, y), 0)
+    def countStones(self, x, y):
+        return self._stones.get((x, y), 0)
 
     @property
     def width(self): return self._width
@@ -217,7 +218,7 @@ class Maze(object):
     def robots(self): return self._robots
 
     @property
-    def beepers(self): return self._beepers
+    def stones(self): return self._stones
 
     @property
     def defaultRobot(self): return self._defaultRobot
@@ -233,7 +234,7 @@ class Maze(object):
             "width": self._width,
             "height": self._height,
             "walls": list(w for w in self._walls if self.isInterior(*w)),
-            "beepers": [(k, v) for k, v in self._beepers.iteritems()],
+            "stones": [(k, v) for k, v in self._stones.iteritems()],
             "robots": [v.staterep for v in self._robots.itervalues()],
         }
     
@@ -281,8 +282,8 @@ class MazeWindow(wx.PyControl):
         self._wallPen2 = wx.Pen('red')
         self._wallPen2.SetWidth(2)
         self._wallPen2.SetCap(wx.CAP_PROJECTING)
-        self._beeperBrush1 = wx.Brush('cyan')
-        self._beeperBrush2 = wx.Brush('white')
+        self._stoneBrush1 = wx.Brush('cyan')
+        self._stoneBrush2 = wx.Brush('white')
         self._textBrush = wx.Brush('black')
         self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self._font.SetWeight(wx.BOLD)
@@ -302,9 +303,9 @@ class MazeWindow(wx.PyControl):
     def repaintSquares(self, *args, **kw):
         self.RefreshRect(self.paintBounds(*args, **kw))
 
-    def _beeperSetter(self, x, y, i):
+    def _stoneSetter(self, x, y, i):
         def f(e):
-            self._world._maze.setBeepers(x, y, i)
+            self._world._maze.setStones(x, y, i)
         return f
 
     def OnClick(self, e):
@@ -319,9 +320,12 @@ class MazeWindow(wx.PyControl):
             if (x >= 0 and x < self._world._maze.width
                 and y >= 0 and y < self._world._maze.height):
                 menu = wx.Menu()
-                for i in range(10):
+                self.Bind(wx.EVT_MENU,
+                    self._stoneSetter(x, y, 0),
+                    menu.Append(wx.ID_ANY, "Empty"))
+                for i in range(1, 10):
                     self.Bind(wx.EVT_MENU,
-                        self._beeperSetter(x, y, i),
+                        self._stoneSetter(x, y, i),
                         menu.Append(wx.ID_ANY, str(i)))
                 self.PopupMenu(menu, e.GetPosition())
 
@@ -433,20 +437,21 @@ class MazeWindow(wx.PyControl):
             gc.PopState()
         gc.SetFont(self._font)
 
-        for k, v in maze.beepers.iteritems():
+        for k, v in maze.stones.iteritems():
             x, y = self.coordinates(k[0] + 0.5, k[1] + 0.5)
-            gc.SetBrush(self._beeperBrush1)
+            gc.SetBrush(self._stoneBrush1)
             p = gc.CreatePath()
             p.AddCircle(x, y, 14)
             gc.FillPath(p)
-            gc.SetBrush(self._beeperBrush2)
+            gc.SetBrush(self._stoneBrush2)
             p = gc.CreatePath()
             p.AddCircle(x, y, 11)
             gc.FillPath(p)
             gc.SetBrush(self._textBrush)
             t = str(v)
             exts = gc.GetFullTextExtent(t)
-            gc.DrawText(t, x - 0.5*exts[0], y - 0.5*exts[1])
+            # Correct for mis-centering by hand - bah!
+            gc.DrawText(t, x - 0.5*exts[0] -1, y - 0.5*exts[1])
         for r in maze.robots.itervalues():
             gc.PushState()
             self.paintRobot(gc, r)
@@ -494,18 +499,18 @@ class ExceptionDialog(wx.Dialog):
         self.SetSizer(sizer)
         sizer.Fit(self)
         
-class BeeperDialog(wx.Dialog):
+class StoneDialog(wx.Dialog):
     def __init__(self, *a, **kw):
         self._maze = extractKey(kw, 'maze')
         wx.Dialog.__init__(self, *a, **kw)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        label = wx.StaticText(self, label="Beepers for robot to start with")
+        label = wx.StaticText(self, label="Stones for robot to start with")
         sizer.Add(label, 0, wx.ALL, 5)
 
         self._spin = wx.SpinCtrl(self,
-            initial=self._maze.defaultRobot.beepers)
+            initial=self._maze.defaultRobot.stones)
         sizer.Add(self._spin, 0, wx.ALL, 5)
 
         sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 5)
@@ -527,7 +532,7 @@ class BeeperDialog(wx.Dialog):
         sizer.Fit(self)
     
     def OnOK(self, e):
-        self._maze.defaultRobot.beepers = self._spin.Value
+        self._maze.defaultRobot.stones = self._spin.Value
         e.Skip()
 
 class NewDialog(wx.Dialog):
@@ -575,9 +580,9 @@ class NewDialog(wx.Dialog):
         return {
             "width": w,
             "walls": [],
-            "beepers": [],
+            "stones": [],
             "robots": [
-                {"name": "robot", "y": 0, "x": 0, "dir": 0, "beepers": 0}
+                {"name": "robot", "y": 0, "x": 0, "dir": 0, "stones": 0}
             ],
             "height": h
         }
@@ -624,24 +629,24 @@ class World(object):
 
     def statusChanged(self):
         if self._maze is not None:
-            self._ui.setWorldStatus("Robot \"%s\" has %s beepers"
-                % (self._maze.defaultRobot.name, self._maze.defaultRobot.beepers))
+            self._ui.setWorldStatus("Robot \"%s\" has %s stones"
+                % (self._maze.defaultRobot.name, self._maze.defaultRobot.stones))
             
     def menu(self, menu):
         return [
-            (self.OnBeeperMenu, menu.Append(wx.ID_ANY, "Set beepers...")),
+            (self.OnStoneMenu, menu.Append(wx.ID_ANY, "Set stones...")),
         ]
 
     def runStart(self):
         self._maze.runStart()
 
-    def OnBeeperMenu(self, e):
+    def OnStoneMenu(self, e):
         if not self.editable:
             wx.MessageDialog(self._ui, caption="Program running",
                 message = "Cannot edit world while program is running",
                 style=wx.ICON_ERROR | wx.OK).ShowModal()
             return
-        d = BeeperDialog(self._ui, maze=self._maze)
+        d = StoneDialog(self._ui, maze=self._maze)
         d.ShowModal()
 
     def _print(self, *a, **kw):
@@ -678,8 +683,8 @@ class World(object):
             (name, t.proxyFunction(self._maze.proxyRobot(name)))
             for name in [
                 "move", "turn_left",
-                "pick_beeper", "put_beeper",
-                "on_beeper", "got_beeper",
+                "pick_stone", "put_stone",
+                "on_stone", "got_stone",
                 "front_is_clear", "left_is_clear", "right_is_clear",
                 "facing_north",
             ]]))
