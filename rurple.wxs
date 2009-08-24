@@ -45,13 +45,13 @@
         <!-- adapted from http://www.wixwiki.com/index.php?title=WixUI_Custom -->
         <UIRef Id="WixUI_Common" />
 
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
         <UI>
             <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
             <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
 
-            <Property Id="WIXUI_INSTALLDIR" Value="TARGETDIR" />
             <Property Id="ARPNOMODIFY" Value="1" />
 
             <DialogRef Id="BrowseDlg" />
