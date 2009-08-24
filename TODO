@@ -2,7 +2,6 @@ Still to do:
 
 - support multiple robots better
 
-- Windows installer
 - make robot look nicer
 - adapt old manual!
 
@@ -87,4 +86,5 @@ Done:
 - Fix error reporting from lovely editor
 - save on close
 - rename beepers to stones
+- Windows installer
 
