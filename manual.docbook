@@ -1,13 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<book>
+<article>
 <info>
-  <title>Learn to program with Rurple</title>
+  <title>Rurple NG 0.5</title>
   <author><firstname>Paul</firstname><surname>Crowley</surname></author>
   <copyright><year>2009</year><holder>Paul Crowley</holder></copyright>
 </info>
-<chapter id="introduction">
-<title>Introduction</title>
-<para>Programming is easier than you think.</para>
-</chapter>
-</book>
+<section>
+<title>About this release</title>
+<para>
+Rurple NG is a tool for teaching programming to those who have never programmed before.  It is very closely based on an existing tool, <ulink url="http://rur-ple.sourceforge.net/">RUR-PLE</ulink>, but in a brand new implementation with various improvements.  This is an early release; it is roughly a complete program and may be useful but much needs to be done to bring it to feature parity with RUR-PLE and doubtless there are bugs to be found and corners to be rounded.  In its current state, it is not useful to anyone wanting to learn to program on their own; it might be used by a bold early adopter teaching someone else.
+</para>
+<para>
+In particular it is so far barely documented.  For now, I can only advise you to read the <ulink url="http://rur-ple.sourceforge.net/en/rur.htm">RUR-PLE manual</ulink> where this one is incomplete; I shall set out some of the differences between the programs here, and hope to give more details on why they differ in a future revision of this document.
+</para>
+</section>
+<section>
+<title>Rurple NG commands</title>
+<itemizedlist>
+<listitem>
+<para>
+<command>
+move()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+turn_left()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+front_is_clear()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+left_is_clear()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+right_is_clear()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+facing_north()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+pick_stone()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+put_stone()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+on_stone()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+got_stone()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+roll_dice()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+input_string()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+input_int()
+</command>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>
+print()
+</command>
+</para>
+</listitem>
+</itemizedlist>
+</section>
+<section>
+<title>Incompatibilities between RUR-PLE and Rurple NG</title>
+<itemizedlist>
+<listitem>
+<para>
+Most importantly, RUR-PLE has a complete manual. Rurple NG is hardly documented.
+</para>
+</listitem>
+<listitem>
+<para>
+There is no <command>turn_off()</command> in Rurple NG; the robot stops when the program finishes.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG renames "beepers" to "stones", to make it clearer that they are inert.
+</para>
+</listitem>
+<listitem>
+<para>
+<command>print()</command> must be called with parenthesis, just like all the other commands.  
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG currently lacks any support for multiple robots, or object-oriented robot commands
+</para>
+</listitem>
+<listitem>
+<para>
+The user program is interpreted with an implicit "from __future__ import division, print_function, unicode_literals" at the start. As a result, in Rurple NG evaluating "3 / 2" gives 1.5, not 1, and  "3 // 2" evaluates to 1.
+</para>
+</listitem>
+<listitem>
+<para>
+RUR-PLE supports four languages; Rurple NG doesn't currently use gettext.
+</para>
+</listitem>
+</itemizedlist>
+</section>
+</article>
 
