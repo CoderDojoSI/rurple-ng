@@ -148,7 +148,7 @@
                 <File Id="fil6D5B63B3DFC6EE9BC958D8623FF0094D" KeyPath="yes" Source="share\COPYING.txt" />
             </Component>
             <Component Id="cmpF2A91E73A582A171EA8027DE6E48A1BA" Directory="dirBEA81CADE30CF2373ACDD7A20CA10B71" Guid="{90C1D820-1D31-4B3F-BD8A-7583AC2E724B}">
-                <File Id="filEEDCA828DCC2EDD8CFDBB0883E74F849" KeyPath="yes" Source="share\html\index.html">
+                <File Id="filEEDCA828DCC2EDD8CFDBB0883E74F849" KeyPath="yes" Source="build\html\index.html">
                     <Shortcut Id="startmenuManual" Directory="ProgramMenuDir" Name="Manual" WorkingDirectory='INSTALLDIR' Advertise="yes" />
                 </File>
             </Component>

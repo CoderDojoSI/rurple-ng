@@ -4,13 +4,8 @@ Development version, Paul Crowley, paul@lshift.net, 2009
 
 http://hg.opensource.lshift.net/rurple-ng
 
-Rurple-NG is the beginning of a reimplementation from scratch of André
-Roberge's marvellous RUR-PLE:
-
-http://rur-ple.sourceforge.net/
-
-Though a great deal of progress has been made, there is still quite a bit to
-do - see the TODO file for some details.
+Rurple NG is a reimplementation from scratch of André Roberge's marvellous
+RUR-PLE: http://rur-ple.sourceforge.net/
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,4 +20,16 @@ do - see the TODO file for some details.
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+This is an early release of RUR-PLE.  On top of the failings listed in the manual, the biggest thing it lacks is a working build system.  In order to get a working build of the Windows installer you need to follow the following steps:
+
+- Build the manual.  This is all the "SConstruct" file supplied currently does, and it currently uses a Linux specific hard-coded path for finding the relevant DocBook style sheet.  Running an XSLT processor by hand should work equally well; the manual should end up in "build\html\index.html".
+
+- Build the executable with "python setup.py py2exe".  You will need py2exe and the wxPython library.  
+
+- Run "build.bat" to build the installer.  You will need WiX installed.
+
+I'd very much like to wrap all of these steps into the SConstruct file in a way that works under Windows.  I'd also of course like to produce a .deb file suitable for Debian and Ubuntu based systems.  Help in this area would be very much appreciated.
+
+-- Paul Crowley, 2009-08-30
 
