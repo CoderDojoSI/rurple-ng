@@ -191,7 +191,8 @@ class Openable(object):
         if os.path.exists(path):
             d = wx.MessageDialog(self._ui, 
                 caption="Overwrite file?",
-                message = "There already is a program of that name. Replace it with your program?",
+                message = "There already is a %s of that name. Replace it with your %s?"
+                    % (self._type, self._type),
                 style=wx.ICON_QUESTION | wx.OK | wx.CANCEL)
             if d.ShowModal() != wx.ID_OK:
                 return False
