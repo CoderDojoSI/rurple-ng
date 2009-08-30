@@ -1,0 +1,61 @@
+My name is Paul Crowley, I'm going to show you Rurple NG version 0.5.  Rurple is for teaching programming to people who've never programmed before.
+
+Let's download it and install it.  It ships as a Windows Installer MSI file, and has a standard install dialog.
+
+Now that's installed, there's a new entry for it under the Start menu.  We can view the manual, or launch the program.  Let's launch the program.
+
+This rightmost window shows a robot in a simple grid-based maze. 
+
+If we press the "up" arrow key, the robot moves forward, and if we press the "left" arrow key she turns left.
+
+If we tell her to go forward when there's a wall in front of her, we see an error.  
+
+We can add walls to the maze by clicking, and remove them the same way.
+
+But I don't want these changes, so I'll press "reset" to get rid of them.
+
+Now that we can drive our robot by hand, let's try writing a simple program to control her.  Let's start with the simplest program we can: we'll just make her move forward one square.
+
+That's the whole program.  We press "run" to run that, and we see that she moves forward one square.  If we run it again, she does it again.  When we press "reset", it takes her and the world back to the way they were before we last ran the program.
+
+Let's give her some more complex instructions; we'll have her move, turn, and move again.  You should be able to guess where she'll end up when we run this.
+
+Now let's reset and see that again, turning the speed right down.  Move, turn left, and move again.
+
+[reset] We can also go through the program step by step, and see the effect of each instruction as it runs.  Move, turn left, and move.
+
+Notice that we can't change the program or the maze while the program is running; we have to stop it first.
+
+As well as moving and turning, she can also pick up and put down stones that she finds in the maze.  Let's put down a stone for her to pick up by clicking inside a square and selecting the number of stones we want in that square
+
+...and let's change the program so that she picks them up as she passes.
+
+The stone is no longer in the maze; it is being carried by the robot, as we see here.
+
+If she tries to pick up a stone that isn't there, we see an error.  Once an error occurs, the program stops running.
+
+She can also put down the stones that she is carrying.
+
+The language that these programs are written in is called Python.  Python is a very powerful and versatile programming language used for thousands of real-world programming applications at Google and all over the world.  Let's start to use some of Python's features.
+
+Now she'll only try to pick up a stone if she finds one at her feet.
+
+You can open and save the programs and worlds you create from the menu.
+
+Rurple supplies a number of example programs and worlds.  Here's a simple maze
+
+and here's a simple maze solver.
+
+We can change the speed while the program is running.
+
+We can create new worlds of our own and choose what size they are
+
+as well as changing the number of stones the robot starts off carrying.
+
+We can access the manual from the help menu.
+
+The manual lists all the commands that our robot knows about.
+
+Unfortunately Rurple NG doesn't yet have a lesson plan for beginners; if you're trying to teach yourself, you might be better off using the orignal version of RUR-PLE, which does have a lesson plan.  But if you're teaching someone else, you can probably adapt the RUR-PLE lesson plans, so long as you bear in mind the incompatibilities listed in the manual.
+
+That completes our tour of Rurple NG 0.5.  As you can see from the manual, there is still some work to do before this program is ready to replace its predecessor for all purposes, but I think it's already good enough to be used where a teacher is on hand to suggest exercises and help out.  I hope that it will continue to grow and improve perhaps with the help of other developers, and I hope that you find the program and this video useful.  Thank you for watching, and please do let me know what you think!
