@@ -433,13 +433,12 @@ class RurFrame(wx.Frame):
         self._cpu.step()
 
     def OnWorldReset(self, e):
-        
         self._reset()
 
     def OnAbout(self, e):
         info = wx.AboutDialogInfo()
         info.Name = "Rurple NG"
-        info.Version = "0.1"
+        info.Version = "0.5"
         info.Copyright = "Copyright 2009 André Roberge and Paul Crowley"
         info.Description = wx.lib.wordwrap.wordwrap(
             "A friendly learning environment for beginners to programming."
