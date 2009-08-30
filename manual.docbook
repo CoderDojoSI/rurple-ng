@@ -8,10 +8,43 @@
 <section>
 <title>About this release</title>
 <para>
-Rurple NG is a tool for teaching programming to those who have never programmed before.  It is very closely based on an existing tool, <ulink url="http://rur-ple.sourceforge.net/">RUR-PLE</ulink>, but in a brand new implementation with various improvements.  This is an early release; it is roughly a complete program and may be useful but much needs to be done to bring it to feature parity with RUR-PLE and doubtless there are bugs to be found and corners to be rounded.  In its current state, it is not useful to anyone wanting to learn to program on their own; it might be used by a bold early adopter teaching someone else.
+Rurple NG is a tool for teaching programming to those who have never programmed before.  It is very closely based on an existing tool, <ulink url="http://rur-ple.sourceforge.net/">RUR-PLE</ulink>, but in a brand new implementation with various improvements.
+</para>
+<caution>
+<title>This program is not ready for you to learn programming from on your own</title>
+<para>
+This is an early release of this program and does not include a lesson plan.  If you want to teach yourself programming on your own, please download and use <ulink url="http://rur-ple.sourceforge.net/">RUR-PLE</ulink> instead.
 </para>
 <para>
-In particular it is so far barely documented.  For now, I can only advise you to read the <ulink url="http://rur-ple.sourceforge.net/en/rur.htm">RUR-PLE manual</ulink> where this one is incomplete; I shall set out some of the differences between the programs here, and hope to give more details on why they differ in a future revision of this document.
+If you already know how to program, and want to teach programming to others, this program might suit you.  If you choose to adapt the <ulink url="http://rur-ple.sourceforge.net/en/rur.htm">RUR-PLE lesson plan</ulink>, be sure to read <xref linkend="incompatibilities"/>.
+</para>
+</caution>
+<para>
+If you use this program, please let me know and provide whatever feedback you can: <email>paul@lshift.net</email>.
+</para>
+</section>
+<section>
+<title>A brief guide to Rurple NG</title>
+<para>
+In the right hand window is a robot in a maze.  Click on the window and you can move the robot forward with the "up" arrow key, or turn her left with the "left" arrow.  If she bumps into a wall, you will see an error - but don't worry, she always recovers.  
+</para>
+<para>
+In the left hand window is your program.  A simple program can be no more than a sequence of commands like <command>move()</command> and <command>turn_left()</command> from the list below each on their own line, though all the power of the Python programming language is available to you.  You can load and save programs using the "File" menu; the "Open sample..." menu item browses example programs shipped with Rurple NG.
+</para>
+<para>
+Click on the "Run" button to start your program running.  You can change the speed at which it runs by moving the slider.  Or, you can press "Pause" and then use the "Step" button to step through each line at your own pace.  Pressing "Stop" stops the program running altogether; next time it starts it will start from the beginning.  You can only edit your program when it is not running (ie when "Stop" is highlighted").
+</para>
+<para>
+If your program goes wrong it will stop, an error will be shown, and the line on which it failed will be highlighted until you dismiss the error.  The error and line number are also written to the log window underneath the maze.
+</para>
+<para>
+When your program is not running, you can change the maze.  Click on where the walls go to add or remove walls.  Or click in the middle of the squares to set the number of "stones" in that square.  The robot can pick stones up, carry them, and put them down.
+</para>
+<para>
+You can load and save mazes using the "World" menu; the "Open sample..." menu item browses example mazes shipped with Rurple NG.  The "Set stones..." menu entry allows you to change the number of stones the robot is carrying when your program starts.
+</para>
+<para>
+After running your program, you can press "Reset" to take the maze and robot back to the way they were when you first started it.
 </para>
 </section>
 <section>
@@ -117,14 +150,9 @@ print()
 </listitem>
 </itemizedlist>
 </section>
-<section>
+<section id="incompatibilities">
 <title>Incompatibilities between RUR-PLE and Rurple NG</title>
 <itemizedlist>
-<listitem>
-<para>
-Most importantly, RUR-PLE has a complete manual. Rurple NG is hardly documented.
-</para>
-</listitem>
 <listitem>
 <para>
 There is no <command>turn_off()</command> in Rurple NG; the robot stops when the program finishes.
@@ -137,7 +165,7 @@ Rurple NG renames "beepers" to "stones", to make it clearer that they are inert.
 </listitem>
 <listitem>
 <para>
-<command>print()</command> must be called with parenthesis, just like all the other commands.  
+<command>print()</command> must be called with parentheses, just like all the other commands.
 </para>
 </listitem>
 <listitem>
@@ -150,12 +178,143 @@ Rurple NG currently lacks any support for multiple robots, or object-oriented ro
 The user program is interpreted with an implicit "from __future__ import division, print_function, unicode_literals" at the start. As a result, in Rurple NG evaluating "3 / 2" gives 1.5, not 1, and  "3 // 2" evaluates to 1.
 </para>
 </listitem>
+</itemizedlist>
+</section>
+<section>
+<title>Advantages of Rurple NG over RUR-PLE</title>
+<para>
+Rurple NG was written mainly to remove confusing and distracting elements from the user interface, to make it more visually appealing and more familiar.  However, it also has a far cleaner internal architecture which among other improvements makes better use of the machine's resources.
+</para>
+<itemizedlist>
 <listitem>
 <para>
-RUR-PLE supports four languages; Rurple NG doesn't currently use gettext.
+RUR-PLE is four applications in one, separated by tabs.  Rurple NG is just one of these applications; other programs can better do the jobs done by the other tabs.  Instead of the browser tab, users are encouraged to use the browser they are most familiar with; this also allows them to have the browser and programming windows open side-by-side.  And we anticipate that when users have reached the level of sophistication that they have outgrown what the robot and maze window can teach them, they should move on to a programming environment suitable for real work; this could be as simple as a favourite editor and text files, or a more sophisticated environment such as Eric, or Eclipse's Pydev.
+</para>
+</listitem>
+<listitem>
+<para>
+All functions in RUR-PLE are achieved with buttons in the toolbar. Rurple NG has a menu bar organised in the normal way.  We anticipate that even the youngest users will likely have mastered the most usual parts of their OS's GUI before starting to learn programming, so Rurple NG tries to conform to the standard behaviour of a GUI application where possible.  In addition, Rurple NG uses wxWidget's standard toolbar widget rather than re-implementing it using sashes, which provides a more attractive and standards-compliant user interface.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG's maze window is much less busy.  All labels have been removed; the lessons supplied with RUR-PLE don't seem to make use either of the "streets/avenues" labelling or the numbers around the edge.  And the grid marks the boundaries of the cells the robot can occupy; in the RUR-PLE interface the robot occupies the intersections of the grid lines, which seems less intuitive.
+</para>
+</listitem>
+<listitem>
+<para>
+The maze window is editable whenever the program is not running; there is no need to switch editing on and off.  RUR-PLE has an edit mode during which an extra set of labels and grid lines is visible; I don't feel these add enough information to pay for the extra UI complexity.
+</para>
+</listitem>
+<listitem>
+<para>
+The robot is seen from above.  In RUR-PLE the robot is seen in elevation even though the maze is seen in plan; in my experience users find thinking about which way the robot might be facing confusing enough without adding this extra step, even though the elevation view is more attractive with RUR-PLE's charming artwork.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG has no <command>turn_off()</command> command.  The reasons for having such a command seem to stem from RUR-PLE's background with Karel the Robot; it may be a good fit in the teaching languages it originates with, but isn't very Pythonic.  This means that a working Rurple NG program can be one line long.
+</para>
+</listitem>
+<listitem>
+<para>
+In a compromise between teaching Python 2 and Python 3, Rurple NG imports everything it can from <code>__future__</code>.  This means that users can target their code at Python 2 and so make use of the vast range of libraries available, but they will learn habits that will serve them if they later switch to Python 3.
+</para>
+</listitem>
+<listitem>
+<para>
+Moving the slider to change the execution speed takes effect immediately even when the program is running in Rurple NG.  This slider uses a logarithmic scale to make as much of the range as possible useful.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG uses the run/pause/stop buttons in the toolbar to indicate the current run state.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG indicates the line on which an error occurred until the dialog is dismissed, even when the error is a syntax error.  In addition the error is written to the log window so the user can consult it while editing.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG automatically saves the program the user is currently working on at exit, and re-loads it on startup.  It also saves a copy of the current world whenever the program is run, and re-loads it on startup or when the "reset" button is pressed.
+</para>
+</listitem>
+<listitem>
+<para>
+RUR-PLE provides a folding editor.  I think this is a feature for more advanced programmers than RUR-PLE's target audience; folding part of a program by accident could be confusing, and the fold markers can be a visual distraction.  I've also switched off the "dots" that indicate the presence of white space; my users found these dots confusing.
+</para>
+</listitem>
+<listitem>
+<para>
+What RUR-PLE calls "beepers", Rurple NG calls "stones".  I found that a couple of users expected beepers to be more "active", so I wanted to give them a more inert name.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG uses antialiased graphics to draw the maze window, among various other changes to give that window a cleaner and less busy look. 
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG does not have a sash for displaying the data structure representing the current state of the maze.  Again, I don't believe the UI complexity that this feature adds pays for itself in teaching.  In its place I may add a tab to the log window showing the current local variables for the running program, which would allow the user the more useful function of tracking data structures of their own making.
+</para>
+</listitem>
+</itemizedlist>
+<para>
+As well as these user-visible improvements, there are various improvements under the hood:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+Rurple NG runs the user program in a separate thread.  RUR-PLE runs the program in the GUI thread, and explicitly calls wx.Yield() when paused, polling to determine when to continue running.  This causes unnecessary CPU load.  A future revision of Rurple NG may even run user code in a separate process.
+</para>
+</listitem>
+<listitem>
+<para>
+RUR-PLE is 4850 lines of Python; Rurple NG is 1651 lines.  This is in part because Rurple NG deliberately omits many of RUR-PLE's features, and in part because of features like multiple robot support that have yet to be added to Rurple NG, but is also because of much more careful factoring of code to avoid repetition. RUR-PLE was one of the first sizeable Python programs written by its author; Rurple NG is by an experienced Python programmer.
+</para>
+</listitem>
+<listitem>
+<para>
+Rurple NG's code more cleanly separates the work of its modules.  In particular, Rurple NG is designed to allow new and different "worlds" to be dropped in as modules, so that user programs could do more than explore the maze that it currently provides.
+</para>
+</listitem>
+<listitem>
+<para>
+Under Windows, Rurple NG uses WiX rather than InnoSetup to build its installer.  WiX is free software and builds an MSI rather than an EXE, which makes the install and uninstall process much more robust.
+</para>
+</listitem>
+</itemizedlist>
+</section>
+<section>
+<title>Advantages of RUR-PLE over Rurple NG</title>
+<para>
+Though many features in RUR-PLE are missing from Rurple NG on purpose, there are still a few features in RUR-PLE that are desirable and have not yet been added to Rurple NG.
+</para>
+<itemizedlist>
+<listitem>
+<para>
+Most importantly, RUR-PLE has a complete manual and lesson plan.
+</para>
+</listitem>
+<listitem>
+<para>
+RUR-PLE supports four natural languages; Rurple NG doesn't currently use gettext.
+</para>
+</listitem>
+<listitem>
+<para>
+RUR-PLE has support for multiple robots and an object-oriented interface for acting on them.
+</para>
+</listitem>
+<listitem>
+<para>
+RUR-PLE is a more mature and well-tested program.
 </para>
 </listitem>
 </itemizedlist>
 </section>
 </article>
-
+ 
