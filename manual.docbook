@@ -185,6 +185,9 @@ The user program is interpreted with an implicit "from __future__ import divisio
 <para>
 Rurple NG was written mainly to remove confusing and distracting elements from the user interface, to make it more visually appealing and more familiar.  However, it also has a far cleaner internal architecture which among other improvements makes better use of the machine's resources.
 </para>
+<para>
+Obviously nothing listed here diminishes the tremendous debt Rurple NG owes to the marvellous program that inspired it.
+</para>
 <itemizedlist>
 <listitem>
 <para>
