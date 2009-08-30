@@ -619,7 +619,7 @@ class World(object):
         return self._maze.staterep
         
     def makeWindow(self, parent):
-        self._window = MazeWindow(parent, world=self)
+        self._window = MazeWindow(parent, style=wx.WANTS_CHARS, world=self)
         self.statusChanged()
         return self._window
 
