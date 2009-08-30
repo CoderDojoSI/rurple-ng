@@ -104,7 +104,7 @@ class CPU(object):
             r((None, None))
     
     def _waitTime(self):
-        return max(0, int(
+        return max(1, int(
             self._lineTime - 1000*(time.time() - self._lastTime)))
     
     def _stopTimer(self):
