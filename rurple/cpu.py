@@ -87,6 +87,7 @@ class CPU(object):
         self._timer = None
         self._thread = None
         self._rcb = None
+        self._frame = None
     
     def _start(self):
         world = self._ui.world
@@ -100,6 +101,7 @@ class CPU(object):
         if r is not None:
             self._rcb = None
             self._timer = None
+            self._frame = None
             self._lastTime = time.time()
             r((None, None))
     
@@ -117,10 +119,11 @@ class CPU(object):
     def trace(self, rcb, frame):
         if self._state == STOP:
             return # FIXME: assert out
-        self._ui.traceLine(frame.f_lineno)
+        self._frame = frame
         self._rcb = rcb
         if self._state == RUN:
             self._timer = wx.CallLater(self._waitTime(), self._release)
+        self._ui.trace(frame)
     
     def done(self):
         self._clear()
@@ -135,7 +138,7 @@ class CPU(object):
     @property
     def state(self):
         return self._state
-    
+
     def run(self):
         if self._state == STOP:
             self._state = RUN
