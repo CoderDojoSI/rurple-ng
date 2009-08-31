@@ -22,6 +22,18 @@ If you already know how to program, and want to teach programming to others, thi
 <para>
 If you use this program, please let me know and provide whatever feedback you can: <email>paul@lshift.net</email>.
 </para>
+<itemizedlist>
+<listitem>
+<para>
+<ulink url="http://hg.opensource.lshift.net/rurple-ng/">Rurple NG source code</ulink>
+</para>
+</listitem>
+<listitem>
+<para>
+<ulink url="http://www.lshift.net/blog/2009/08/13/teaching-programming-rur-ple-and-rurple-ng">Blog entry about this program</ulink>
+</para>
+</listitem>
+</itemizedlist>
 </section>
 <section>
 <title>A brief guide to Rurple NG</title>
@@ -150,6 +162,11 @@ print()
 </listitem>
 </itemizedlist>
 </section>
+<section>
+<title>Rurple NG and RUR-PLE</title>
+<para>
+Rurple NG clearly owes a tremendous debt to the marvellous program that inspired it.  Here are some of the differences.
+</para>
 <section id="incompatibilities">
 <title>Incompatibilities between RUR-PLE and Rurple NG</title>
 <itemizedlist>
@@ -184,9 +201,6 @@ The user program is interpreted with an implicit "from __future__ import divisio
 <title>Advantages of Rurple NG over RUR-PLE</title>
 <para>
 Rurple NG was written mainly to remove confusing and distracting elements from the user interface, to make it more visually appealing and more familiar.  However, it also has a far cleaner internal architecture which among other improvements makes better use of the machine's resources.
-</para>
-<para>
-Obviously nothing listed here diminishes the tremendous debt Rurple NG owes to the marvellous program that inspired it.
 </para>
 <itemizedlist>
 <listitem>
@@ -251,7 +265,7 @@ RUR-PLE provides a folding editor.  I think this is a feature for more advanced 
 </listitem>
 <listitem>
 <para>
-What RUR-PLE calls "beepers", Rurple NG calls "stones".  I found that a couple of users expected beepers to be more "active", so I wanted to give them a more inert name.
+What RUR-PLE calls "beepers", Rurple NG calls "stones".  I found that some users expected beepers to be more "active", so I wanted to give them a more inert name.
 </para>
 </listitem>
 <listitem>
@@ -319,5 +333,6 @@ RUR-PLE is a more mature and well-tested program.
 </listitem>
 </itemizedlist>
 </section>
+</section>
 </article>
- 
+
