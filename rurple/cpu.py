@@ -69,7 +69,7 @@ class TraceThread(threading.Thread):
         # FIXME: shame to stop only on the lines in string if stopped
         if "<string>" in frame.f_code.co_filename:
             if event == "line":
-                self._traceProxy(frame.f_lineno)
+                self._traceProxy(frame)
         return self._tracefunc
 
 STOP = 1
@@ -114,10 +114,10 @@ class CPU(object):
     
     # ----- Thread methods ------
 
-    def trace(self, rcb, lineno):
+    def trace(self, rcb, frame):
         if self._state == STOP:
             return # FIXME: assert out
-        self._ui.traceLine(lineno)
+        self._ui.traceLine(frame.f_lineno)
         self._rcb = rcb
         if self._state == RUN:
             self._timer = wx.CallLater(self._waitTime(), self._release)
