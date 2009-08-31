@@ -498,11 +498,10 @@ class RurFrame(wx.Frame):
     def trace(self, frame):
         self._editor.mark = frame.f_lineno
         self._vars.DeleteAllItems()
-        # FIXME: locals too
-        for k in sorted(frame.f_globals.iterkeys()):
+        for k in sorted(frame.f_locals.iterkeys()):
             if k.startswith("__"):
                 continue
-            v = frame.f_globals[k]
+            v = frame.f_locals[k]
             if type(v) == type (lambda:None):
                 continue
             idx = self._vars.InsertStringItem(self._vars.ItemCount, k)
