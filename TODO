@@ -2,7 +2,6 @@ Still to do:
 
 - fix build system
 
-- update scrollbars when world changes
 - fix license display under Windows
 
 - support multiple robots
@@ -24,7 +23,8 @@ Done:
 - switch from thread to threading
 - pass return-callbacks instead of queues
 - cpu tells main thread when it's finished
-- abolish CPU.AddFunction in favour of SetGlobals and exposing proxyFunction
+- abolish CPU.AddFunction in favour of SetG
+lobals and exposing proxyFunction
 - handle exceptions
 - move timing into CPU object
 - make proper Play, Pause, Step, Stop buttons
@@ -94,4 +94,5 @@ Done:
 - save on close
 - rename beepers to stones
 - Windows installer
+- update scrollbars when world changes
 

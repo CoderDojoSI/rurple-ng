@@ -487,10 +487,9 @@ class RurFrame(wx.Frame):
             self._worldWindow.Destroy()
             self._worldWindow = None
         self._world = world
-        sps = wx.BoxSizer()
         self._worldWindow = self._world.makeWindow(self._worldParent)
-        sps.Add(self._worldWindow)
-        self._worldParent.SetSizer(sps)
+        w, h = self._worldWindow.BestSize
+        self._worldParent.SetScrollbars(1, 1, w, h, 0, 0)
         while self._worldMenuItems < self._worldMenu.MenuItemCount:
             mi = self._worldMenu.FindItemByPosition(self._worldMenuItems)
             self._worldMenu.Delete(mi.Id)
