@@ -296,6 +296,10 @@ class RurFrame(wx.Frame):
         self._vars.InsertColumn(0, "Variable")
         self._vars.InsertColumn(1, "Value")
         self._notebook.AddPage(self._vars, "Variables")
+        self._funcs = listctrl.ListCtrl(self._notebook, 
+            style = wx.LC_REPORT|wx.LC_HRULES)
+        self._funcs.InsertColumn(0, "Function")
+        self._notebook.AddPage(self._funcs, "Functions")
         self._hsash.SplitHorizontally(self._worldParent, self._notebook)
         self._worldParent.SetupScrolling()
         self._statusBar = self.CreateStatusBar()    
@@ -497,16 +501,18 @@ class RurFrame(wx.Frame):
     # called by cpu
     def trace(self, frame):
         self._editor.mark = frame.f_lineno
-        self._vars.DeleteAllItems()
         function = type(lambda:None)
-        for k in sorted(frame.f_locals.iterkeys()):
+        varpairs = []
+        funcs = []
+        for k, v in sorted(frame.f_locals.iteritems()):
             if k.startswith("__"):
                 continue
-            v = frame.f_locals[k]
             if type(v) == function:
-                continue
-            idx = self._vars.InsertStringItem(self._vars.ItemCount, k)
-            self._vars.SetStringItem(idx, 1, repr(v))
+                funcs.append((k,))
+            else:
+                varpairs.append((k, repr(v)))
+        self._vars.SetItems(varpairs)
+        self._funcs.SetItems(funcs)
     
     # called by cpu
     def starting(self):
