@@ -2,6 +2,9 @@ Still to do:
 
 - fix build system
 
+- update scrollbars when world changes
+- fix license display under Windows
+
 - support multiple robots
 
 - change file extensions?
