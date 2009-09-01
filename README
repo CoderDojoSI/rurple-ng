@@ -2,10 +2,7 @@ Rurple NG, an environment for teaching programming to beginners
 
 Development version, Paul Crowley, paul@lshift.net, 2009
 
-http://hg.opensource.lshift.net/rurple-ng
-
-Rurple NG is a reimplementation from scratch of André Roberge's marvellous
-RUR-PLE: http://rur-ple.sourceforge.net/
+http://dev.lshift.net/paul/rurple/
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +17,9 @@ RUR-PLE: http://rur-ple.sourceforge.net/
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Rurple NG is a reimplementation from scratch of André Roberge's marvellous
+RUR-PLE: http://rur-ple.sourceforge.net/
 
 This is an early release of RUR-PLE.  On top of the failings listed in the manual, the biggest thing it lacks is a working build system.  In order to get a working build of the Windows installer you need to follow the following steps:
 
