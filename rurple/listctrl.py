@@ -37,4 +37,7 @@ class ListCtrl(wx.ListCtrl):
             return
         for i in range(cc -1):
             w -= self.GetColumnWidth(i)
-        self.SetColumnWidth(cc -1, w)
+        # UGLY KLUDGE: try to leave room for the scrollbar
+        w -= 20
+        self.SetColumnWidth(cc -1, max(w, 1))
+        
