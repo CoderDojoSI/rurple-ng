@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals, with_statement
 
-import sys
+import types
 import math
 import os
 import os.path
@@ -502,13 +502,12 @@ class RurFrame(wx.Frame):
         self._editor.mark = frame.f_lineno
         d = dict(frame.f_globals)
         d.update(frame.f_locals)
-        function = type(lambda:None)
         varpairs = []
         funcs = []
         for k, v in sorted(d.iteritems()):
             if k.startswith("__"):
                 continue
-            if type(v) == function:
+            if type(v) == types.FunctionType:
                 funcs.append((k,))
             else:
                 varpairs.append((k, repr(v)))
