@@ -291,15 +291,15 @@ class RurFrame(wx.Frame):
         self._notebook = wx.Notebook(self._hsash)
         self._logWindow = textctrl.LogWindow(self._notebook)
         self._notebook.AddPage(self._logWindow, "Log")
+        self._funcs = listctrl.ListCtrl(self._notebook, 
+            style = wx.LC_REPORT|wx.LC_HRULES)
+        self._funcs.InsertColumn(0, "Function")
+        self._notebook.AddPage(self._funcs, "Functions")
         self._vars = listctrl.ListCtrl(self._notebook, 
             style = wx.LC_REPORT|wx.LC_HRULES)
         self._vars.InsertColumn(0, "Variable")
         self._vars.InsertColumn(1, "Value")
         self._notebook.AddPage(self._vars, "Variables")
-        self._funcs = listctrl.ListCtrl(self._notebook, 
-            style = wx.LC_REPORT|wx.LC_HRULES)
-        self._funcs.InsertColumn(0, "Function")
-        self._notebook.AddPage(self._funcs, "Functions")
         self._hsash.SplitHorizontally(self._worldParent, self._notebook)
         self._worldParent.SetupScrolling()
         self._statusBar = self.CreateStatusBar()    
