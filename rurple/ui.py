@@ -501,10 +501,12 @@ class RurFrame(wx.Frame):
     # called by cpu
     def trace(self, frame):
         self._editor.mark = frame.f_lineno
+        d = dict(frame.f_globals)
+        d.update(frame.f_locals)
         function = type(lambda:None)
         varpairs = []
         funcs = []
-        for k, v in sorted(frame.f_locals.iteritems()):
+        for k, v in sorted(d.iteritems()):
             if k.startswith("__"):
                 continue
             if type(v) == function:
