@@ -47,7 +47,7 @@ class TraceThread(threading.Thread):
             if self._stopped:
                 rcb((None, ThreadStopException()))
             else:
-                f(rcb, *a, **kw)
+                f(self, rcb, *a, **kw)
         def callF(*a, **kw):
             q = Queue.Queue()
             wx.CallAfter(guardF, q.put, *a, **kw)
@@ -58,7 +58,7 @@ class TraceThread(threading.Thread):
         return callF
 
     def proxyFunction(self, f):
-        def callBlocking(rcb, *a, **kw):
+        def callBlocking(t, rcb, *a, **kw):
             try:
                 rcb((f(*a, **kw), None))
             except Exception, e:
@@ -116,7 +116,7 @@ class CPU(object):
     
     # ----- Thread methods ------
 
-    def trace(self, rcb, frame):
+    def trace(self, t, rcb, frame):
         if self._state == STOP:
             return # FIXME: assert out
         self._frame = frame
