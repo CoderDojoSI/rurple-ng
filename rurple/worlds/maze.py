@@ -238,11 +238,6 @@ class Maze(object):
             "robots": [v.staterep for v in self._robots.itervalues()],
         }
     
-    def proxyRobot(self, name):
-        return eval(
-            "lambda *a, **kw: self.defaultRobot.%s(*a, **kw)" % name,
-            {"self": self})
-
     def runStart(self):
         for r in self._robots.itervalues():
             r.runStart()
@@ -677,10 +672,15 @@ class World(object):
         finally:
             dlg.Destroy()
     
+    def _proxyRobot(self, name):
+        return eval(
+            "lambda *a, **kw: maze.defaultRobot.%s(*a, **kw)" % name,
+            {"maze": self._maze})
+
     def getGlobals(self, t):
         res = {}
         res.update(dict([
-            (name, t.proxyFunction(self._maze.proxyRobot(name)))
+            (name, t.proxyFunction(self._proxyRobot(name)))
             for name in [
                 "move", "turn_left",
                 "pick_stone", "put_stone",
