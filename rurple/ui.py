@@ -11,7 +11,7 @@ import wx
 import wx.lib.scrolledpanel
 import wx.lib.wordwrap
 
-from rurple import share, cpu, world, textctrl
+from rurple import share, cpu, world, textctrl, listctrl
 import rurple.worlds.maze
 
 class LogScale(object):
@@ -291,7 +291,7 @@ class RurFrame(wx.Frame):
         self._notebook = wx.Notebook(self._hsash)
         self._logWindow = textctrl.LogWindow(self._notebook)
         self._notebook.AddPage(self._logWindow, "Log")
-        self._vars = wx.ListCtrl(self._notebook, 
+        self._vars = listctrl.ListCtrl(self._notebook, 
             style = wx.LC_REPORT|wx.LC_HRULES)
         self._vars.InsertColumn(0, "Variable")
         self._vars.InsertColumn(1, "Value")
@@ -498,11 +498,12 @@ class RurFrame(wx.Frame):
     def trace(self, frame):
         self._editor.mark = frame.f_lineno
         self._vars.DeleteAllItems()
+        function = type(lambda:None)
         for k in sorted(frame.f_locals.iterkeys()):
             if k.startswith("__"):
                 continue
             v = frame.f_locals[k]
-            if type(v) == type (lambda:None):
+            if type(v) == function:
                 continue
             idx = self._vars.InsertStringItem(self._vars.ItemCount, k)
             self._vars.SetStringItem(idx, 1, repr(v))
