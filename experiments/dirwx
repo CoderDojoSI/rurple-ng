@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
 import wx as dirme
-print [x for x in dir(dirme) if x.startswith("ICON_")]
+for x in sorted(dir(dirme)):
+    if x.startswith("LIST_"):
+        print x
 
