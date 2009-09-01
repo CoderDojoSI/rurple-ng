@@ -1,16 +1,16 @@
 {
-    "stones": [], 
-    "height": 10, 
+    "height": 6, 
     "robots": [
         {
-            "stones": 0, 
             "dir": 0, 
             "name": "robot", 
+            "stones": 0, 
             "x": 0, 
             "y": 0
         }
     ], 
+    "stones": [], 
     "walls": [], 
-    "width": 10, 
+    "width": 6, 
     "world": "maze"
 }

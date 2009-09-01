@@ -292,7 +292,7 @@ class MazeWindow(wx.PyControl):
         self._robotPen = wx.Pen('blue')
         self._robotPen.SetWidth(4)
         self._robotPen.SetCap(wx.CAP_BUTT)
-        self._trailPen = wx.Pen('black')
+        self._trailPen = wx.Pen('grey')
         self._trailPen.SetWidth(1)
     
     def OnPaint(self, e):
@@ -619,7 +619,7 @@ class World(object):
         return self._maze.staterep
         
     def makeWindow(self, parent):
-        self._window = MazeWindow(parent, world=self)
+        self._window = MazeWindow(parent, style=wx.WANTS_CHARS, world=self)
         self.statusChanged()
         return self._window
 

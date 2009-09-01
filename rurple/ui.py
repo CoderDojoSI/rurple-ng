@@ -11,7 +11,7 @@ import wx
 import wx.lib.scrolledpanel
 import wx.lib.wordwrap
 
-from rurple import share, cpu, world, textctrl
+from rurple import share, cpu, world, textctrl, listctrl
 import rurple.worlds.maze
 
 class LogScale(object):
@@ -191,7 +191,8 @@ class Openable(object):
         if os.path.exists(path):
             d = wx.MessageDialog(self._ui, 
                 caption="Overwrite file?",
-                message = "There already is a program of that name. Replace it with your program?",
+                message = "There already is a %s of that name. Replace it with your %s?"
+                    % (self._type, self._type),
                 style=wx.ICON_QUESTION | wx.OK | wx.CANCEL)
             if d.ShowModal() != wx.ID_OK:
                 return False
@@ -287,11 +288,17 @@ class RurFrame(wx.Frame):
         self._worldParent = wx.lib.scrolledpanel.ScrolledPanel(self._hsash)
         self._worldWindow = None
         self._vsash.SplitVertically(self._editor, self._hsash)
-        self._logWindow = textctrl.LogWindow(self._hsash)
-        self._hsash.SplitHorizontally(self._worldParent, self._logWindow)
+        self._notebook = wx.Notebook(self._hsash)
+        self._logWindow = textctrl.LogWindow(self._notebook)
+        self._notebook.AddPage(self._logWindow, "Log")
+        self._vars = listctrl.ListCtrl(self._notebook, 
+            style = wx.LC_REPORT|wx.LC_HRULES)
+        self._vars.InsertColumn(0, "Variable")
+        self._vars.InsertColumn(1, "Value")
+        self._notebook.AddPage(self._vars, "Variables")
+        self._hsash.SplitHorizontally(self._worldParent, self._notebook)
         self._worldParent.SetupScrolling()
-        
-        self._statusBar = self.CreateStatusBar()
+        self._statusBar = self.CreateStatusBar()    
         self._statusBar.SetFieldsCount(3)
         self._programO = ProgramOpen(self)
         self._worldO = WorldOpen(self)
@@ -433,13 +440,12 @@ class RurFrame(wx.Frame):
         self._cpu.step()
 
     def OnWorldReset(self, e):
-        
         self._reset()
 
     def OnAbout(self, e):
         info = wx.AboutDialogInfo()
         info.Name = "Rurple NG"
-        info.Version = "0.1"
+        info.Version = "0.5"
         info.Copyright = "Copyright 2009 André Roberge and Paul Crowley"
         info.Description = wx.lib.wordwrap.wordwrap(
             "A friendly learning environment for beginners to programming."
@@ -489,8 +495,18 @@ class RurFrame(wx.Frame):
         #sps.SetSizeHints(sp)
 
     # called by cpu
-    def traceLine(self, line):
-        self._editor.mark = line
+    def trace(self, frame):
+        self._editor.mark = frame.f_lineno
+        self._vars.DeleteAllItems()
+        function = type(lambda:None)
+        for k in sorted(frame.f_locals.iterkeys()):
+            if k.startswith("__"):
+                continue
+            v = frame.f_locals[k]
+            if type(v) == function:
+                continue
+            idx = self._vars.InsertStringItem(self._vars.ItemCount, k)
+            self._vars.SetStringItem(idx, 1, repr(v))
     
     # called by cpu
     def starting(self):
